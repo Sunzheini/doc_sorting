@@ -1,6 +1,10 @@
-from support.the_gui import MyGui
+import time
+
+from core.engine import Engine
+from gui.gui_controller import MyGui
 
 
 if __name__ == '__main__':
-    gui = MyGui()
+    engine = Engine()
+    gui = MyGui(engine)
     gui.run()

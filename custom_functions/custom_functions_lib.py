@@ -1,14 +1,16 @@
-import os
+import time
 
 
 def replace_lower_dashes_with_spaces(string):
     return string.replace("_", " ")
 
 
-def get_list_of_all_projects_in_the_dir(directory):
-    result = []
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if file.endswith(".ap18"):
-                result.append(os.path.join(root, file))
-    return result
+def time_measurement_decorator(some_function):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = some_function(*args, **kwargs)
+        end = time.time()
+        measurement = end - start
+        print(f"generated in: {measurement:.5f}")
+        return result
+    return wrapper
