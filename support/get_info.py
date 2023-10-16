@@ -36,12 +36,15 @@ def search_keyword_in_all_files_in_a_dir(directory, keyword):
     return results
 
 
+# In Python 3.7 and later, dictionaries maintain the insertion order of their items.
 def the_walk_loop(directory):
+    result_dictionary = {}
     for (dir_path, dir_names, file_names) in walk(directory):
-        pass
+        normalized_path = os.path.normpath(dir_path)
+        result_dictionary[normalized_path] = file_names
 
-        for directory in dir_names:
-            pass
+    # Print in the console for checking
+    for key, value in result_dictionary.items():
+        print(f'{key}: {value}')
 
-        for file in file_names:
-            pass
+    return result_dictionary
