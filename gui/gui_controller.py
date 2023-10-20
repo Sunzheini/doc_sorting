@@ -219,10 +219,10 @@ class MyGui:
     @time_measurement_decorator
     def command2(self, event=None):
         # function
-        result = self.engine_object.functions_bound_to_button2()
+        result, color = self.engine_object.functions_bound_to_button2()
 
         # feedback
-        self.update_light_next_to_button(self.canvas2, self.rect2, result)
+        self.update_light_next_to_button(self.canvas2, self.rect2, color)
         self.update_status_label(f"Операция 2: '{result}'")
 
     @time_measurement_decorator
@@ -255,7 +255,7 @@ class MyGui:
 
         # feedback
         self.update_label_next_to_browse_button(self.label11, f"{filepath}")
-        self.update_status_label(f"selected: '{filepath}'")
+        self.update_status_label(f"избрано: '{filepath}'")
 
     @time_measurement_decorator
     def select_location_of_work_dir(self):
@@ -274,7 +274,7 @@ class MyGui:
 
         # feedback
         self.update_label_next_to_browse_button(self.label12, f"{filepath}")
-        self.update_status_label(f"selected: '{filepath}'")
+        self.update_status_label(f"избрано: '{filepath}'")
 
     @time_measurement_decorator
     def select_location_of_ready_dir(self):
@@ -293,7 +293,7 @@ class MyGui:
 
         # feedback
         self.update_label_next_to_browse_button(self.label13, f"{filepath}")
-        self.update_status_label(f"selected: '{filepath}'")
+        self.update_status_label(f"избрано: '{filepath}'")
 
     # -----------------------------------------------------------------------------
     # Browse methods

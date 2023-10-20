@@ -1,6 +1,19 @@
 from core.module_controller import ModuleController
 
 
+# work pc
+# source_folder = r'C:\Appl\Projects\Python\Folders to move\Work'
+# destination_folder = r'C:\Appl\Projects\Python\Folders to move\Finished'
+# archive_folder = r'C:\Appl\Projects\Python\Folders to move\Finished'
+
+# home pc
+source_folder = r'C:\Users\User\Desktop\MK\Work'
+destination_folder = r'C:\Users\User\Desktop\MK\Ready'
+archive_folder = r'C:\Users\User\Desktop\MK\Ready'
+
+# os.makedirs(archive_folder, exist_ok=True)
+
+
 class Engine:
     def __init__(self, location_of_log_file):
         # locations
@@ -29,4 +42,13 @@ class Engine:
         return 'Сканирането премина успешно', 'green'
 
     def functions_bound_to_button2(self):
-        pass
+        result = self.module0.function4_testing_of_doc_sorter(
+            source_folder,
+            destination_folder,
+            archive_folder,
+        )
+
+        if result != 'Success':
+            return result, 'red'
+
+        return 'Папките са обновени успешно', 'green'
