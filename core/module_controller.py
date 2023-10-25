@@ -3,6 +3,7 @@ import os
 import shutil
 import zipfile
 
+from pdf_module.pdf_reader import extract_text_from_pdf
 from support.excel_reader import read_from_excel_file
 from support.get_info import the_walk_loop
 from support.txt_writer import append_a_dict_to_txt_file, append_a_string_to_txt_file
@@ -19,17 +20,20 @@ class ModuleController:
     # ----------------------------------------------------------------------------------------
     # Internal
     # ----------------------------------------------------------------------------------------
-    def _extract_revision(self, filename):
+    @staticmethod
+    def _extract_revision(filename):
         parts = filename.split('_')
         revision = parts[1]
         return revision
 
-    def _extract_file_name(self, filename):
+    @staticmethod
+    def _extract_file_name(filename):
         parts = filename.split('_')
         file_name = parts[0]
         return file_name
 
-    def _archive_file(self, file_path, archive_folder):
+    @staticmethod
+    def _archive_file(file_path, archive_folder):
         # Create an archive of the file
         file_name = os.path.basename(file_path)
         archive_name = os.path.splitext(file_name)[0] + ".zip"
@@ -38,7 +42,17 @@ class ModuleController:
         with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as archive:
             archive.write(file_path, os.path.basename(file_path))
 
+    @staticmethod
+    def _split_pdf_scanning_coordinates(pdf_scanning_coordinates):
+        project_name_coordinates = pdf_scanning_coordinates['project_name']
+        project_description_coordinates = pdf_scanning_coordinates['project_description']
+        document_number_coordinates = pdf_scanning_coordinates['document_number']
 
+        return project_name_coordinates, project_description_coordinates, document_number_coordinates
+
+    # ----------------------------------------------------------------------------------------
+    # External
+    # ----------------------------------------------------------------------------------------
     def function1_scan_excel(self, file_path):
         # read from Excel file
         try:
@@ -131,5 +145,27 @@ class ModuleController:
             return f'Error: {e}'
 
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully tested')
+
+        return 'Success'
+
+    def read_from_pdf(self, pdf_scanning_coordinates):
+        # split pdf_scanning_coordinates
+        project_name_coordinates, project_description_coordinates, document_number_coordinates = (
+            self._split_pdf_scanning_coordinates(pdf_scanning_coordinates))
+
+        # project name
+        project_name = extract_text_from_pdf(project_name_coordinates)
+        print(f"Project Name: {project_name}")
+        append_a_string_to_txt_file(self.location_of_log_file, f"Project Name: {project_name}")
+
+        # project description
+        project_description = extract_text_from_pdf(project_description_coordinates)
+        print(f"Project Description: {project_description}")
+        append_a_string_to_txt_file(self.location_of_log_file, f"Project Description: {project_description}")
+
+        # document number
+        document_number = extract_text_from_pdf(document_number_coordinates)
+        print(f"Document Number: {document_number}")
+        append_a_string_to_txt_file(self.location_of_log_file, f"Document Number: {document_number}")
 
         return 'Success'

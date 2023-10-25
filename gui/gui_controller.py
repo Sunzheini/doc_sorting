@@ -219,7 +219,11 @@ class MyGui:
     @time_measurement_decorator
     def command2(self, event=None):
         # function
-        result, color = self.engine_object.functions_bound_to_button2()
+        result, color = self.engine_object.functions_bound_to_button2(
+            self.location_of_work_dir,      # source_folder
+            self.location_of_ready_dir,     # destination_folder
+            self.location_of_ready_dir,     # archive_folder
+        )
 
         # feedback
         self.update_light_next_to_button(self.canvas2, self.rect2, color)
