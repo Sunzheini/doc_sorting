@@ -2,6 +2,7 @@ import random
 import os
 import shutil
 import zipfile
+import re
 
 from pdf_module.pdf_reader import extract_text_from_pdf
 from support.excel_reader import read_from_excel_file
@@ -10,12 +11,24 @@ from support.txt_writer import append_a_dict_to_txt_file, append_a_string_to_txt
 
 
 class ModuleController:
-    def __init__(self, location_of_log_file):
+    def __init__(
+            self,
+            location_of_log_file,
+            db_controller,
+            paths_table_name,
+            previous_state_table_name,
+    ):
         self.location_of_log_file = location_of_log_file
+
+        self.db_controller = db_controller
+        self.paths_table_name = paths_table_name
+        self.previous_state_table_name = previous_state_table_name
 
         self.contents_of_file = None
         self.contents_of_work_dir = None
         self.contents_of_ready_dir = None
+
+        self.contents_of_saved_work_dir = None
 
     # ----------------------------------------------------------------------------------------
     # Internal
@@ -68,7 +81,7 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported excel to txt file')
 
         return 'Success'
 
@@ -87,7 +100,7 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported work dir to txt file')
 
         return 'Success'
 
@@ -106,11 +119,86 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported ready dir to txt file')
 
         return 'Success'
 
-    def function4_testing_of_doc_sorter(self, dir1, dir2, archive_folder):
+    def function4_extract_content_of_work_dir_from_database(self):
+        # Retrieve data from the database
+        try:
+            data = self.db_controller.retrieve_data(self.previous_state_table_name)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        # Extract the data
+        try:
+            self.contents_of_saved_work_dir = {}
+            for row in data:
+                self.contents_of_saved_work_dir[row[1]] = row[2]
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        # export to txt file
+        try:
+            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_saved_work_dir)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported saved work dir to txt file')
+
+        return 'Success'
+
+    # ToDo: how to compare and by which criteria to compare
+    def function5(self, ready_dir):
+        # prints contents of the 3 sources
+        print(f"Now in work: {self.contents_of_work_dir}")
+        print(f"Now in ready: {self.contents_of_ready_dir}")
+        print(f"Saved work: {self.contents_of_saved_work_dir}")
+
+        # check for new folders in work compared to saved work
+        new_folders_in_work = {}
+        for key, value in self.contents_of_work_dir.items():
+            if key not in self.contents_of_saved_work_dir.keys():
+                new_folders_in_work[key] = value
+
+        # print new folders in work
+        print(f"New folders in work: {new_folders_in_work}")
+
+        # prepare the info about new folder to return
+        if len(new_folders_in_work) > 0:
+            info = f"Number of new folders in work: {len(new_folders_in_work)}\n"
+            count = 1
+            for key, value in new_folders_in_work.items():
+                path = key
+                # Use a regular expression to extract the text after the last backslash
+                pattern = r'[^\\]+$'
+                match = re.search(pattern, path)
+                folder_name = match.group(0)
+                info += f"{count}) {folder_name}\n"
+                count += 1
+        else:
+            info = None
+
+        return 'Success', info
+
+    def function6_store_current_condition_in_database(self):
+        try:
+            self.db_controller.delete_all_data(self.previous_state_table_name)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        for key, value in self.contents_of_work_dir.items():
+            self.db_controller.insert_data(self.previous_state_table_name, 'dir_path', 'file_names', key, str(value))
+
+        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully stored current condition in database')
+
+        return 'Success'
+
+    def function7_testing_of_doc_sorter(self, dir1, dir2, archive_folder):
         try:
             files_list1 = os.listdir(dir1)
             files_list2 = os.listdir(dir2)
@@ -144,11 +232,11 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully tested')
+        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully replaced files')
 
         return 'Success'
 
-    def read_from_pdf(self, pdf_scanning_coordinates):
+    def function8_read_from_pdf(self, pdf_scanning_coordinates):
         # split pdf_scanning_coordinates
         project_name_coordinates, project_description_coordinates, document_number_coordinates = (
             self._split_pdf_scanning_coordinates(pdf_scanning_coordinates))

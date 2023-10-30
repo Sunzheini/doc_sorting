@@ -26,10 +26,10 @@ def read_from_excel_file(file_path):
         next_line += 1
 
     # printing in console for checking
-    to_print_in_lines = []
-    for key, value in new_dict.items():
-        to_print_in_lines.append(f'{key}: {value}')
-    print(*to_print_in_lines, sep='\n')
+    # to_print_in_lines = []
+    # for key, value in new_dict.items():
+    #     to_print_in_lines.append(f'{key}: {value}')
+    # print(*to_print_in_lines, sep='\n')
 
     # returning the dictionary
     return new_dict

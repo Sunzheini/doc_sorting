@@ -12,7 +12,7 @@ class MyGui:
     WINDOW_HEIGHT = 400
     DEFAULT_STATUS_TEXT = '\n' * 12 + 'Няма нови промени'
 
-    def __init__(self, engine_object, db_object):
+    def __init__(self, engine_object, db_object, paths_table_name, previous_state_table_name):
 
         # -----------------------------------------------------------------------------
         # General window looks
@@ -37,6 +37,12 @@ class MyGui:
         self.engine_object = engine_object
         self.db_object = db_object
         self.db_object.create_table()
+
+        # -----------------------------------------------------------------------------
+        # External strings
+        # -----------------------------------------------------------------------------
+        self.paths_table_name = paths_table_name
+        self.previous_state_table_name = previous_state_table_name
 
         # -----------------------------------------------------------------------------
         # Internal objects
@@ -193,7 +199,7 @@ class MyGui:
     # -----------------------------------------------------------------------------
     def initial_query_of_database(self):
         try:
-            result = self.db_object.retrieve_data()
+            result = self.db_object.retrieve_data(self.paths_table_name)
             self.location_of_documents_list_file = result[0][2]
             self.location_of_work_dir = result[1][2]
             self.location_of_ready_dir = result[2][2]
@@ -206,7 +212,7 @@ class MyGui:
     @time_measurement_decorator
     def command1(self, event=None):
         # function
-        result, color = self.engine_object.functions_bound_to_button1(
+        result, color, message = self.engine_object.functions_bound_to_button1(
             self.location_of_documents_list_file,
             self.location_of_work_dir,
             self.location_of_ready_dir,
@@ -214,7 +220,11 @@ class MyGui:
 
         # feedback
         self.update_light_next_to_button(self.canvas1, self.rect1, color)
-        self.update_status_label(f"Операция 1: '{result}'")
+
+        if message is not None:
+            self.update_status_label(f"Операция 1: '{result}'\n{message}")
+        else:
+            self.update_status_label(f"Операция 1: '{result}'")
 
     @time_measurement_decorator
     def command2(self, event=None):
@@ -250,12 +260,12 @@ class MyGui:
 
         # check if entry exists
         button_identifier = 'location_of_documents_list_file'
-        if self.db_object.entry_exists(button_identifier):
+        if self.db_object.entry_exists(self.paths_table_name, "button_identifier", button_identifier):
             # Entry already exists; update it
-            self.db_object.update_entry(button_identifier, filepath)
+            self.db_object.update_entry(self.paths_table_name, "button_identifier", "path", button_identifier, filepath)
         else:
             # Entry doesn't exist; insert a new one
-            self.db_object.insert_data(button_identifier, filepath)
+            self.db_object.insert_data(self.paths_table_name, "button_identifier", "path", button_identifier, filepath)
 
         # feedback
         self.update_label_next_to_browse_button(self.label11, f"{filepath}")
@@ -269,12 +279,13 @@ class MyGui:
 
         # check if entry exists
         button_identifier = 'location_of_work_dir'
-        if self.db_object.entry_exists(button_identifier):
+        # if self.db_object.entry_exists(button_identifier):
+        if self.db_object.entry_exists(self.paths_table_name, "button_identifier", button_identifier):
             # Entry already exists; update it
-            self.db_object.update_entry(button_identifier, filepath)
+            self.db_object.update_entry(self.paths_table_name, "button_identifier", "path", button_identifier, filepath)
         else:
             # Entry doesn't exist; insert a new one
-            self.db_object.insert_data(button_identifier, filepath)
+            self.db_object.insert_data(self.paths_table_name, "button_identifier", "path", button_identifier, filepath)
 
         # feedback
         self.update_label_next_to_browse_button(self.label12, f"{filepath}")
@@ -288,12 +299,13 @@ class MyGui:
 
         # check if entry exists
         button_identifier = 'location_of_ready_dir'
-        if self.db_object.entry_exists(button_identifier):
+        # if self.db_object.entry_exists(button_identifier):
+        if self.db_object.entry_exists(self.paths_table_name, "button_identifier", button_identifier):
             # Entry already exists; update it
-            self.db_object.update_entry(button_identifier, filepath)
+            self.db_object.update_entry(self.paths_table_name, "button_identifier", "path", button_identifier, filepath)
         else:
             # Entry doesn't exist; insert a new one
-            self.db_object.insert_data(button_identifier, filepath)
+            self.db_object.insert_data(self.paths_table_name, "button_identifier", "path", button_identifier, filepath)
 
         # feedback
         self.update_label_next_to_browse_button(self.label13, f"{filepath}")

@@ -44,7 +44,7 @@ def the_walk_loop(directory):
         result_dictionary[normalized_path] = file_names
 
     # Print in the console for checking
-    for key, value in result_dictionary.items():
-        print(f'{key}: {value}')
+    # for key, value in result_dictionary.items():
+    #     print(f'{key}: {value}')
 
     return result_dictionary
