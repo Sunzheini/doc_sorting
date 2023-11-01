@@ -1,14 +1,9 @@
-import cv2
-import numpy as np
 import fitz  # PyMuPDF
 import pytesseract
 from PIL import Image, ImageEnhance
 
 
-file_path = r'C:\Users\User\Desktop\MK\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28-09-2023-A1.pdf'
-
-
-def extract_text_from_pdf(coordinates):
+def extract_text_from_pdf(file_path, coordinates):
     doc = fitz.open(file_path)
     page = doc[0]  # get the first page
 
@@ -43,13 +38,3 @@ def extract_text_from_pdf(coordinates):
     text = text.replace('\x0c', ' ')
 
     return text
-
-
-# # project name
-# print(f"Project Name: {extract_text_from_pdf(file_path, project_name_coordinates)}")
-#
-# # project description
-# print(f"Project Description: {extract_text_from_pdf(file_path, project_description_coordinates)}")
-#
-# # document number
-# print(f"Document Number: {extract_text_from_pdf(file_path, document_number_coordinates)}")

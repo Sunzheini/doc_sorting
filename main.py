@@ -14,8 +14,7 @@ pdf_scanning_coordinates = {
     'document_number': {'x1': 2135, 'y1': 1608, 'x2': 2310, 'y2': 1640},
 }
 
-# compile to exe
-# pyinstaller --onefile --noconsole main.py
+# compile to exe: `pyinstaller --onefile --noconsole main.py`
 
 if __name__ == '__main__':
     # delete the log file in the beginning

@@ -36,7 +36,7 @@ class MyGui:
         # -----------------------------------------------------------------------------
         self.engine_object = engine_object
         self.db_object = db_object
-        self.db_object.create_table()
+        self.db_object.create_the_2_predefined_tables()
 
         # -----------------------------------------------------------------------------
         # External strings
@@ -133,7 +133,7 @@ class MyGui:
         self.button1 = Button(
             self.window,
             text=self.name_of_button1,
-            command=self.command1,
+            command=self.commands_of_button1,
             width=25,
             height=2,
         )
@@ -142,7 +142,7 @@ class MyGui:
         self.button2 = Button(
             self.window,
             text=self.name_of_button2,
-            command=self.command2,
+            command=self.commands_of_button2,
             width=25,
             height=2,
         )
@@ -151,16 +151,16 @@ class MyGui:
         self.button3 = Button(
             self.window,
             text=self.name_of_button3,
-            command=self.command3,
+            command=self.commands_of_button3,
             width=25,
             height=2,
         )
         self.button3.place(x=10, y=305)
 
         # Bind keyboard shortcuts
-        self.window.bind_all('<a>', self.command1)
-        self.window.bind_all('<s>', self.command2)
-        self.window.bind_all('<d>', self.command3)
+        self.window.bind_all('<a>', self.commands_of_button1)
+        self.window.bind_all('<s>', self.commands_of_button2)
+        self.window.bind_all('<d>', self.commands_of_button3)
 
         # Lights next to buttons
         self.canvas1 = Canvas(self.window, width=15, height=60, bd=0, highlightthickness=0, bg='#E5E5E5')
@@ -210,8 +210,8 @@ class MyGui:
     # Methods on buttons
     # -----------------------------------------------------------------------------
     @time_measurement_decorator
-    def command1(self, event=None):
-        # function
+    def commands_of_button1(self, event=None):
+        # functions
         result, color, message = self.engine_object.functions_bound_to_button1(
             self.location_of_documents_list_file,
             self.location_of_work_dir,
@@ -221,15 +221,16 @@ class MyGui:
         # feedback
         self.update_light_next_to_button(self.canvas1, self.rect1, color)
 
+        # if there is an additional message, show it
         if message is not None:
             self.update_status_label(f"Операция 1: '{result}'\n{message}")
         else:
             self.update_status_label(f"Операция 1: '{result}'")
 
     @time_measurement_decorator
-    def command2(self, event=None):
-        # function
-        result, color = self.engine_object.functions_bound_to_button2(
+    def commands_of_button2(self, event=None):
+        # functions
+        result, color, message = self.engine_object.functions_bound_to_button2(
             self.location_of_work_dir,      # source_folder
             self.location_of_ready_dir,     # destination_folder
             self.location_of_ready_dir,     # archive_folder
@@ -237,10 +238,15 @@ class MyGui:
 
         # feedback
         self.update_light_next_to_button(self.canvas2, self.rect2, color)
-        self.update_status_label(f"Операция 2: '{result}'")
+
+        # if there is an additional message, show it
+        if message is not None:
+            self.update_status_label(f"Операция 2: '{result}'\n{message}")
+        else:
+            self.update_status_label(f"Операция 2: '{result}'")
 
     @time_measurement_decorator
-    def command3(self, event=None):
+    def commands_of_button3(self, event=None):
         # clear the status label
         self.contents_of_status_label = self.DEFAULT_STATUS_TEXT
         self.status_label.delete('1.0', END)

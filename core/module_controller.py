@@ -1,10 +1,9 @@
-import random
 import os
 import shutil
 import zipfile
 import re
 
-from pdf_module.pdf_reader import extract_text_from_pdf
+from support.pdf_reader import extract_text_from_pdf
 from support.excel_reader import read_from_excel_file
 from support.get_info import the_walk_loop
 from support.txt_writer import append_a_dict_to_txt_file, append_a_string_to_txt_file
@@ -64,7 +63,7 @@ class ModuleController:
         return project_name_coordinates, project_description_coordinates, document_number_coordinates
 
     # ----------------------------------------------------------------------------------------
-    # External
+    # Scanners
     # ----------------------------------------------------------------------------------------
     def function1_scan_excel(self, file_path):
         # read from Excel file
@@ -81,8 +80,8 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
+        # return
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported excel to txt file')
-
         return 'Success'
 
     def function2_scan_work_dir(self, work_dir):
@@ -100,8 +99,8 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
+        # return
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported work dir to txt file')
-
         return 'Success'
 
     def function3_scan_ready_dir(self, ready_dir):
@@ -119,8 +118,8 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
+        # return
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported ready dir to txt file')
-
         return 'Success'
 
     def function4_extract_content_of_work_dir_from_database(self):
@@ -131,7 +130,7 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        # Extract the data
+        # Fill the dictionary with the retrieved data
         try:
             self.contents_of_saved_work_dir = {}
             for row in data:
@@ -147,10 +146,13 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
+        # return
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported saved work dir to txt file')
-
         return 'Success'
 
+    # ----------------------------------------------------------------------------------------
+    # Comparators
+    # ----------------------------------------------------------------------------------------
     # ToDo: how to compare and by which criteria to compare
     def function5(self, ready_dir):
         # prints contents of the 3 sources
@@ -184,6 +186,9 @@ class ModuleController:
 
         return 'Success', info
 
+    # ----------------------------------------------------------------------------------------
+    # Finishers
+    # ----------------------------------------------------------------------------------------
     def function6_store_current_condition_in_database(self):
         try:
             self.db_controller.delete_all_data(self.previous_state_table_name)
@@ -198,11 +203,15 @@ class ModuleController:
 
         return 'Success'
 
+    # ----------------------------------------------------------------------------------------
+    # Testing
+    # ----------------------------------------------------------------------------------------
     def function7_testing_of_doc_sorter(self, dir1, dir2, archive_folder):
         try:
             files_list1 = os.listdir(dir1)
             files_list2 = os.listdir(dir2)
 
+            # ToDo: not working since they are now directories not files
             print(os.path.splitext(files_list1[0])[0])
             print(os.path.splitext(files_list2[0])[0])
 
@@ -233,26 +242,27 @@ class ModuleController:
             return f'Error: {e}'
 
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully replaced files')
-
         return 'Success'
 
     def function8_read_from_pdf(self, pdf_scanning_coordinates):
+        file_path = r'C:\Users\User\Desktop\MK\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28-09-2023-A1.pdf'
+
         # split pdf_scanning_coordinates
         project_name_coordinates, project_description_coordinates, document_number_coordinates = (
             self._split_pdf_scanning_coordinates(pdf_scanning_coordinates))
 
-        # project name
-        project_name = extract_text_from_pdf(project_name_coordinates)
+        # scan project name
+        project_name = extract_text_from_pdf(file_path, project_name_coordinates)
         print(f"Project Name: {project_name}")
         append_a_string_to_txt_file(self.location_of_log_file, f"Project Name: {project_name}")
 
-        # project description
-        project_description = extract_text_from_pdf(project_description_coordinates)
+        # scan project description
+        project_description = extract_text_from_pdf(file_path, project_name_coordinates)
         print(f"Project Description: {project_description}")
         append_a_string_to_txt_file(self.location_of_log_file, f"Project Description: {project_description}")
 
-        # document number
-        document_number = extract_text_from_pdf(document_number_coordinates)
+        # scan document number
+        document_number = extract_text_from_pdf(file_path, project_name_coordinates)
         print(f"Document Number: {document_number}")
         append_a_string_to_txt_file(self.location_of_log_file, f"Document Number: {document_number}")
 
