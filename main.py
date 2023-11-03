@@ -15,6 +15,7 @@ pdf_scanning_coordinates = {
 }
 
 # compile to exe: `pyinstaller --onefile --noconsole main.py`
+# regular expression: https://regex101.com/r/Lo8BEL/1
 
 if __name__ == '__main__':
     # delete the log file in the beginning

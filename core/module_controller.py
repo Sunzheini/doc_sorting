@@ -30,39 +30,6 @@ class ModuleController:
         self.contents_of_saved_work_dir = None
 
     # ----------------------------------------------------------------------------------------
-    # Internal
-    # ----------------------------------------------------------------------------------------
-    @staticmethod
-    def _extract_revision(filename):
-        parts = filename.split('_')
-        revision = parts[1]
-        return revision
-
-    @staticmethod
-    def _extract_file_name(filename):
-        parts = filename.split('_')
-        file_name = parts[0]
-        return file_name
-
-    @staticmethod
-    def _archive_file(file_path, archive_folder):
-        # Create an archive of the file
-        file_name = os.path.basename(file_path)
-        archive_name = os.path.splitext(file_name)[0] + ".zip"
-        archive_path = os.path.join(archive_folder, archive_name)
-
-        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as archive:
-            archive.write(file_path, os.path.basename(file_path))
-
-    @staticmethod
-    def _split_pdf_scanning_coordinates(pdf_scanning_coordinates):
-        project_name_coordinates = pdf_scanning_coordinates['project_name']
-        project_description_coordinates = pdf_scanning_coordinates['project_description']
-        document_number_coordinates = pdf_scanning_coordinates['document_number']
-
-        return project_name_coordinates, project_description_coordinates, document_number_coordinates
-
-    # ----------------------------------------------------------------------------------------
     # Scanners
     # ----------------------------------------------------------------------------------------
     def function1_scan_excel(self, file_path):
@@ -81,7 +48,8 @@ class ModuleController:
             return f'Error: {e}'
 
         # return
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported excel to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported excel to txt file (see above)')
         return 'Success'
 
     def function2_scan_work_dir(self, work_dir):
@@ -100,7 +68,8 @@ class ModuleController:
             return f'Error: {e}'
 
         # return
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported work dir to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported work dir to txt file (see above)')
         return 'Success'
 
     def function3_scan_ready_dir(self, ready_dir):
@@ -119,7 +88,8 @@ class ModuleController:
             return f'Error: {e}'
 
         # return
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported ready dir to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported ready dir to txt file (see above)')
         return 'Success'
 
     def function4_extract_content_of_work_dir_from_database(self):
@@ -147,24 +117,83 @@ class ModuleController:
             return f'Error: {e}'
 
         # return
-        append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported saved work dir to txt file')
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported saved work dir to txt file (see above)')
         return 'Success'
 
     # ----------------------------------------------------------------------------------------
     # Comparators
     # ----------------------------------------------------------------------------------------
-    # ToDo: how to compare and by which criteria to compare
+    @staticmethod
+    def split_name_into_date_name_revision(string):
+        pattern = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
+
+        match = re.search(pattern, string)
+
+        if match:
+            date = match.group(1)
+            number = match.group(3) + match.group(4) + '-' + match.group(6) + '-' + match.group(8)
+            name = match.group(10)
+            revision = match.group(11)
+
+            if revision == "":
+                revision = 0
+
+            return date, number, name, revision
+        else:
+            return None, None, None, None
+
+    # ToDo: currently this is working by adding the folders 1 by 1 from source to work_dir and clicking the button1
     def function5(self, ready_dir):
         # prints contents of the 3 sources
-        print(f"Now in work: {self.contents_of_work_dir}")
-        print(f"Now in ready: {self.contents_of_ready_dir}")
-        print(f"Saved work: {self.contents_of_saved_work_dir}")
+        print(f"Now in Work: {self.contents_of_work_dir}")
+        print(f"Now in Ready: {self.contents_of_ready_dir}")
+        print(f"Now in Saved work: {self.contents_of_saved_work_dir}")
 
-        # check for new folders in work compared to saved work
         new_folders_in_work = {}
         for key, value in self.contents_of_work_dir.items():
-            if key not in self.contents_of_saved_work_dir.keys():
+            not_found = True
+            work_date, work_number, work_name, work_revision = (
+                self.split_name_into_date_name_revision(key))
+            if work_name is None:
+                continue
+
+            for key2, value2 in self.contents_of_saved_work_dir.items():
+                saved_work_date, saved_work_number, saved_work_name, saved_work_revision = (
+                    self.split_name_into_date_name_revision(key2))
+                if saved_work_name is None:
+                    continue
+
+                # if the folder is in saved work
+                if work_name == saved_work_name and work_number == saved_work_number:
+                    not_found = False
+                    # check if the date is newer
+                    if work_date > saved_work_date:
+                        new_folders_in_work[key] = value
+                        break
+                    # check if the date is older
+                    elif work_date < saved_work_date:
+                        continue
+
+                    # check if the revision is higher
+                    if work_revision > saved_work_revision:
+                        new_folders_in_work[key] = value
+                        break
+                    else:
+                        continue
+
+            # if the folder is not in saved work, add it to new folders in work
+            if not_found:
                 new_folders_in_work[key] = value
+
+        # correct new_folders_in_work if there is a newer rev in the work dir
+        keys_to_remove = []
+        for key, value in new_folders_in_work.items():
+            if key in self.contents_of_saved_work_dir:
+                keys_to_remove.append(key)
+
+        for key in keys_to_remove:
+            del new_folders_in_work[key]
 
         # print new folders in work
         print(f"New folders in work: {new_folders_in_work}")
@@ -184,6 +213,16 @@ class ModuleController:
         else:
             info = None
 
+        # export to txt file
+        try:
+            append_a_dict_to_txt_file(self.location_of_log_file, new_folders_in_work)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return 'Error', None
+
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported new folders in work to txt file (see above)')
         return 'Success', info
 
     # ----------------------------------------------------------------------------------------
@@ -206,6 +245,28 @@ class ModuleController:
     # ----------------------------------------------------------------------------------------
     # Testing
     # ----------------------------------------------------------------------------------------
+    @staticmethod
+    def _extract_revision(filename):
+        parts = filename.split('_')
+        revision = parts[1]
+        return revision
+
+    @staticmethod
+    def _extract_file_name(filename):
+        parts = filename.split('_')
+        file_name = parts[0]
+        return file_name
+
+    @staticmethod
+    def _archive_file(file_path, archive_folder):
+        # Create an archive of the file
+        file_name = os.path.basename(file_path)
+        archive_name = os.path.splitext(file_name)[0] + ".zip"
+        archive_path = os.path.join(archive_folder, archive_name)
+
+        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as archive:
+            archive.write(file_path, os.path.basename(file_path))
+
     def function7_testing_of_doc_sorter(self, dir1, dir2, archive_folder):
         try:
             files_list1 = os.listdir(dir1)
@@ -243,6 +304,14 @@ class ModuleController:
 
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully replaced files')
         return 'Success'
+
+    @staticmethod
+    def _split_pdf_scanning_coordinates(pdf_scanning_coordinates):
+        project_name_coordinates = pdf_scanning_coordinates['project_name']
+        project_description_coordinates = pdf_scanning_coordinates['project_description']
+        document_number_coordinates = pdf_scanning_coordinates['document_number']
+
+        return project_name_coordinates, project_description_coordinates, document_number_coordinates
 
     def function8_read_from_pdf(self, pdf_scanning_coordinates):
         file_path = r'C:\Users\User\Desktop\MK\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28-09-2023-A1.pdf'
