@@ -92,7 +92,7 @@ class Engine:
         if not has_additional_message:
             return 'Сканирането премина успешно', 'green', None
         else:
-            return 'Сканирането премина успешно\n', 'green', additional_message
+            return 'Сканирането премина успешно', 'green', additional_message
 
     def functions_bound_to_button2(self, source_folder, destination_folder, archive_folder):
         has_additional_message = False
@@ -123,6 +123,6 @@ class Engine:
         #     return result2, 'red', None
 
         if not has_additional_message:
-            return 'Сортирането премина успешно', 'green', None
+            return 'Обновяването премина успешно', 'green', None
         else:
-            return 'Сортирането премина успешно\n', 'green', additional_message
+            return 'Обновяването премина успешно', 'green', additional_message

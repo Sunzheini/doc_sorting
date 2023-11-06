@@ -7,9 +7,9 @@ from support.custom_functions_lib import time_measurement_decorator
 
 
 class MyGui:
-    APP_NAME = 'ZED, v0.1a'
+    APP_NAME = 'ZED, v0.2a'
     WINDOW_WIDTH = 800
-    WINDOW_HEIGHT = 400
+    WINDOW_HEIGHT = 705
     DEFAULT_STATUS_TEXT = '\n' * 12 + 'Няма нови промени'
 
     def __init__(self, engine_object, db_object, paths_table_name, previous_state_table_name):
@@ -59,13 +59,13 @@ class MyGui:
         # -----------------------------------------------------------------------------
         # Names of elements
         # -----------------------------------------------------------------------------
-        self.name_of_browse_label1 = 'избран файл: няма'
+        self.name_of_browse_label1 = 'Път към списъка: няма'
         self.name_of_browse_button1 = 'Избери списъка с документи'
 
-        self.name_of_browse_label2 = 'избрана папка: няма'
+        self.name_of_browse_label2 = 'Път към Work: няма'
         self.name_of_browse_button2 = 'Избери папка `Work`'
 
-        self.name_of_browse_label3 = 'избрана папка: няма'
+        self.name_of_browse_label3 = 'Път към Ready: няма'
         self.name_of_browse_button3 = 'Избери папка `Ready`'
 
         self.name_of_button1 = 'Сканирай за промени (A)'
@@ -75,45 +75,53 @@ class MyGui:
         # -----------------------------------------------------------------------------
         # Browse Buttons
         # -----------------------------------------------------------------------------
-        self.label11 = Label(
-            self.window, text=self.name_of_browse_label1, width=26, height=1,
-            bg='#2b2828', borderwidth=0, relief="ridge", fg='white',
-        )
-        self.label11.place(x=10, y=10)
-
         self.button11 = Button(
             self.window, text=self.name_of_browse_button1, width=25, height=1,
+            cursor='hand2',
             command=self.select_location_of_dox_list
         )
-        self.button11.place(x=10, y=30)
+        self.button11.place(x=10, y=10)
 
-        self.label12 = Label(
-            self.window, text=self.name_of_browse_label2, width=26, height=1,
-            bg='#2b2828', borderwidth=0, relief="ridge", fg='white'
+        self.label11 = Label(
+            self.window, text=self.name_of_browse_label1, width=84, height=1,
+            bg='#E5E5E5', borderwidth=0, relief="ridge", fg='grey', pady=4,
         )
-        self.label12.place(x=10, y=70)
+        self.label11.place(x=200, y=11)
+        self.label11.config(font=("Roboto", 9, "italic"))
 
         self.button12 = Button(
             self.window, text=self.name_of_browse_button2, width=25, height=1,
+            cursor='hand2',
             command=self.select_location_of_work_dir
         )
-        self.button12.place(x=10, y=90)
+        self.button12.place(x=10, y=40)
 
-        self.label13 = Label(
-            self.window, text=self.name_of_browse_label3, width=26, height=1,
-            bg='#2b2828', borderwidth=0, relief="ridge", fg='white'
+        self.label12 = Label(
+            self.window, text=self.name_of_browse_label2, width=84, height=1,
+            bg='#E5E5E5', borderwidth=0, relief="ridge", fg='grey', pady=4,
         )
-        self.label13.place(x=10, y=130)
+        self.label12.place(x=200, y=41)
+        self.label12.config(font=("Roboto", 9, "italic"))
 
         self.button13 = Button(
             self.window, text=self.name_of_browse_button3, width=25, height=1,
+            cursor='hand2',
             command=self.select_location_of_ready_dir
         )
-        self.button13.place(x=10, y=150)
+        self.button13.place(x=10, y=70)
+
+        self.label13 = Label(
+            self.window, text=self.name_of_browse_label3, width=84, height=1,
+            bg='#E5E5E5', borderwidth=0, relief="ridge", fg='grey', pady=4,
+        )
+        self.label13.place(x=200, y=71)
+        self.label13.config(font=("Roboto", 9, "italic"))
+
+        # -----------------------------------------------------------------------------
 
         # Create a line separator under the button
         self.line_sep = Frame(self.window, height=2, bd=1, relief='sunken')
-        self.line_sep.place(x=10, y=190, width=186, height=2)
+        self.line_sep.place(x=10, y=110, width=780, height=2)
 
         # -----------------------------------------------------------------------------
         # Initial query of the database for the directories
@@ -136,8 +144,9 @@ class MyGui:
             command=self.commands_of_button1,
             width=25,
             height=2,
+            cursor='hand2',
         )
-        self.button1.place(x=10, y=205)
+        self.button1.place(x=10, y=125)
 
         self.button2 = Button(
             self.window,
@@ -145,8 +154,9 @@ class MyGui:
             command=self.commands_of_button2,
             width=25,
             height=2,
+            cursor='hand2',
         )
-        self.button2.place(x=10, y=255)
+        self.button2.place(x=275, y=125)
 
         self.button3 = Button(
             self.window,
@@ -154,8 +164,9 @@ class MyGui:
             command=self.commands_of_button3,
             width=25,
             height=2,
+            cursor='hand2',
         )
-        self.button3.place(x=10, y=305)
+        self.button3.place(x=540, y=125)
 
         # Bind keyboard shortcuts
         self.window.bind_all('<a>', self.commands_of_button1)
@@ -164,35 +175,37 @@ class MyGui:
 
         # Lights next to buttons
         self.canvas1 = Canvas(self.window, width=15, height=60, bd=0, highlightthickness=0, bg='#E5E5E5')
-        self.rect1 = self.canvas1.create_rectangle(2, 1, 7, 39, fill='gray', outline='gray')
-        self.canvas1.place(x=195, y=205)
+        self.rect1 = self.canvas1.create_rectangle(2, 1, 10, 39, fill='gray', outline='gray')
+        self.canvas1.place(x=195, y=125)
 
         self.canvas2 = Canvas(self.window, width=15, height=60, bd=0, highlightthickness=0, bg='#E5E5E5')
-        self.rect2 = self.canvas2.create_rectangle(2, 1, 7, 39, fill='gray', outline='gray')
-        self.canvas2.place(x=195, y=255)
+        self.rect2 = self.canvas2.create_rectangle(2, 1, 10, 39, fill='gray', outline='gray')
+        self.canvas2.place(x=460, y=125)
 
         self.canvas3 = Canvas(self.window, width=15, height=60, bd=0, highlightthickness=0, bg='#E5E5E5')
-        self.rect3 = self.canvas3.create_rectangle(2, 1, 7, 39, fill='gray', outline='gray')
-        self.canvas3.place(x=195, y=305)
+        self.rect3 = self.canvas3.create_rectangle(2, 1, 10, 39, fill='gray', outline='gray')
+        self.canvas3.place(x=725, y=125)
 
         # Create a line separator under the button
         self.line_sep = Frame(self.window, height=2, bd=1, relief='sunken')
-        self.line_sep.place(x=10, y=360, width=186, height=2)
+        self.line_sep.place(x=10, y=180, width=780, height=2)
 
         # -----------------------------------------------------------------------------
         # Status label
         # -----------------------------------------------------------------------------
         self.status_label = scrolledtext.ScrolledText(
             self.window,
-            width=45,
-            height=23,
+            width=109,
+            height=33,
             wrap=WORD,
             bg='#FAFAFA',
             fg='#444444',
             border=1,
             relief='solid',
+            font=roboto_font,
         )
-        self.status_label.place(x=412, y=10)
+        # self.status_label.place(x=412, y=10)
+        self.status_label.place(x=10, y=195)
 
     # -----------------------------------------------------------------------------
     # Initial query of the database for the directories
