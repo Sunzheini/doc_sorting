@@ -20,10 +20,13 @@ class Engine:
         self.previous_state_table_name = previous_state_table_name
 
         # initialize all modules here
-        self.module = ModuleController(location_of_log_file, db_controller, paths_table_name, previous_state_table_name)
+        self.module = ModuleController(
+            location_of_log_file, db_controller, paths_table_name, previous_state_table_name, pdf_scanning_coordinates
+        )
 
     def functions_bound_to_button1(self, file_path, work_dir, ready_dir):
         has_additional_message = False
+        additional_message = ""
 
         # ------------------------------------------------------------------------------
         # Scanners
@@ -51,10 +54,29 @@ class Engine:
         # ------------------------------------------------------------------------------
         # Comparators
         # ------------------------------------------------------------------------------
-        # ToDo: wip
-        result, additional_message = self.module.function5(ready_dir)
-        if additional_message is not None:
+        # compare work and saved_work directories and provides a dictionary with the differences
+        result, temp_message = self.module.function5_new_folders_in_work_compared_to_saved_work()
+        if temp_message is not None:
             has_additional_message = True
+            additional_message += temp_message
+        if result != 'Success':
+            return result, 'red', None
+
+        # compare work and ready directories and provides a dictionary with the differences
+        result, temp_message = self.module.function6_new_folders_in_work_compared_to_ready()
+        if temp_message is not None:
+            has_additional_message = True
+            additional_message += '\n'
+            additional_message += temp_message
+        if result != 'Success':
+            return result, 'red', None
+
+        # check if new folders in work correspond to Excel file
+        result, temp_message = self.module.function7_check_if_new_folders_in_work_and_their_contents_correspond_to_excel()
+        if temp_message is not None:
+            has_additional_message = True
+            additional_message += '\n'
+            additional_message += temp_message
         if result != 'Success':
             return result, 'red', None
 
@@ -62,7 +84,7 @@ class Engine:
         # Finishers
         # ------------------------------------------------------------------------------
         # store current condition in database
-        result = self.module.function6_store_current_condition_in_database()
+        result = self.module.function11_store_current_condition_in_database()
         if result != 'Success':
             return result, 'red', None
 
@@ -75,22 +97,30 @@ class Engine:
     def functions_bound_to_button2(self, source_folder, destination_folder, archive_folder):
         has_additional_message = False
 
-        # ------------------------------------------------------------------------------
-        # ToDo: Testing only
+        # ----------------------------------------------------------------------------------------
+        # Moving
+        # ----------------------------------------------------------------------------------------
         additional_message = ""
-        # ------------------------------------------------------------------------------
-
-        result = self.module.function7_testing_of_doc_sorter(
-            source_folder,
-            destination_folder,
-            archive_folder,
-        )
+        result = self.module.function8_move_new_folders_from_work_to_ready(source_folder, destination_folder, archive_folder)
         if result != 'Success':
             return result, 'red', None
 
-        result2 = self.module.function8_read_from_pdf(self.pdf_scanning_coordinates)
-        if result2 != 'Success':
-            return result2, 'red', None
+        # ----------------------------------------------------------------------------------------
+        # Testing
+        # ----------------------------------------------------------------------------------------
+        # additional_message = ""
+
+        # result = self.module.function12_testing_of_doc_sorter(
+        #     source_folder,
+        #     destination_folder,
+        #     archive_folder,
+        # )
+        # if result != 'Success':
+        #     return result, 'red', None
+        #
+        # result2 = self.module.function13_read_from_pdf(self.pdf_scanning_coordinates)
+        # if result2 != 'Success':
+        #     return result2, 'red', None
 
         if not has_additional_message:
             return 'Сортирането премина успешно', 'green', None
