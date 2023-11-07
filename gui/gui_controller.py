@@ -1,3 +1,4 @@
+import os
 from tkinter import filedialog
 from tkinter import *
 from tkinter import font
@@ -72,12 +73,14 @@ class MyGui:
         self.name_of_button2 = 'Приложи промените (S)'
         self.name_of_button3 = 'Изчисти конзолата (D)'
 
+        self.name_of_shortcut_button = '>>'
+
         # -----------------------------------------------------------------------------
         # Browse Buttons
         # -----------------------------------------------------------------------------
         self.button11 = Button(
             self.window, text=self.name_of_browse_button1, width=25, height=1,
-            cursor='hand2',
+            # cursor='hand2',
             command=self.select_location_of_dox_list
         )
         self.button11.place(x=10, y=10)
@@ -91,7 +94,7 @@ class MyGui:
 
         self.button12 = Button(
             self.window, text=self.name_of_browse_button2, width=25, height=1,
-            cursor='hand2',
+            # cursor='hand2',
             command=self.select_location_of_work_dir
         )
         self.button12.place(x=10, y=40)
@@ -105,7 +108,7 @@ class MyGui:
 
         self.button13 = Button(
             self.window, text=self.name_of_browse_button3, width=25, height=1,
-            cursor='hand2',
+            # cursor='hand2',
             command=self.select_location_of_ready_dir
         )
         self.button13.place(x=10, y=70)
@@ -117,11 +120,33 @@ class MyGui:
         self.label13.place(x=200, y=71)
         self.label13.config(font=("Roboto", 9, "italic"))
 
-        # -----------------------------------------------------------------------------
-
         # Create a line separator under the button
         self.line_sep = Frame(self.window, height=2, bd=1, relief='sunken')
         self.line_sep.place(x=10, y=110, width=780, height=2)
+
+        # -----------------------------------------------------------------------------
+        # Shortcut buttons
+        # -----------------------------------------------------------------------------
+        self.button21 = Button(
+            self.window, text=self.name_of_shortcut_button, width=5, height=1,
+            relief="flat", cursor='hand2',
+            command=self.open_excel_file
+        )
+        self.button21.place(x=730, y=10)
+
+        self.button22 = Button(
+            self.window, text=self.name_of_shortcut_button, width=5, height=1,
+            relief="flat", cursor='hand2',
+            command=self.open_work_dir
+        )
+        self.button22.place(x=730, y=40)
+
+        self.button23 = Button(
+            self.window, text=self.name_of_shortcut_button, width=5, height=1,
+            relief="flat", cursor='hand2',
+            command=self.open_ready_dir
+        )
+        self.button23.place(x=730, y=70)
 
         # -----------------------------------------------------------------------------
         # Initial query of the database for the directories
@@ -144,7 +169,7 @@ class MyGui:
             command=self.commands_of_button1,
             width=25,
             height=2,
-            cursor='hand2',
+            # cursor='hand2',
         )
         self.button1.place(x=10, y=125)
 
@@ -154,9 +179,9 @@ class MyGui:
             command=self.commands_of_button2,
             width=25,
             height=2,
-            cursor='hand2',
+            # cursor='hand2',
         )
-        self.button2.place(x=275, y=125)
+        self.button2.place(x=295, y=125)
 
         self.button3 = Button(
             self.window,
@@ -164,9 +189,9 @@ class MyGui:
             command=self.commands_of_button3,
             width=25,
             height=2,
-            cursor='hand2',
+            # cursor='hand2',
         )
-        self.button3.place(x=540, y=125)
+        self.button3.place(x=580, y=125)
 
         # Bind keyboard shortcuts
         self.window.bind_all('<a>', self.commands_of_button1)
@@ -180,11 +205,11 @@ class MyGui:
 
         self.canvas2 = Canvas(self.window, width=15, height=60, bd=0, highlightthickness=0, bg='#E5E5E5')
         self.rect2 = self.canvas2.create_rectangle(2, 1, 10, 39, fill='gray', outline='gray')
-        self.canvas2.place(x=460, y=125)
+        self.canvas2.place(x=480, y=125)
 
         self.canvas3 = Canvas(self.window, width=15, height=60, bd=0, highlightthickness=0, bg='#E5E5E5')
         self.rect3 = self.canvas3.create_rectangle(2, 1, 10, 39, fill='gray', outline='gray')
-        self.canvas3.place(x=725, y=125)
+        self.canvas3.place(x=765, y=125)
 
         # Create a line separator under the button
         self.line_sep = Frame(self.window, height=2, bd=1, relief='sunken')
@@ -331,7 +356,19 @@ class MyGui:
         self.update_status_label(f"избрано: '{filepath}'")
 
     # -----------------------------------------------------------------------------
-    # Browse methods
+    # Support methods
+    # -----------------------------------------------------------------------------
+    def open_excel_file(self):
+        os.startfile(self.location_of_documents_list_file)
+
+    def open_work_dir(self):
+        os.startfile(self.location_of_work_dir)
+
+    def open_ready_dir(self):
+        os.startfile(self.location_of_ready_dir)
+
+    # -----------------------------------------------------------------------------
+    # Support methods
     # -----------------------------------------------------------------------------
     @staticmethod
     def update_label_next_to_browse_button(label_number, text):
