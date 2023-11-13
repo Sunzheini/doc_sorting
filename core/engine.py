@@ -24,13 +24,14 @@ class Engine:
             location_of_log_file, db_controller, paths_table_name, previous_state_table_name, pdf_scanning_coordinates
         )
 
-    def functions_bound_to_button1(self, file_path, work_dir, ready_dir):
+    def functions_bound_to_button1(self, project_dir, ready_dir, finished_dir, file_path):
         has_additional_message = False
         additional_message = ""
 
         # ------------------------------------------------------------------------------
         # Scanners
         # ------------------------------------------------------------------------------
+        # ToDo: дотук (чакам ексела)
         # read from Excel file
         result = self.module.function1_scan_excel(file_path)
         if result != 'Success':

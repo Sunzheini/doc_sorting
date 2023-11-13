@@ -361,7 +361,7 @@ class ModuleController:
         return_info = ""
         count = 1
 
-        # check if the new folders in work correspond to Excel file
+        # check if the new folders in work compared to ready correspond to Excel file
         for key, value in self.new_folders_in_work_compared_to_ready.items():
             work_date, work_number, work_name, work_revision = (
                 self._split_folder_name_into_date_name_revision(key))
