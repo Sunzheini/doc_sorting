@@ -24,7 +24,7 @@ class MyGui:
         'или:\n' +
         '`MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf`\n' +
         '\n' +
-        'правилен формат на Excel-ския файл: .xlsx\n' +
+        'Правилен формат на Excel-ския файл: .xlsx\n' +
         '\n' +
         'Програмата чете от първия Sheet на Excel-ския файл!'
     )
@@ -373,32 +373,51 @@ class MyGui:
 
     @staticmethod
     def _choose_the_excel_with_latest_revision(path):
-        # get a list of all Excel files in the folder
-        list_of_files = os.listdir(path)
+        try:
+            # get a list of all Excel files in the folder
+            list_of_files = os.listdir(path)
 
-        # filter the list to contain only Excel files
-        list_of_files = [file for file in list_of_files if file.endswith('.xlsx')]
+            # filter the list to contain only Excel files
+            list_of_files = [file for file in list_of_files if file.endswith('.xlsx')]
 
-        # sort the list by date
-        list_of_files.sort(key=lambda x: os.path.getmtime(os.path.join(path, x)))
+            # sort the list by date
+            list_of_files.sort(key=lambda x: os.path.getmtime(os.path.join(path, x)))
 
-        # get the latest file
-        latest_file = list_of_files[-1]
+            # get the latest file
+            latest_file = list_of_files[-1]
 
-        # return the path to the latest file
-        return os.path.join(path, latest_file)
+            # return the path to the latest file
+            return os.path.join(path, latest_file)
+        except Exception as e:
+            return f"Грешка: '{e}'""", 'red', None
 
     def _actualize_all_dirs_based_on_project_dir(self):
-        # actualize the other directories based on the project directory
-        if self.location_of_project_dir is not None:
-            self.location_of_ready_dir = os.path.join(self.location_of_project_dir, self.default_path_for_ready_after_project_name)
-            self.select_location_of_ready_dir(self.location_of_ready_dir)
+        try:
+            # actualize the other directories based on the project directory
+            if self.location_of_project_dir is not None:
+                self.location_of_ready_dir = os.path.join(self.location_of_project_dir,
+                                                          self.default_path_for_ready_after_project_name)
+                self.select_location_of_ready_dir(self.location_of_ready_dir)
 
-            self.location_of_finished_dir = os.path.join(self.location_of_project_dir, self.default_path_for_finished_after_project_name)
-            self.select_location_of_finished_dir(self.location_of_finished_dir)
+                self.location_of_finished_dir = os.path.join(self.location_of_project_dir,
+                                                             self.default_path_for_finished_after_project_name)
+                self.select_location_of_finished_dir(self.location_of_finished_dir)
 
-            self.location_of_documents_list_file = os.path.join(self.location_of_project_dir, self.default_path_for_excel_after_project_name)
-            self.select_location_of_documents_list_file(self._choose_the_excel_with_latest_revision(self.location_of_documents_list_file))
+                self.location_of_documents_list_file = os.path.join(self.location_of_project_dir,
+                                                                    self.default_path_for_excel_after_project_name)
+                self.select_location_of_documents_list_file(
+                    self._choose_the_excel_with_latest_revision(self.location_of_documents_list_file))
+
+            # check if they are existing folders
+            if not os.path.exists(self.location_of_ready_dir):
+                return f"Грешка: '{self.location_of_ready_dir}' не съществува!", 'red', None
+            if not os.path.exists(self.location_of_finished_dir):
+                return f"Грешка: '{self.location_of_finished_dir}' не съществува!", 'red', None
+            if not os.path.exists(self.location_of_documents_list_file):
+                return f"Грешка: '{self.location_of_documents_list_file}' не съществува!", 'red', None
+
+        except Exception as e:
+            return f"Грешка: '{e}'""", 'red', None
 
     @time_measurement_decorator
     def select_location_of_project_dir(self, path=None):

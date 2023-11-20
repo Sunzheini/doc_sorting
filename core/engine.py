@@ -31,32 +31,36 @@ class Engine:
         # ------------------------------------------------------------------------------
         # Scanners
         # ------------------------------------------------------------------------------
-        # ToDo: дотук (чакам ексела)
         # read from Excel file
         result = self.module.function1_scan_excel(file_path)
         if result != 'Success':
             return result, 'red', None
 
-        # scan work directory
-        result = self.module.function2_scan_work_dir(work_dir)
+        # scan ready directory
+        result = self.module.function2_scan_ready_dir(ready_dir)
         if result != 'Success':
             return result, 'red', None
 
-        # scan ready directory
-        result = self.module.function3_scan_ready_dir(ready_dir)
+        # ToDo: New
+        result = self.module.function3_create_folders_in_finished_dir(finished_dir)
+        if result != 'Success':
+            return result, 'red', None
+
+        # scan finished directory
+        result = self.module.function3_scan_finished_dir(finished_dir)
         if result != 'Success':
             return result, 'red', None
 
         # extract content of work directory from database
-        result = self.module.function4_extract_content_of_work_dir_from_database()
+        result = self.module.function4_extract_content_of_finished_dir_from_database()
         if result != 'Success':
             return result, 'red', None
 
-        # ------------------------------------------------------------------------------
-        # Comparators
-        # ------------------------------------------------------------------------------
+        # # ------------------------------------------------------------------------------
+        # # Comparators
+        # # ------------------------------------------------------------------------------
         # compare work and saved_work directories and provides a dictionary with the differences
-        result, temp_message = self.module.function5_new_folders_in_work_compared_to_saved_work()
+        result, temp_message = self.module.function5_new_folders_in_ready_compared_to_saved_ready()
         if temp_message is not None:
             has_additional_message = True
             additional_message += temp_message
@@ -64,7 +68,7 @@ class Engine:
             return result, 'red', None
 
         # compare work and ready directories and provides a dictionary with the differences
-        result, temp_message = self.module.function6_new_folders_in_work_compared_to_ready()
+        result, temp_message = self.module.function6_new_folders_in_ready_compared_to_finished()
         if temp_message is not None:
             has_additional_message = True
             additional_message += '\n'
@@ -81,9 +85,9 @@ class Engine:
         if result != 'Success':
             return result, 'red', None
 
-        # ------------------------------------------------------------------------------
-        # Finishers
-        # ------------------------------------------------------------------------------
+        # # ------------------------------------------------------------------------------
+        # # Finishers
+        # # ------------------------------------------------------------------------------
         # store current condition in database
         result = self.module.function11_store_current_condition_in_database()
         if result != 'Success':

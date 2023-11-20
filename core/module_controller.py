@@ -28,20 +28,26 @@ class ModuleController:
         self.pdf_scanning_coordinates = pdf_scanning_coordinates
 
         self.contents_of_file = None
-        self.contents_of_work_dir = None
         self.contents_of_ready_dir = None
-        self.contents_of_saved_work_dir = None
+        self.contents_of_finished_dir = None
+        self.contents_of_saved_ready_dir = None
 
-        self.new_folders_in_work_compared_to_saved_work = None
-        self.new_folders_in_work_compared_to_ready = None
+        self.list_of_created_main_folder_names = []
+        self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names = {}
+
+        self.new_folders_in_ready_compared_to_saved_ready = None
+        self.new_folders_in_ready_compared_to_finished = None
 
     # ----------------------------------------------------------------------------------------
     # Scanners
     # ----------------------------------------------------------------------------------------
     def function1_scan_excel(self, file_path):
+        # define a string, by which the function determines the start row
+        string_for_start_row = 'A'
+
         # read from Excel file
         try:
-            self.contents_of_file = read_from_excel_file(file_path)
+            self.contents_of_file = read_from_excel_file(file_path, string_for_start_row)
             print(f"Contents of file: {self.contents_of_file}")
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
@@ -59,30 +65,10 @@ class ModuleController:
                                     'Successfully exported excel to txt file (see above)')
         return 'Success'
 
-    def function2_scan_work_dir(self, work_dir):
-        # scan work directory
-        try:
-            self.contents_of_work_dir = the_walk_loop(work_dir)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return f'Error: {e}'
-
-        # export to txt file
-        try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_work_dir)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return f'Error: {e}'
-
-        # return
-        append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported work dir to txt file (see above)')
-        return 'Success'
-
-    def function3_scan_ready_dir(self, ready_dir):
+    def function2_scan_ready_dir(self, work_dir):
         # scan ready directory
         try:
-            self.contents_of_ready_dir = the_walk_loop(ready_dir)
+            self.contents_of_ready_dir = the_walk_loop(work_dir)
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
@@ -99,7 +85,76 @@ class ModuleController:
                                     'Successfully exported ready dir to txt file (see above)')
         return 'Success'
 
-    def function4_extract_content_of_work_dir_from_database(self):
+    def _create_list_of_main_folder_names(self):
+        self.list_of_created_main_folder_names = []
+
+        # create folders in finished dir
+        for key, value in self.contents_of_file.items():
+            current_folder_name = key
+
+            # remove last characters separated by space
+            current_folder_name = current_folder_name.rsplit(' ', 1)[0]
+
+            # check if the folder exists
+            if current_folder_name not in self.list_of_created_main_folder_names:
+                self.list_of_created_main_folder_names.append(current_folder_name)
+
+    def function3_create_folders_in_finished_dir(self, finished_dir):
+        self._create_list_of_main_folder_names()
+
+        # create folders in finished dir
+        for folder in self.list_of_created_main_folder_names:
+            current_folder_path = os.path.join(finished_dir, folder)
+
+            # check if the folder exists
+            if not os.path.exists(current_folder_path):
+                os.makedirs(current_folder_path)
+
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully created folders in finished dir')
+        return 'Success'
+
+        # # create folders in finished dir
+        # for key, value in self.contents_of_file.items():
+        #     current_folder_name = key
+        #
+        #     # remove last characters separated by space
+        #     current_folder_name = current_folder_name.rsplit(' ', 1)[0]
+        #     current_folder_path = os.path.join(finished_dir, current_folder_name)
+        #
+        #     # check if the folder exists
+        #     if not os.path.exists(current_folder_path):
+        #         os.makedirs(current_folder_path)
+        #         self.list_of_created_main_folder_names.append(current_folder_name)
+        #
+        # # return
+        # append_a_string_to_txt_file(self.location_of_log_file,
+        #                             'Successfully created folders in finished dir')
+        #
+        # return 'Success'
+
+    def function3_scan_finished_dir(self, ready_dir):
+        # scan finished directory
+        try:
+            self.contents_of_finished_dir = the_walk_loop(ready_dir)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        # export to txt file
+        try:
+            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_finished_dir)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported finished dir to txt file (see above)')
+        return 'Success'
+
+    def function4_extract_content_of_finished_dir_from_database(self):
         # Retrieve data from the database
         try:
             data = self.db_controller.retrieve_data(self.previous_state_table_name)
@@ -109,16 +164,16 @@ class ModuleController:
 
         # Fill the dictionary with the retrieved data
         try:
-            self.contents_of_saved_work_dir = {}
+            self.contents_of_saved_ready_dir = {}
             for row in data:
-                self.contents_of_saved_work_dir[row[1]] = row[2]
+                self.contents_of_saved_ready_dir[row[1]] = row[2]
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
         # export to txt file
         try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_saved_work_dir)
+            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_saved_ready_dir)
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
@@ -131,13 +186,14 @@ class ModuleController:
     # ----------------------------------------------------------------------------------------
     # Comparators
     # ----------------------------------------------------------------------------------------
-    def _print_current_contents_of_the_3_folders(self):
-        print(f"Now in Work: {self.contents_of_work_dir}")
+    def _print_all_current_contents(self):
         print(f"Now in Ready: {self.contents_of_ready_dir}")
-        print(f"Now in Saved work: {self.contents_of_saved_work_dir}")
+        print(f"Now in Finished: {self.contents_of_finished_dir}")
+        print(f"Now in Saved Ready: {self.contents_of_saved_ready_dir}")
+        print(f"Main names: {self.list_of_created_main_folder_names}")
 
     @staticmethod
-    def _split_folder_name_into_date_name_revision(string):
+    def _split_folder_name_into_date_number_name_revision(string):
         pattern = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
 
         match = re.search(pattern, string)
@@ -156,7 +212,7 @@ class ModuleController:
             return None, None, None, None
 
     @staticmethod
-    def _split_file_name_into_number_name_revision(string):
+    def _split_file_name_into_number_name(string):
         pattern = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(\s*-\s*|\s*-|-\s*|-\s*)(\d+)'
 
         match = re.search(pattern, string)
@@ -179,6 +235,10 @@ class ModuleController:
 
     @staticmethod
     def _compare_by_name_and_number(name1, number1, name2, number2):
+        # turn to lowercase
+        name1 = name1.lower()
+        name2 = name2.lower()
+
         if name1 != name2:
             return False
         if number1 != number2:
@@ -210,21 +270,21 @@ class ModuleController:
         return project_name, project_description, document_number
 
     # ToDo: currently this is working by adding the folders 1 by 1 from source to work_dir and clicking the button1
-    def function5_new_folders_in_work_compared_to_saved_work(self):
+    def function5_new_folders_in_ready_compared_to_saved_ready(self):
         # prints contents of the 3 sources
-        self._print_current_contents_of_the_3_folders()
+        self._print_all_current_contents()
 
-        self.new_folders_in_work_compared_to_saved_work = {}
-        for key, value in self.contents_of_work_dir.items():
+        self.new_folders_in_ready_compared_to_saved_ready = {}
+        for key, value in self.contents_of_ready_dir.items():
             not_found = True
             work_date, work_number, work_name, work_revision = (
-                self._split_folder_name_into_date_name_revision(key))
+                self._split_folder_name_into_date_number_name_revision(key))
             if work_name is None:
                 continue
 
-            for key2, value2 in self.contents_of_saved_work_dir.items():
+            for key2, value2 in self.contents_of_saved_ready_dir.items():
                 saved_work_date, saved_work_number, saved_work_name, saved_work_revision = (
-                    self._split_folder_name_into_date_name_revision(key2))
+                    self._split_folder_name_into_date_number_name_revision(key2))
                 if saved_work_name is None:
                     continue
 
@@ -233,7 +293,7 @@ class ModuleController:
                     not_found = False
                     # check if the date is newer
                     if work_date > saved_work_date:
-                        self.new_folders_in_work_compared_to_saved_work[key] = value
+                        self.new_folders_in_ready_compared_to_saved_ready[key] = value
                         break
                     # check if the date is older
                     elif work_date < saved_work_date:
@@ -241,32 +301,32 @@ class ModuleController:
 
                     # check if the revision is higher
                     if work_revision > saved_work_revision:
-                        self.new_folders_in_work_compared_to_saved_work[key] = value
+                        self.new_folders_in_ready_compared_to_saved_ready[key] = value
                         break
                     else:
                         continue
 
             # if the folder is not in saved work, add it to new folders in work
             if not_found:
-                self.new_folders_in_work_compared_to_saved_work[key] = value
+                self.new_folders_in_ready_compared_to_saved_ready[key] = value
 
         # correct new_folders_in_work if there is a newer rev in the work dir
         keys_to_remove = []
-        for key, value in self.new_folders_in_work_compared_to_saved_work.items():
-            if key in self.contents_of_saved_work_dir:
+        for key, value in self.new_folders_in_ready_compared_to_saved_ready.items():
+            if key in self.contents_of_saved_ready_dir:
                 keys_to_remove.append(key)
 
         for key in keys_to_remove:
-            del self.new_folders_in_work_compared_to_saved_work[key]
+            del self.new_folders_in_ready_compared_to_saved_ready[key]
 
         # print new folders in work
-        print(f"Разлика с предходното състояние на Work: {self.new_folders_in_work_compared_to_saved_work}")
+        print(f"Разлика с предходното състояние на Ready: {self.new_folders_in_ready_compared_to_saved_ready}")
 
         # prepare the info about new folder to return
-        if len(self.new_folders_in_work_compared_to_saved_work) > 0:
-            info = f"Бр. папки в Work спрямо предходното състояние: {len(self.new_folders_in_work_compared_to_saved_work)}\n"
+        if len(self.new_folders_in_ready_compared_to_saved_ready) > 0:
+            info = f"Бр. папки в Ready спрямо предходното състояние: {len(self.new_folders_in_ready_compared_to_saved_ready)}\n"
             count = 1
-            for key, value in self.new_folders_in_work_compared_to_saved_work.items():
+            for key, value in self.new_folders_in_ready_compared_to_saved_ready.items():
                 folder_name = self._extract_text_after_last_backslash(key)
                 info += f"{count}) {folder_name}\n"
                 count += 1
@@ -275,28 +335,28 @@ class ModuleController:
 
         # export to txt file
         try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.new_folders_in_work_compared_to_saved_work)
+            append_a_dict_to_txt_file(self.location_of_log_file, self.new_folders_in_ready_compared_to_saved_ready)
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return 'Error', None
 
         # return
         append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported new folders in work to txt file (see above)')
+                                    'Successfully exported new folders in ready to txt file (see above)')
         return 'Success', info
 
-    def function6_new_folders_in_work_compared_to_ready(self):
-        self.new_folders_in_work_compared_to_ready = {}
-        for key, value in self.contents_of_work_dir.items():
+    def function6_new_folders_in_ready_compared_to_finished(self):
+        self.new_folders_in_ready_compared_to_finished = {}
+        for key, value in self.contents_of_ready_dir.items():
             not_found = True
             work_date, work_number, work_name, work_revision = (
-                self._split_folder_name_into_date_name_revision(key))
+                self._split_folder_name_into_date_number_name_revision(key))
             if work_name is None:
                 continue
 
-            for key2, value2 in self.contents_of_ready_dir.items():
+            for key2, value2 in self.contents_of_finished_dir.items():
                 ready_date, ready_number, ready_name, ready_revision = (
-                    self._split_folder_name_into_date_name_revision(key2))
+                    self._split_folder_name_into_date_number_name_revision(key2))
                 if ready_name is None:
                     continue
 
@@ -305,7 +365,7 @@ class ModuleController:
                     not_found = False
                     # check if the date is newer
                     if work_date > ready_date:
-                        self.new_folders_in_work_compared_to_ready[key] = value
+                        self.new_folders_in_ready_compared_to_finished[key] = value
                         break
                     # check if the date is older
                     elif work_date < ready_date:
@@ -313,32 +373,33 @@ class ModuleController:
 
                     # check if the revision is higher
                     if work_revision > ready_revision:
-                        self.new_folders_in_work_compared_to_ready[key] = value
+                        self.new_folders_in_ready_compared_to_finished[key] = value
                         break
                     else:
                         continue
 
             # if the folder is not in ready, add it to new folders in work
             if not_found:
-                self.new_folders_in_work_compared_to_ready[key] = value
+                self.new_folders_in_ready_compared_to_finished[key] = value
 
         # correct new_folders_in_work if there is a newer rev in the work dir
         keys_to_remove = []
-        for key, value in self.new_folders_in_work_compared_to_ready.items():
-            if key in self.contents_of_ready_dir:
+        for key, value in self.new_folders_in_ready_compared_to_finished.items():
+            if key in self.contents_of_finished_dir:
                 keys_to_remove.append(key)
 
         for key in keys_to_remove:
-            del self.new_folders_in_work_compared_to_ready[key]
+            del self.new_folders_in_ready_compared_to_finished[key]
 
         # print new folders in work
-        print(f"Разлика между Work и Ready: {self.new_folders_in_work_compared_to_ready}")
+        print(f"Разлика между Ready и Finished: {self.new_folders_in_ready_compared_to_finished}")
 
         # prepare the info about new folder to return
-        if len(self.new_folders_in_work_compared_to_ready) > 0:
-            info = f"Бр. нови папки в Work спрямо Ready: {len(self.new_folders_in_work_compared_to_ready)}\n"
+        if len(self.new_folders_in_ready_compared_to_finished) > 0:
+            info = f"Бр. нови папки в Ready спрямо Finished: {len(self.new_folders_in_ready_compared_to_finished)}\n"
+            print(info)
             count = 1
-            for key, value in self.new_folders_in_work_compared_to_ready.items():
+            for key, value in self.new_folders_in_ready_compared_to_finished.items():
                 folder_name = self._extract_text_after_last_backslash(key)
                 info += f"{count}) {folder_name}\n"
                 count += 1
@@ -347,14 +408,14 @@ class ModuleController:
 
         # export to txt file
         try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.new_folders_in_work_compared_to_ready)
+            append_a_dict_to_txt_file(self.location_of_log_file, self.new_folders_in_ready_compared_to_finished)
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return 'Error', None
 
         # return
         append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported new folders in work to txt file (see above)')
+                                    'Successfully exported new folders in ready to txt file (see above)')
         return 'Success', info
 
     def function7_check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self):
@@ -362,9 +423,9 @@ class ModuleController:
         count = 1
 
         # check if the new folders in work compared to ready correspond to Excel file
-        for key, value in self.new_folders_in_work_compared_to_ready.items():
+        for key, value in self.new_folders_in_ready_compared_to_finished.items():
             work_date, work_number, work_name, work_revision = (
-                self._split_folder_name_into_date_name_revision(key))
+                self._split_folder_name_into_date_number_name_revision(key))
             if work_name is None:
                 continue
 
@@ -373,11 +434,15 @@ class ModuleController:
                 if self._compare_by_name_and_number(work_name, work_number, value2['drawing_name'], value2['drawing_number']):
                     return_info += f"{count}. Папката {work_name} с номер {work_number} съответства на Excel файла\n"
 
+                    # fill the dictionary with the names of the new folders in ready comp to finished and mf names
+                    current_folder_name = key2.rsplit(' ', 1)[0]
+                    self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names[key] = current_folder_name
+
                     # check the list, which contains the files in the folder
                     for file in value:
                         file_extension = os.path.splitext(file)[1]
                         file_number, file_name = (
-                            self._split_file_name_into_number_name_revision(file))
+                            self._split_file_name_into_number_name(file))
                         if file_name is None:
                             continue
 
@@ -415,6 +480,8 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return 'Error', None
 
+        print(f"To move / MF: {self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names}")
+
         # return
         append_a_string_to_txt_file(self.location_of_log_file,
                                     'Successfully compared new folders in work compared to ready with Excel (see above)')
@@ -431,7 +498,7 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        for key, value in self.contents_of_work_dir.items():
+        for key, value in self.contents_of_ready_dir.items():
             self.db_controller.insert_data(self.previous_state_table_name, 'dir_path', 'file_names', key, str(value))
 
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully stored current condition in database')
@@ -453,22 +520,16 @@ class ModuleController:
                     archive.write(os.path.join(root, file), os.path.join(folder_name, file))
 
     def function8_move_new_folders_from_work_to_ready(self, source_folder, destination_folder, archive_folder):
-        for key, value in self.new_folders_in_work_compared_to_ready.items():
-            work_folder_date, work_folder_number, work_folder_name, work_folder_revision = (
-                self._split_folder_name_into_date_name_revision(key))
+        folders_to_archive = []
 
-            # find the folders to archive
-            for folder in self.contents_of_ready_dir:
-                ready_folder_date, ready_folder_number, ready_folder_name, ready_folder_revision = (
-                    self._split_folder_name_into_date_name_revision(folder))
+        # move new folders from work to ready
+        for key, value in self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names.items():
+            destination_path = os.path.join(destination_folder, value)
+            destination_path_with_folder_name = os.path.join(destination_path, self._extract_text_after_last_backslash(key))
 
-                # if the folder is in ready, archive it and remove it
-                if ready_folder_name == work_folder_name and ready_folder_number == work_folder_number:
-                    self._archive_folder(folder, archive_folder)
-                    shutil.rmtree(folder)
-
-            # move the folder
-            shutil.move(key, destination_folder)
+            # check if the folder exists
+            if not os.path.exists(destination_path_with_folder_name):
+                shutil.copytree(key, destination_path_with_folder_name)
 
         return 'Success'
 
