@@ -31,44 +31,43 @@ class Engine:
         # ------------------------------------------------------------------------------
         # Scanners
         # ------------------------------------------------------------------------------
-        # read from Excel file
-        result = self.module.function1_scan_excel(file_path)
-        if result != 'Success':
-            return result, 'red', None
-
         # scan ready directory
-        result = self.module.function2_scan_ready_dir(ready_dir)
+        result = self.module.scan_ready_dir(ready_dir)
         if result != 'Success':
             return result, 'red', None
 
-        # ToDo: New
-        result = self.module.function3_create_folders_in_finished_dir(finished_dir)
+        # read from Excel file
+        result = self.module.scan_excel(file_path)
+        if result != 'Success':
+            return result, 'red', None
+
+        result = self.module.create_folders_in_finished_dir(finished_dir)
         if result != 'Success':
             return result, 'red', None
 
         # scan finished directory
-        result = self.module.function3_scan_finished_dir(finished_dir)
+        result = self.module.scan_finished_dir(finished_dir)
         if result != 'Success':
             return result, 'red', None
 
-        # extract content of work directory from database
-        result = self.module.function4_extract_content_of_finished_dir_from_database()
-        if result != 'Success':
-            return result, 'red', None
+        # # extract content of work directory from database
+        # result = self.module.function4_extract_content_of_finished_dir_from_database()
+        # if result != 'Success':
+        #     return result, 'red', None
 
         # # ------------------------------------------------------------------------------
         # # Comparators
         # # ------------------------------------------------------------------------------
         # compare work and saved_work directories and provides a dictionary with the differences
-        result, temp_message = self.module.function5_new_folders_in_ready_compared_to_saved_ready()
-        if temp_message is not None:
-            has_additional_message = True
-            additional_message += temp_message
-        if result != 'Success':
-            return result, 'red', None
+        # result, temp_message = self.module.function5_new_folders_in_ready_compared_to_saved_ready()
+        # if temp_message is not None:
+        #     has_additional_message = True
+        #     additional_message += temp_message
+        # if result != 'Success':
+        #     return result, 'red', None
 
-        # compare work and ready directories and provides a dictionary with the differences
-        result, temp_message = self.module.function6_new_folders_in_ready_compared_to_finished()
+        # compare ready and finished directories
+        result, temp_message = self.module.compare_ready_to_finished()
         if temp_message is not None:
             has_additional_message = True
             additional_message += '\n'
@@ -77,7 +76,7 @@ class Engine:
             return result, 'red', None
 
         # check if new folders in work correspond to Excel file
-        result, temp_message = self.module.function7_check_if_new_folders_in_work_and_their_contents_correspond_to_excel()
+        result, temp_message = self.module.check_if_new_folders_in_work_and_their_contents_correspond_to_excel(finished_dir)
         if temp_message is not None:
             has_additional_message = True
             additional_message += '\n'
@@ -89,9 +88,9 @@ class Engine:
         # # Finishers
         # # ------------------------------------------------------------------------------
         # store current condition in database
-        result = self.module.function11_store_current_condition_in_database()
-        if result != 'Success':
-            return result, 'red', None
+        # result = self.module.function11_store_current_condition_in_database()
+        # if result != 'Success':
+        #     return result, 'red', None
 
         # return if ok
         if not has_additional_message:
@@ -106,7 +105,7 @@ class Engine:
         # Moving
         # ----------------------------------------------------------------------------------------
         additional_message = ""
-        result = self.module.function8_move_new_folders_from_work_to_ready(source_folder, destination_folder, archive_folder)
+        result = self.module.archive_then_new_folders_from_ready_to_finished(source_folder, destination_folder, archive_folder)
         if result != 'Success':
             return result, 'red', None
 

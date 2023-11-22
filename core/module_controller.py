@@ -4,10 +4,12 @@ import os
 import shutil
 import zipfile
 import re
+from pathlib import Path
 
+from support.custom_functions_lib import normalize_path_to_have_only_forward_slashes
 from support.pdf_reader import extract_text_from_pdf
 from support.excel_reader import read_from_excel_file
-from support.get_info import the_walk_loop
+from support.get_info import the_walk_loop_ready, the_walk_loop_finished
 from support.txt_writer import append_a_dict_to_txt_file, append_a_string_to_txt_file
 
 
@@ -22,60 +24,48 @@ class ModuleController:
     ):
         self.location_of_log_file = location_of_log_file
 
+        # database
         self.db_controller = db_controller
         self.paths_table_name = paths_table_name
         self.previous_state_table_name = previous_state_table_name
         self.pdf_scanning_coordinates = pdf_scanning_coordinates
 
-        self.contents_of_file = None
-        self.contents_of_ready_dir = None
-        self.contents_of_finished_dir = None
+        # structures
+        self.dict_contents_of_ready_dir = None
+        self.dict_contents_of_file_by_section = None
+        self.dict_contents_of_file_by_file = None
+        self.dict_contents_of_finished_dir = None
+        self.dict_waiting_for_execution = None
+
+
+
+
         self.contents_of_saved_ready_dir = None
 
         self.list_of_created_main_folder_names = []
         self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names = {}
 
         self.new_folders_in_ready_compared_to_saved_ready = None
-        self.new_folders_in_ready_compared_to_finished = None
 
     # ----------------------------------------------------------------------------------------
     # Scanners
     # ----------------------------------------------------------------------------------------
-    def function1_scan_excel(self, file_path):
-        # define a string, by which the function determines the start row
-        string_for_start_row = 'A'
-
-        # read from Excel file
-        try:
-            self.contents_of_file = read_from_excel_file(file_path, string_for_start_row)
-            print(f"Contents of file: {self.contents_of_file}")
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return f'Error: {e}'
-
-        # export to txt file
-        try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_file)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return f'Error: {e}'
-
-        # return
-        append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported excel to txt file (see above)')
-        return 'Success'
-
-    def function2_scan_ready_dir(self, work_dir):
+    def scan_ready_dir(self, ready_dir):
+        """
+        Scans the ready directory and exports the result to a txt file
+        :param ready_dir:
+        :return: 'Success' or 'Error'
+        """
         # scan ready directory
         try:
-            self.contents_of_ready_dir = the_walk_loop(work_dir)
+            self.dict_contents_of_ready_dir = the_walk_loop_ready(ready_dir)
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
         # export to txt file
         try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_ready_dir)
+            append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_ready_dir)
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
@@ -85,26 +75,44 @@ class ModuleController:
                                     'Successfully exported ready dir to txt file (see above)')
         return 'Success'
 
-    def _create_list_of_main_folder_names(self):
-        self.list_of_created_main_folder_names = []
+    def scan_excel(self, file_path):
+        """
+        Scans the Excel file and exports the result to a txt file
+        :param file_path:
+        :return: 'Success' or 'Error'
+        """
+        # define a string, by which the function determines the start row
+        string_for_start_row = 'A'
 
-        # create folders in finished dir
-        for key, value in self.contents_of_file.items():
-            current_folder_name = key
+        # read from Excel file
+        try:
+            self.dict_contents_of_file_by_section, self.dict_contents_of_file_by_file \
+                = read_from_excel_file(file_path, string_for_start_row)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
 
-            # remove last characters separated by space
-            current_folder_name = current_folder_name.rsplit(' ', 1)[0]
+        # export to txt file
+        try:
+            append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_file_by_section)
+            append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_file_by_file)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
 
-            # check if the folder exists
-            if current_folder_name not in self.list_of_created_main_folder_names:
-                self.list_of_created_main_folder_names.append(current_folder_name)
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported excel to txt file (see above)')
+        return 'Success'
 
-    def function3_create_folders_in_finished_dir(self, finished_dir):
-        self._create_list_of_main_folder_names()
-
-        # create folders in finished dir
-        for folder in self.list_of_created_main_folder_names:
-            current_folder_path = os.path.join(finished_dir, folder)
+    def create_folders_in_finished_dir(self, finished_dir):
+        """
+        Creates folders in finished dir
+        :param finished_dir:
+        :return: Success or Error
+        """
+        for key in self.dict_contents_of_file_by_section.keys():
+            current_folder_path = os.path.join(finished_dir, key)
 
             # check if the folder exists
             if not os.path.exists(current_folder_path):
@@ -115,6 +123,369 @@ class ModuleController:
                                     'Successfully created folders in finished dir')
         return 'Success'
 
+    def scan_finished_dir(self, finished_dir):
+        """
+        Scans the finished directory and exports the result to a txt file
+        :param finished_dir:
+        :return: 'Success' or 'Error'
+        """
+        # scan finished directory
+        try:
+            self.dict_contents_of_finished_dir = the_walk_loop_finished(finished_dir)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        # export to txt file
+        try:
+            append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_finished_dir)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return f'Error: {e}'
+
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported finished dir to txt file (see above)')
+        return 'Success'
+
+    def compare_ready_to_finished(self):
+        """
+        Compares the contents of ready and finished directories and exports the result to a txt file
+        dict5 {'folder number folder name': {'folder destination path': '', 'files_to_move': {'number name', 'source path', 'destination path'}, 'files_to_archive': {'number name', 'path'}}}
+        :return: 'Success' + info or 'Error'
+        """
+        # reinitialize the dictionary to be empty
+        self.dict_waiting_for_execution = {}
+
+        # compare self.dict_contents_of_ready_dir and self.dict_contents_of_finished_dir
+        for key, value in self.dict_contents_of_ready_dir.items():
+
+            # check for matching
+            if key in self.dict_contents_of_finished_dir:
+
+                # lists of files in ready and finished
+                dict_of_ready_files = value['files']
+                dict_of_finished_files = self.dict_contents_of_finished_dir[key]['files']
+
+                # folder destination path for later
+                folder_destination_path = self.dict_contents_of_finished_dir[key]['path']
+
+                # iterate over the files in ready
+                for ready_file in dict_of_ready_files:
+                    not_found_and_must_be_moved = True
+
+                    ready_file_number = dict_of_ready_files[ready_file]['number']
+                    ready_file_name = dict_of_ready_files[ready_file]['name']
+                    ready_file_date = dict_of_ready_files[ready_file]['date']
+                    ready_file_path = dict_of_ready_files[ready_file]['path']
+                    ready_file_extension = os.path.splitext(ready_file)[1]
+
+                    # iterate over the files in finished
+                    for finished_file in dict_of_finished_files:
+                        finished_file_number = dict_of_finished_files[finished_file]['number']
+                        finished_file_name = dict_of_finished_files[finished_file]['name']
+                        finished_file_date = dict_of_finished_files[finished_file]['date']
+                        finished_file_path = dict_of_finished_files[finished_file]['path']
+                        finished_file_extension = os.path.splitext(finished_file)[1]
+
+                        # check for matching number, name and extension
+                        if (ready_file_number == finished_file_number
+                                and ready_file_name == finished_file_name
+                                and ready_file_extension == finished_file_extension):
+
+                            not_found_and_must_be_moved = False
+
+                            # check if the date is newer
+                            if ready_file_date > finished_file_date:
+
+                                # check if the folder is already in the dictionary
+                                if key not in self.dict_waiting_for_execution:
+                                    self.dict_waiting_for_execution[key] = {}
+                                    self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
+                                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                                # add the file to move
+                                self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
+                                    'source path': ready_file_path,
+                                    'destination path': folder_destination_path,
+                                    'number name': ready_file_number + ' ' + ready_file_name
+                                }
+
+                                # add the file to archive
+                                self.dict_waiting_for_execution[key]['files_to_archive'][finished_file] = {
+                                    'path': finished_file_path
+                                }
+
+                                # break the loop
+                                break
+
+                    # add to the folder to move
+                    if not_found_and_must_be_moved:
+                        # check if the folder is already in the dictionary
+                        if key not in self.dict_waiting_for_execution:
+                            self.dict_waiting_for_execution[key] = {}
+                            self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
+                            self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                            self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                        # add the file to move
+                        self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
+                            'source path': ready_file_path,
+                            'destination path': folder_destination_path,
+                            'number name': ready_file_number + ' ' + ready_file_name
+                        }
+
+            # if the folder is not in finished, add it to dict_waiting_for_execution
+            else:
+                # folder destination path for later
+                folder_destination_path = ''
+
+                # check if the folder is already in the dictionary
+                if key not in self.dict_waiting_for_execution:
+                    self.dict_waiting_for_execution[key] = {}
+                    self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
+                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                # lists of files in ready
+                dict_of_ready_files = value['files']
+
+                # iterate over the files in ready
+                for ready_file in dict_of_ready_files:
+                    ready_file_path = dict_of_ready_files[ready_file]['path']
+                    ready_file_number = dict_of_ready_files[ready_file]['number']
+                    ready_file_name = dict_of_ready_files[ready_file]['name']
+
+                    # add the file to move
+                    self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
+                        'source path': ready_file_path,
+                        'destination path': folder_destination_path,
+                        'number name': ready_file_number + ' ' + ready_file_name
+                    }
+
+        # prepare the info about new folder to return
+        if len(self.dict_waiting_for_execution) > 0:
+            info = f"Бр. обновени папки в Ready спрямо Finished: {len(self.dict_waiting_for_execution)}\n"
+            count = 1
+            for key, value in self.dict_waiting_for_execution.items():
+                folder_name = self.dict_contents_of_ready_dir[key]['path']
+                final_name = self._extract_text_after_last_backslash(folder_name)
+                info += f"{count}) {final_name}\n"
+                count += 1
+        else:
+            info = None
+
+        # export to txt file
+        try:
+            append_a_dict_to_txt_file(self.location_of_log_file, self.dict_waiting_for_execution)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return 'Error', None
+
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully exported new folders in ready to txt file (see above)')
+        return 'Success', info
+
+    def _scan_pdf(self, file_path, pdf_scanning_coordinates):
+        # split pdf_scanning_coordinates
+        project_name_coordinates, project_description_coordinates, document_number_coordinates = (
+            self._split_pdf_scanning_coordinates(pdf_scanning_coordinates))
+
+        # scan project name
+        project_name = extract_text_from_pdf(file_path, project_name_coordinates)
+
+        # scan project description
+        project_description = extract_text_from_pdf(file_path, project_description_coordinates)
+
+        # scan document number
+        document_number = extract_text_from_pdf(file_path, document_number_coordinates)
+
+        return project_name, project_description, document_number
+
+    def check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self, finished_dir):
+        return_info = ""
+        key_to_remove = []
+        files_to_remove = {}
+
+        # check if the folders in waiting for execution correspond to contents of Excel file
+        for key, value in self.dict_waiting_for_execution.items():
+            not_found_and_needs_to_be_removed = True
+
+            # check if the folder is in the Excel file
+            for key2, value2 in self.dict_contents_of_file_by_file.items():
+
+                # check if match
+                if key.lower() == key2.lower():
+                    not_found_and_needs_to_be_removed = False
+
+                    # fills folder destination path if empty
+                    if value['folder destination path'] == '':
+
+                        new_path = os.path.join(
+                            finished_dir,
+                            value2['section number'],
+                            key
+                        )
+
+                        new_path = normalize_path_to_have_only_forward_slashes(new_path)
+
+                        # update folder destination path
+                        value['folder destination path'] = new_path
+
+                        # updated all files with empty destination path
+                        for key3, value3 in value['files_to_move'].items():
+                            if value3['destination path'] == '':
+                                value3['destination path'] = value['folder destination path']
+
+                    # # check if the files аre in the Excel file
+                    for key4, value4 in value['files_to_move'].items():
+                        remove_file = True
+                        number_name = value4['number name']
+                        file_path = value4['source path']
+
+                        for key5, value5 in self.dict_contents_of_file_by_file.items():
+                            if number_name.lower() == key5.lower():
+
+                                # now scan the Excel ------------------------------------------------
+                                file_extension = os.path.splitext(key4)[1]
+                                if file_extension == '.pdf':
+                                    project_name, project_description, document_number = (
+                                        self._scan_pdf(file_path, self.pdf_scanning_coordinates))
+                                    return_info += f"--- Номер на документ: {document_number}\n"
+                                    return_info += f"--- Описание на проект: {project_description}\n"
+                                    return_info += f"--- Име на проект: {project_name}\n"
+
+                                    # check for match
+                                    if self._compare_by_name_and_number(
+                                        project_description,
+                                        document_number,
+                                        ' '.join(number_name.split(' ')[1:]),
+                                        number_name.split(' ')[0]
+                                    ):
+                                        return_info += f"--- Съответства на Excel файла\n"
+                                    else:
+                                        return_info += f"--- НЕ съответства на Excel файла\n"
+
+                                remove_file = False
+                                break
+
+                        if remove_file:
+                            if key not in files_to_remove:
+                                files_to_remove[key] = []
+
+                            files_to_remove[key].append(key4)
+
+                    break
+
+            # if the folder is not in the Excel file, remove it from waiting for execution
+            if not_found_and_needs_to_be_removed:
+                key_to_remove.append(key)
+
+        # remove folders from waiting for execution, which are not matching the Excel file
+        for key in key_to_remove:
+            return_info += f"Папката {key} НЕ съответства на Excel файла\n"
+            del self.dict_waiting_for_execution[key]
+
+        # remove files from waiting for execution, which are not matching the Excel file
+        for key, value in files_to_remove.items():
+            for file in value:
+                return_info += f"Файлът {file} НЕ съответства на Excel файла\n"
+                del self.dict_waiting_for_execution[key]['files_to_move'][file]
+
+        try:
+            append_a_string_to_txt_file(self.location_of_log_file, return_info)
+        except Exception as e:
+            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
+            return 'Error', None
+
+        # return
+        append_a_string_to_txt_file(self.location_of_log_file,
+                                    'Successfully compared new folders in work compared to ready with Excel (see above)')
+        return 'Success', return_info
+
+    # ----------------------------------------------------------------------------------------
+    # Moving
+    # ----------------------------------------------------------------------------------------
+    def _archive_folder(self, path_of_folder_to_archive, archive_folder):
+        # Create an archive of the folder
+        folder_name = self._extract_text_after_last_backslash(path_of_folder_to_archive)
+        archive_name = folder_name + ".zip"
+        archive_path = os.path.join(archive_folder, archive_name)
+
+        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as archive:
+            for root, dirs, files in os.walk(path_of_folder_to_archive):
+                for file in files:
+                    archive.write(os.path.join(root, file), os.path.join(folder_name, file))
+
+    def archive_then_new_folders_from_ready_to_finished(self, source_folder, destination_folder, archive_folder):
+        # archive files inside the folders
+        for key, value in self.dict_waiting_for_execution.items():
+            # create archive folder
+            # ToDO: does not work
+            # archive_folder_path = self.dict_waiting_for_execution[key]['folder destination path']
+            # new_path = normalize_path_to_have_only_forward_slashes(archive_folder_path)
+            # print(f"Archive Folder Path: {new_path}")
+
+            # # ToDo: this works
+            # new_path = r"C:\Users\User\Desktop\MK\ProjectXYZ\05 DESIGN DOCUMENTS\020 CLASSIFICATION DRAWINGS\A DRAWINGS\Archive"
+
+            # ToDo: this works
+            # old = normalize_path_to_have_only_forward_slashes(self.dict_waiting_for_execution[key]['folder destination path'])
+            # explode = old.split('\\')
+            #
+            # explode_2 = 'A DRAWINGS'
+            # # explode_1 = 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'
+            # explode_1 = 'MC077-022-001'
+            #
+            # # new_path = os.path.join(archive_folder, explode[-2], explode[-1])
+            # new_path = os.path.join(archive_folder, explode_2, explode_1)
+
+            archive_folder_path = self.dict_waiting_for_execution[key]['folder destination path']
+            new_path = normalize_path_to_have_only_forward_slashes(archive_folder_path)
+            explode = new_path.split('\\')
+            explode_2 = explode[-2]
+            explode_1 = explode[-1][:13]
+            new_path = os.path.join(archive_folder, explode_2, explode_1)
+
+            # # Check if the folder exists, create it if not
+            if not os.path.exists(new_path):
+                os.makedirs(new_path)
+
+            # ToDo: up to the archiving
+            # # archive the files in files_to_archive
+            # for key2, value2 in value['files_to_archive'].items():
+            #     # archive the file
+            #     self._archive_folder(value2['path'], new_path)
+
+            # ToDo: this works, but when i had existing 20230928 folder it didnt create ot copy
+            # Now proceed with copying the files
+            for key2, value2 in value['files_to_move'].items():
+                # copy the file to the archive folder
+                shutil.copy(value2['source path'], new_path)
+
+        return 'Success'
+
+
+
+
+
+
+
+    def _create_list_of_main_folder_names(self):
+        self.list_of_created_main_folder_names = []
+
+        # create folders in finished dir
+        for key, value in self.dict_contents_of_file_by_section.items():
+            current_folder_name = key
+
+            # remove last characters separated by space
+            current_folder_name = current_folder_name.rsplit(' ', 1)[0]
+
+            # check if the folder exists
+            if current_folder_name not in self.list_of_created_main_folder_names:
+                self.list_of_created_main_folder_names.append(current_folder_name)
         # # create folders in finished dir
         # for key, value in self.contents_of_file.items():
         #     current_folder_name = key
@@ -133,26 +504,6 @@ class ModuleController:
         #                             'Successfully created folders in finished dir')
         #
         # return 'Success'
-
-    def function3_scan_finished_dir(self, ready_dir):
-        # scan finished directory
-        try:
-            self.contents_of_finished_dir = the_walk_loop(ready_dir)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return f'Error: {e}'
-
-        # export to txt file
-        try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.contents_of_finished_dir)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return f'Error: {e}'
-
-        # return
-        append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported finished dir to txt file (see above)')
-        return 'Success'
 
     def function4_extract_content_of_finished_dir_from_database(self):
         # Retrieve data from the database
@@ -187,8 +538,8 @@ class ModuleController:
     # Comparators
     # ----------------------------------------------------------------------------------------
     def _print_all_current_contents(self):
-        print(f"Now in Ready: {self.contents_of_ready_dir}")
-        print(f"Now in Finished: {self.contents_of_finished_dir}")
+        print(f"Now in Ready: {self.dict_contents_of_ready_dir}")
+        print(f"Now in Finished: {self.dict_contents_of_finished_dir}")
         print(f"Now in Saved Ready: {self.contents_of_saved_ready_dir}")
         print(f"Main names: {self.list_of_created_main_folder_names}")
 
@@ -253,29 +604,13 @@ class ModuleController:
 
         return project_name_coordinates, project_description_coordinates, document_number_coordinates
 
-    def _scan_pdf(self, file_path, pdf_scanning_coordinates):
-        # split pdf_scanning_coordinates
-        project_name_coordinates, project_description_coordinates, document_number_coordinates = (
-            self._split_pdf_scanning_coordinates(pdf_scanning_coordinates))
-
-        # scan project name
-        project_name = extract_text_from_pdf(file_path, project_name_coordinates)
-
-        # scan project description
-        project_description = extract_text_from_pdf(file_path, project_description_coordinates)
-
-        # scan document number
-        document_number = extract_text_from_pdf(file_path, document_number_coordinates)
-
-        return project_name, project_description, document_number
-
     # ToDo: currently this is working by adding the folders 1 by 1 from source to work_dir and clicking the button1
     def function5_new_folders_in_ready_compared_to_saved_ready(self):
         # prints contents of the 3 sources
         self._print_all_current_contents()
 
         self.new_folders_in_ready_compared_to_saved_ready = {}
-        for key, value in self.contents_of_ready_dir.items():
+        for key, value in self.dict_contents_of_ready_dir.items():
             not_found = True
             work_date, work_number, work_name, work_revision = (
                 self._split_folder_name_into_date_number_name_revision(key))
@@ -345,148 +680,6 @@ class ModuleController:
                                     'Successfully exported new folders in ready to txt file (see above)')
         return 'Success', info
 
-    def function6_new_folders_in_ready_compared_to_finished(self):
-        self.new_folders_in_ready_compared_to_finished = {}
-        for key, value in self.contents_of_ready_dir.items():
-            not_found = True
-            work_date, work_number, work_name, work_revision = (
-                self._split_folder_name_into_date_number_name_revision(key))
-            if work_name is None:
-                continue
-
-            for key2, value2 in self.contents_of_finished_dir.items():
-                ready_date, ready_number, ready_name, ready_revision = (
-                    self._split_folder_name_into_date_number_name_revision(key2))
-                if ready_name is None:
-                    continue
-
-                # if the folder is in ready
-                if work_name == ready_name and work_number == ready_number:
-                    not_found = False
-                    # check if the date is newer
-                    if work_date > ready_date:
-                        self.new_folders_in_ready_compared_to_finished[key] = value
-                        break
-                    # check if the date is older
-                    elif work_date < ready_date:
-                        continue
-
-                    # check if the revision is higher
-                    if work_revision > ready_revision:
-                        self.new_folders_in_ready_compared_to_finished[key] = value
-                        break
-                    else:
-                        continue
-
-            # if the folder is not in ready, add it to new folders in work
-            if not_found:
-                self.new_folders_in_ready_compared_to_finished[key] = value
-
-        # correct new_folders_in_work if there is a newer rev in the work dir
-        keys_to_remove = []
-        for key, value in self.new_folders_in_ready_compared_to_finished.items():
-            if key in self.contents_of_finished_dir:
-                keys_to_remove.append(key)
-
-        for key in keys_to_remove:
-            del self.new_folders_in_ready_compared_to_finished[key]
-
-        # print new folders in work
-        print(f"Разлика между Ready и Finished: {self.new_folders_in_ready_compared_to_finished}")
-
-        # prepare the info about new folder to return
-        if len(self.new_folders_in_ready_compared_to_finished) > 0:
-            info = f"Бр. нови папки в Ready спрямо Finished: {len(self.new_folders_in_ready_compared_to_finished)}\n"
-            print(info)
-            count = 1
-            for key, value in self.new_folders_in_ready_compared_to_finished.items():
-                folder_name = self._extract_text_after_last_backslash(key)
-                info += f"{count}) {folder_name}\n"
-                count += 1
-        else:
-            info = None
-
-        # export to txt file
-        try:
-            append_a_dict_to_txt_file(self.location_of_log_file, self.new_folders_in_ready_compared_to_finished)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return 'Error', None
-
-        # return
-        append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported new folders in ready to txt file (see above)')
-        return 'Success', info
-
-    def function7_check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self):
-        return_info = ""
-        count = 1
-
-        # check if the new folders in work compared to ready correspond to Excel file
-        for key, value in self.new_folders_in_ready_compared_to_finished.items():
-            work_date, work_number, work_name, work_revision = (
-                self._split_folder_name_into_date_number_name_revision(key))
-            if work_name is None:
-                continue
-
-            # check if the folder is in the Excel file
-            for key2, value2 in self.contents_of_file.items():
-                if self._compare_by_name_and_number(work_name, work_number, value2['drawing_name'], value2['drawing_number']):
-                    return_info += f"{count}. Папката {work_name} с номер {work_number} съответства на Excel файла\n"
-
-                    # fill the dictionary with the names of the new folders in ready comp to finished and mf names
-                    current_folder_name = key2.rsplit(' ', 1)[0]
-                    self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names[key] = current_folder_name
-
-                    # check the list, which contains the files in the folder
-                    for file in value:
-                        file_extension = os.path.splitext(file)[1]
-                        file_number, file_name = (
-                            self._split_file_name_into_number_name(file))
-                        if file_name is None:
-                            continue
-
-                        # check if the file is in the Excel file
-                        if self._compare_by_name_and_number(file_name, file_number, value2['drawing_name'], value2['drawing_number']):
-                            return_info += f"- Файлът {file_name}{file_extension} с номер {file_number} съответства на Excel файла\n"
-                        else:
-                            return_info += f"- Файлът {file_name}{file_extension} с номер {file_number} НЕ съответства на Excel файла\n"
-
-                        # scan pdf files and check if they correspond to Excel file
-                        if file_extension == '.pdf':
-                            file_path = os.path.join(key, file)
-
-                            project_name, project_description, document_number = (
-                                self._scan_pdf(file_path, self.pdf_scanning_coordinates))
-                            return_info += f"--- Номер на документ: {document_number}\n"
-                            return_info += f"--- Описание на проект: {project_description}\n"
-                            return_info += f"--- Име на проект: {project_name}\n"
-
-                            if self._compare_by_name_and_number(project_name, document_number, value2['drawing_name'], value2['drawing_number']):
-                                return_info += f"--- Съответства на Excel файла\n"
-                            else:
-                                return_info += f"--- НЕ съответства на Excel файла\n"
-
-                    break
-            else:
-                return_info += f"{count}. Папката {work_name} с номер {work_number} НЕ съответства на Excel файла\n"
-
-            count += 1
-
-        # export to txt file
-        try:
-            append_a_string_to_txt_file(self.location_of_log_file, return_info)
-        except Exception as e:
-            append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return 'Error', None
-
-        print(f"To move / MF: {self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names}")
-
-        # return
-        append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully compared new folders in work compared to ready with Excel (see above)')
-        return 'Success', return_info
-
     # ----------------------------------------------------------------------------------------
     # Finishers
     # ----------------------------------------------------------------------------------------
@@ -498,38 +691,10 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return f'Error: {e}'
 
-        for key, value in self.contents_of_ready_dir.items():
+        for key, value in self.dict_contents_of_ready_dir.items():
             self.db_controller.insert_data(self.previous_state_table_name, 'dir_path', 'file_names', key, str(value))
 
         append_a_string_to_txt_file(self.location_of_log_file, 'Successfully stored current condition in database')
-
-        return 'Success'
-
-    # ----------------------------------------------------------------------------------------
-    # Moving
-    # ----------------------------------------------------------------------------------------
-    def _archive_folder(self, path_of_folder_to_archive, archive_folder):
-        # Create an archive of the folder
-        folder_name = self._extract_text_after_last_backslash(path_of_folder_to_archive)
-        archive_name = folder_name + ".zip"
-        archive_path = os.path.join(archive_folder, archive_name)
-
-        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as archive:
-            for root, dirs, files in os.walk(path_of_folder_to_archive):
-                for file in files:
-                    archive.write(os.path.join(root, file), os.path.join(folder_name, file))
-
-    def function8_move_new_folders_from_work_to_ready(self, source_folder, destination_folder, archive_folder):
-        folders_to_archive = []
-
-        # move new folders from work to ready
-        for key, value in self.dict_of_names_of_new_folders_in_ready_compared_to_finished_and_main_folder_names.items():
-            destination_path = os.path.join(destination_folder, value)
-            destination_path_with_folder_name = os.path.join(destination_path, self._extract_text_after_last_backslash(key))
-
-            # check if the folder exists
-            if not os.path.exists(destination_path_with_folder_name):
-                shutil.copytree(key, destination_path_with_folder_name)
 
         return 'Success'
 
