@@ -1,10 +1,9 @@
 # -*- coding: windows-1251 -*-
-
 import os
 import shutil
 import zipfile
 import re
-from pathlib import Path
+from datetime import datetime
 
 from support.custom_functions_lib import normalize_path_to_have_only_forward_slashes
 from support.pdf_reader import extract_text_from_pdf
@@ -150,8 +149,60 @@ class ModuleController:
 
     def compare_ready_to_finished(self):
         """
-        Compares the contents of ready and finished directories and exports the result to a txt file
-        dict5 {'folder number folder name': {'folder destination path': '', 'files_to_move': {'number name', 'source path', 'destination path'}, 'files_to_archive': {'number name', 'path'}}}
+        Compares the contents of ready and finished directories
+
+        Ready format:
+        {
+       'MC077-021-001 Leak proof joint design and drawing for hull':
+        {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
+         'files': {
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
+       'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
+        {'date': '20230930', 'rev': '1', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1',
+         'files': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1 - Copy.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1 - Copy.pdf'},
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg'},
+            'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {'number': 'MC077-022-099', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf'}}}}
+
+        Finished format with number and name:
+        {
+       'MC077-021-001 Leak proof joint design and drawing for hull':
+        {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
+         'files': {
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
+       'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
+        {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface',
+         'files': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf'},
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
+
+        ToDo: This is working currently while creating a new folder in finished dir!
+        Finished with number only:
+        {
+       'MC077-021-001':
+        {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-021-001',
+         'files': {
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-021-001\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-021-001\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
+       'MC077-022-001':
+        {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
+         'files': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf'},
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
+
+        Waiting ti be moved dict:
+        {
+       'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
+        {'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
+         'files_to_move': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'},
+            'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-099 Leak proof joint design and drawing for tank and deck surface'}},
+         'files_to_archive': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
+
+        and exports the result to a txt file
         :return: 'Success' + info or 'Error'
         """
         # reinitialize the dictionary to be empty
@@ -159,51 +210,126 @@ class ModuleController:
 
         # compare self.dict_contents_of_ready_dir and self.dict_contents_of_finished_dir
         for key, value in self.dict_contents_of_ready_dir.items():
+            this_key_needs_to_be_moved = True
+            iteration_is_finished = False
 
-            # check for matching
-            if key in self.dict_contents_of_finished_dir:
+            # ------------------------------------------------------------
+            # ToDo: added since the finished dir is with number only
+            for finished_key in self.dict_contents_of_finished_dir.keys():
+                # check if it is the last finished_key
+                if finished_key == list(self.dict_contents_of_finished_dir.keys())[-1]:
+                    iteration_is_finished = True
 
-                # lists of files in ready and finished
-                dict_of_ready_files = value['files']
-                dict_of_finished_files = self.dict_contents_of_finished_dir[key]['files']
+                # check for matching
+                part_key = key[:13]
+                if part_key in finished_key:
+                    this_key_needs_to_be_moved = False
 
-                # folder destination path for later
-                folder_destination_path = self.dict_contents_of_finished_dir[key]['path']
+                    # commented
+                    # check for matching
+                    # if key in self.dict_contents_of_finished_dir.keys():
 
-                # iterate over the files in ready
-                for ready_file in dict_of_ready_files:
-                    not_found_and_must_be_moved = True
+            # ------------------------------------------------------------
+                    # changed identation up to the line below
 
-                    ready_file_number = dict_of_ready_files[ready_file]['number']
-                    ready_file_name = dict_of_ready_files[ready_file]['name']
-                    ready_file_date = dict_of_ready_files[ready_file]['date']
-                    ready_file_path = dict_of_ready_files[ready_file]['path']
-                    ready_file_extension = os.path.splitext(ready_file)[1]
+                    # lists of files in ready and finished
+                    dict_of_ready_files = value['files']
+                    # ToDo: changed key to key[:13]
+                    dict_of_finished_files = self.dict_contents_of_finished_dir[key[:13]]['files']
 
-                    # iterate over the files in finished
-                    for finished_file in dict_of_finished_files:
-                        finished_file_number = dict_of_finished_files[finished_file]['number']
-                        finished_file_name = dict_of_finished_files[finished_file]['name']
-                        finished_file_date = dict_of_finished_files[finished_file]['date']
-                        finished_file_path = dict_of_finished_files[finished_file]['path']
-                        finished_file_extension = os.path.splitext(finished_file)[1]
+                    # folder destination path for later
+                    # ToDo: changed key to key[:13]
+                    folder_destination_path = self.dict_contents_of_finished_dir[key[:13]]['path']
 
-                        # check for matching number, name and extension
-                        if (ready_file_number == finished_file_number
-                                and ready_file_name == finished_file_name
-                                and ready_file_extension == finished_file_extension):
+                    # iterate over the files in ready
+                    for ready_file in dict_of_ready_files:
+                        not_found_and_must_be_moved = True
 
-                            not_found_and_must_be_moved = False
+                        ready_file_number = dict_of_ready_files[ready_file]['number']
+                        ready_file_name = dict_of_ready_files[ready_file]['name']
+                        ready_file_date = dict_of_ready_files[ready_file]['date']
+                        ready_file_path = dict_of_ready_files[ready_file]['path']
+                        ready_file_extension = os.path.splitext(ready_file)[1]
 
-                            # check if the date is newer
-                            if ready_file_date > finished_file_date:
+                        # iterate over the files in finished
+                        for finished_file in dict_of_finished_files:
+                            finished_file_number = dict_of_finished_files[finished_file]['number']
+                            finished_file_name = dict_of_finished_files[finished_file]['name']
+                            finished_file_date = dict_of_finished_files[finished_file]['date']
+                            finished_file_path = dict_of_finished_files[finished_file]['path']
+                            finished_file_extension = os.path.splitext(finished_file)[1]
 
-                                # check if the folder is already in the dictionary
-                                if key not in self.dict_waiting_for_execution:
-                                    self.dict_waiting_for_execution[key] = {}
-                                    self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
-                                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+                            # check for matching number, name and extension
+                            if (ready_file_number == finished_file_number
+                                    and ready_file_name == finished_file_name
+                                    and ready_file_extension == finished_file_extension):
+
+                                not_found_and_must_be_moved = False
+
+                                # check if the date is newer
+                                if ready_file_date > finished_file_date:
+
+                                    # check if the folder is already in the dictionary
+                                    if key not in self.dict_waiting_for_execution:
+                                        self.dict_waiting_for_execution[key] = {}
+                                        self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
+                                        self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                                        self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                                    # add the file to move
+                                    self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
+                                        'source path': ready_file_path,
+                                        'destination path': folder_destination_path,
+                                        'number name': ready_file_number + ' ' + ready_file_name
+                                    }
+
+                                    # add the file to archive
+                                    self.dict_waiting_for_execution[key]['files_to_archive'][finished_file] = {
+                                        'path': finished_file_path
+                                    }
+
+                                    # break the loop
+                                    break
+
+                        # add to the folder to move
+                        if not_found_and_must_be_moved:
+                            # check if the folder is already in the dictionary
+                            if key not in self.dict_waiting_for_execution:
+                                self.dict_waiting_for_execution[key] = {}
+                                self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
+                                self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                                self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                            # add the file to move
+                            self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
+                                'source path': ready_file_path,
+                                'destination path': folder_destination_path,
+                                'number name': ready_file_number + ' ' + ready_file_name
+                            }
+
+                # if the folder is not in finished, add it to dict_waiting_for_execution
+                else:
+                    if iteration_is_finished:
+                        if this_key_needs_to_be_moved:
+
+                            # folder destination path for later
+                            folder_destination_path = ''
+
+                            # check if the folder is already in the dictionary
+                            if key not in self.dict_waiting_for_execution:
+                                self.dict_waiting_for_execution[key] = {}
+                                self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
+                                self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                                self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                            # lists of files in ready
+                            dict_of_ready_files = value['files']
+
+                            # iterate over the files in ready
+                            for ready_file in dict_of_ready_files:
+                                ready_file_path = dict_of_ready_files[ready_file]['path']
+                                ready_file_number = dict_of_ready_files[ready_file]['number']
+                                ready_file_name = dict_of_ready_files[ready_file]['name']
 
                                 # add the file to move
                                 self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
@@ -212,57 +338,7 @@ class ModuleController:
                                     'number name': ready_file_number + ' ' + ready_file_name
                                 }
 
-                                # add the file to archive
-                                self.dict_waiting_for_execution[key]['files_to_archive'][finished_file] = {
-                                    'path': finished_file_path
-                                }
-
-                                # break the loop
-                                break
-
-                    # add to the folder to move
-                    if not_found_and_must_be_moved:
-                        # check if the folder is already in the dictionary
-                        if key not in self.dict_waiting_for_execution:
-                            self.dict_waiting_for_execution[key] = {}
-                            self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
-                            self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                            self.dict_waiting_for_execution[key]['files_to_archive'] = {}
-
-                        # add the file to move
-                        self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
-                            'source path': ready_file_path,
-                            'destination path': folder_destination_path,
-                            'number name': ready_file_number + ' ' + ready_file_name
-                        }
-
-            # if the folder is not in finished, add it to dict_waiting_for_execution
-            else:
-                # folder destination path for later
-                folder_destination_path = ''
-
-                # check if the folder is already in the dictionary
-                if key not in self.dict_waiting_for_execution:
-                    self.dict_waiting_for_execution[key] = {}
-                    self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
-                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
-
-                # lists of files in ready
-                dict_of_ready_files = value['files']
-
-                # iterate over the files in ready
-                for ready_file in dict_of_ready_files:
-                    ready_file_path = dict_of_ready_files[ready_file]['path']
-                    ready_file_number = dict_of_ready_files[ready_file]['number']
-                    ready_file_name = dict_of_ready_files[ready_file]['name']
-
-                    # add the file to move
-                    self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
-                        'source path': ready_file_path,
-                        'destination path': folder_destination_path,
-                        'number name': ready_file_number + ' ' + ready_file_name
-                    }
+            # ------------------------------------------------------------
 
         # prepare the info about new folder to return
         if len(self.dict_waiting_for_execution) > 0:
@@ -305,6 +381,21 @@ class ModuleController:
         return project_name, project_description, document_number
 
     def check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self, finished_dir):
+        """
+        Checks if the new folders in work correspond to Excel file
+        :param finished_dir:
+
+        Corrected self.dict_waiting_for_execution:
+        {
+       'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
+        {'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
+         'files_to_move': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}},
+         'files_to_archive': {
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
+
+        :return:
+        """
         return_info = ""
         key_to_remove = []
         files_to_remove = {}
@@ -400,6 +491,8 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return 'Error', None
 
+        print(self.dict_waiting_for_execution)
+
         # return
         append_a_string_to_txt_file(self.location_of_log_file,
                                     'Successfully compared new folders in work compared to ready with Excel (see above)')
@@ -453,13 +546,25 @@ class ModuleController:
             if not os.path.exists(new_path):
                 os.makedirs(new_path)
 
-            # ToDo: up to the archiving
-            # # archive the files in files_to_archive
-            # for key2, value2 in value['files_to_archive'].items():
-            #     # archive the file
-            #     self._archive_folder(value2['path'], new_path)
+            # archive the files in files_to_archive
+            if len(value['files_to_archive']) > 0:
+                # get current date and time
+                current_datetime = datetime.now()
+                folder_name = current_datetime.strftime("%y%m%d%H%M%S")     # 231123125228
+                # create the folder
+                path_of_new_archive = os.path.join(new_path, folder_name)
+                os.makedirs(path_of_new_archive)
 
-            # ToDo: this works, but when i had existing 20230928 folder it didnt create ot copy
+                # move the files to archive there
+                for key2, value2 in value['files_to_archive'].items():
+                    shutil.move(value2['path'], path_of_new_archive)
+
+                # archive the folder
+                self._archive_folder(path_of_new_archive, new_path)
+
+                # delete the folder
+                shutil.rmtree(path_of_new_archive)
+
             # Now proceed with copying the files
             for key2, value2 in value['files_to_move'].items():
                 # copy the file to the archive folder

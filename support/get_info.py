@@ -102,6 +102,19 @@ def split_file_name_into_number_name_date(string):
         return None, None, None
 
 
+def split_folder_name_into_number(string):
+    pattern = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)'
+
+    match = re.search(pattern, string)
+
+    if match:
+        number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
+
+        return number
+    else:
+        return None
+
+
 def extract_text_after_last_backslash(path):
     # Use a regular expression to extract the text after the last backslash
     pattern = r'[^\\]+$'
@@ -186,12 +199,24 @@ def the_walk_loop_finished(directory):
             continue
 
         dir_path_after_last_backslash = extract_text_after_last_backslash(dir_path)
-        folder_number, folder_name = split_folder_name_into_number_name(dir_path_after_last_backslash)
 
-        if folder_number is None and folder_name is None:
+        # ToDo: changed this, since now only creating a folder with a folder number works!
+        # ------------------------------------------------------------------------------
+        # folder_number, folder_name = split_folder_name_into_number_name(dir_path_after_last_backslash)
+        #
+        # if folder_number is None and folder_name is None:
+        #     continue
+        #
+        # folder_number_space_name = folder_number + ' ' + folder_name
+
+        folder_number = split_folder_name_into_number(dir_path_after_last_backslash)
+
+        if folder_number is None:
             continue
 
-        folder_number_space_name = folder_number + ' ' + folder_name
+        folder_number_space_name = folder_number
+
+        # ------------------------------------------------------------------------------
 
         result[folder_number_space_name] = {
             'path': normalize_path_to_have_only_forward_slashes(dir_path),
