@@ -1,5 +1,4 @@
-# -*- coding: windows-1251 -*-
-
+# -*- coding: utf-8 -*-
 import os
 from tkinter import filedialog
 from tkinter import *
@@ -14,37 +13,37 @@ class MyGui:
     WINDOW_WIDTH = 800
     WINDOW_HEIGHT = 705
     DEFAULT_STATUS_TEXT = (
-        'Правилно име на фолдър:\n' +
+        'РџСЂР°РІРёР»РЅРѕ РёРјРµ РЅР° С„РѕР»РґСЉСЂ:\n' +
         '`20230928 - MC077-021-001-Leak proof joint design and drawing for hull`\n' +
-        'или:\n'
+        'РёР»Рё:\n'
         '`20230928 - MC077-021-001-Leak proof joint design and drawing for hull - 1`\n' +
         '\n' +
-        'Правилно име на файл:\n' +
+        'РџСЂР°РІРёР»РЅРѕ РёРјРµ РЅР° С„Р°Р№Р»:\n' +
         '`MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg`\n' +
-        'или:\n' +
+        'РёР»Рё:\n' +
         '`MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf`\n' +
         '\n' +
-        'Към момента фолдърите в `020 CLASSIFICATION DRAWINGS` са с имена от този тип: `MC077-021-001!`\n' +
+        'РљСЉРј РјРѕРјРµРЅС‚Р° С„РѕР»РґСЉСЂРёС‚Рµ РІ `020 CLASSIFICATION DRAWINGS` СЃР° СЃ РёРјРµРЅР° РѕС‚ С‚РѕР·Рё С‚РёРї: `MC077-021-001!`\n' +
         '\n' +
-        'Правилен формат на Excel-ския файл: .xlsx\n' +
+        'РџСЂР°РІРёР»РµРЅ С„РѕСЂРјР°С‚ РЅР° Excel-СЃРєРёСЏ С„Р°Р№Р»: .xlsx\n' +
         '\n' +
-        'Програмата сканира Ready и при наличие на 2 с еднакви номер и име избира този с по-нова дата. '
-        'При еднакви дати, избира с по-голяма ревизия.\n' +
+        'РџСЂРѕРіСЂР°РјР°С‚Р° СЃРєР°РЅРёСЂР° Ready Рё РїСЂРё РЅР°Р»РёС‡РёРµ РЅР° 2 СЃ РµРґРЅР°РєРІРё РЅРѕРјРµСЂ Рё РёРјРµ РёР·Р±РёСЂР° С‚РѕР·Рё СЃ РїРѕ-РЅРѕРІР° РґР°С‚Р°. '
+        'РџСЂРё РµРґРЅР°РєРІРё РґР°С‚Рё, РёР·Р±РёСЂР° СЃ РїРѕ-РіРѕР»СЏРјР° СЂРµРІРёР·РёСЏ.\n' +
         '\n' +
-        'След това програмата сканира `020 CLASSIFICATION DRAWINGS` и сравнява резултата с предходното сканиране. '
+        'РЎР»РµРґ С‚РѕРІР° РїСЂРѕРіСЂР°РјР°С‚Р° СЃРєР°РЅРёСЂР° `020 CLASSIFICATION DRAWINGS` Рё СЃСЂР°РІРЅСЏРІР° СЂРµР·СѓР»С‚Р°С‚Р° СЃ РїСЂРµРґС…РѕРґРЅРѕС‚Рѕ СЃРєР°РЅРёСЂР°РЅРµ. '
         '\n' +
-        'Събира цялата информация от Excel-ския файл и създава папките от тип `C ESD SYSTEM DESIGN` '
-        'в `020 CLASSIFICATION DRAWINGS`' +
+        'РЎСЉР±РёСЂР° С†СЏР»Р°С‚Р° РёРЅС„РѕСЂРјР°С†РёСЏ РѕС‚ Excel-СЃРєРёСЏ С„Р°Р№Р» Рё СЃСЉР·РґР°РІР° РїР°РїРєРёС‚Рµ РѕС‚ С‚РёРї `C ESD SYSTEM DESIGN` '
+        'РІ `020 CLASSIFICATION DRAWINGS`' +
         '\n' +
-        'Ключова стъпка: Сравнява Ready с `020 CLASSIFICATION DRAWINGS` и набелязва списък с разликите. '
+        'РљР»СЋС‡РѕРІР° СЃС‚СЉРїРєР°: РЎСЂР°РІРЅСЏРІР° Ready СЃ `020 CLASSIFICATION DRAWINGS` Рё РЅР°Р±РµР»СЏР·РІР° СЃРїРёСЃСЉРє СЃ СЂР°Р·Р»РёРєРёС‚Рµ. '
         '\n' +
-        'След това сравнява разликите с Excel-ския файл. Ако номер + име съвпадат не съвпадат ги премахва'
-        ' от списъка с разликите. Сканира .pdf файловете отново за сравнение с Excel-ския файл (само информативно без да ги маха от списъка'
-        'с разликите). '
+        'РЎР»РµРґ С‚РѕРІР° СЃСЂР°РІРЅСЏРІР° СЂР°Р·Р»РёРєРёС‚Рµ СЃ Excel-СЃРєРёСЏ С„Р°Р№Р». РђРєРѕ РЅРѕРјРµСЂ + РёРјРµ СЃСЉРІРїР°РґР°С‚ РЅРµ СЃСЉРІРїР°РґР°С‚ РіРё РїСЂРµРјР°С…РІР°'
+        ' РѕС‚ СЃРїРёСЃСЉРєР° СЃ СЂР°Р·Р»РёРєРёС‚Рµ. РЎРєР°РЅРёСЂР° .pdf С„Р°Р№Р»РѕРІРµС‚Рµ РѕС‚РЅРѕРІРѕ Р·Р° СЃСЂР°РІРЅРµРЅРёРµ СЃ Excel-СЃРєРёСЏ С„Р°Р№Р» (СЃР°РјРѕ РёРЅС„РѕСЂРјР°С‚РёРІРЅРѕ Р±РµР· РґР° РіРё РјР°С…Р° РѕС‚ СЃРїРёСЃСЉРєР°'
+        'СЃ СЂР°Р·Р»РёРєРёС‚Рµ). '
         '\n' +
-        'След това програмата премества файловете от Ready в Finished и архивира Finished.'
+        'РЎР»РµРґ С‚РѕРІР° РїСЂРѕРіСЂР°РјР°С‚Р° РїСЂРµРјРµСЃС‚РІР° С„Р°Р№Р»РѕРІРµС‚Рµ РѕС‚ Ready РІ Finished Рё Р°СЂС…РёРІРёСЂР° Finished.'
         '\n' +
-        'Програмата чете от първия Sheet на Excel-ския файл!'
+        'РџСЂРѕРіСЂР°РјР°С‚Р° С‡РµС‚Рµ РѕС‚ РїСЉСЂРІРёСЏ Sheet РЅР° Excel-СЃРєРёСЏ С„Р°Р№Р»!'
     )
 
     def __init__(
@@ -110,21 +109,21 @@ class MyGui:
         # -----------------------------------------------------------------------------
         # Names of elements
         # -----------------------------------------------------------------------------
-        self.name_of_browse_label1 = 'Път към проекта: няма'
-        self.name_of_browse_button1 = 'Избери пътя към проекта'
+        self.name_of_browse_label1 = 'РџСЉС‚ РєСЉРј РїСЂРѕРµРєС‚Р°: РЅСЏРјР°'
+        self.name_of_browse_button1 = 'РР·Р±РµСЂРё РїСЉС‚СЏ РєСЉРј РїСЂРѕРµРєС‚Р°'
 
-        self.name_of_browse_label2 = 'Път към `Ready`: няма'
-        self.name_of_browse_button2 = 'Промени пътя към `Ready`'
+        self.name_of_browse_label2 = 'РџСЉС‚ РєСЉРј `Ready`: РЅСЏРјР°'
+        self.name_of_browse_button2 = 'РџСЂРѕРјРµРЅРё РїСЉС‚СЏ РєСЉРј `Ready`'
 
-        self.name_of_browse_label3 = 'Път към `020 CLASSIFICATION DRAWINGS`: няма'
-        self.name_of_browse_button3 = 'Промени пътя към `020`'
+        self.name_of_browse_label3 = 'РџСЉС‚ РєСЉРј `020 CLASSIFICATION DRAWINGS`: РЅСЏРјР°'
+        self.name_of_browse_button3 = 'РџСЂРѕРјРµРЅРё РїСЉС‚СЏ РєСЉРј `020`'
 
-        self.name_of_browse_label4 = 'Път към актуалния списък в Excel: няма'
-        self.name_of_browse_button4 = 'Промени пътя към списъка'
+        self.name_of_browse_label4 = 'РџСЉС‚ РєСЉРј Р°РєС‚СѓР°Р»РЅРёСЏ СЃРїРёСЃСЉРє РІ Excel: РЅСЏРјР°'
+        self.name_of_browse_button4 = 'РџСЂРѕРјРµРЅРё РїСЉС‚СЏ РєСЉРј СЃРїРёСЃСЉРєР°'
 
-        self.name_of_button1 = 'Сканирай за промени (A)'
-        self.name_of_button2 = 'Приложи промените (S)'
-        self.name_of_button3 = 'Изчисти конзолата (D)'
+        self.name_of_button1 = 'РЎРєР°РЅРёСЂР°Р№ Р·Р° РїСЂРѕРјРµРЅРё (A)'
+        self.name_of_button2 = 'РџСЂРёР»РѕР¶Рё РїСЂРѕРјРµРЅРёС‚Рµ (S)'
+        self.name_of_button3 = 'РР·С‡РёСЃС‚Рё РєРѕРЅР·РѕР»Р°С‚Р° (D)'
 
         self.name_of_shortcut_button = '>>'
 
@@ -340,9 +339,9 @@ class MyGui:
 
         # if there is an additional message, show it
         if message is not None:
-            self.update_status_label(f"Операция 1: '{result}'\n{message}")
+            self.update_status_label(f"РћРїРµСЂР°С†РёСЏ 1: '{result}'\n{message}")
         else:
-            self.update_status_label(f"Операция 1: '{result}'")
+            self.update_status_label(f"РћРїРµСЂР°С†РёСЏ 1: '{result}'")
 
     @time_measurement_decorator
     def commands_of_button2(self, event=None):
@@ -358,9 +357,9 @@ class MyGui:
 
         # if there is an additional message, show it
         if message is not None:
-            self.update_status_label(f"Операция 2: '{result}'\n{message}")
+            self.update_status_label(f"РћРїРµСЂР°С†РёСЏ 2: '{result}'\n{message}")
         else:
-            self.update_status_label(f"Операция 2: '{result}'")
+            self.update_status_label(f"РћРїРµСЂР°С†РёСЏ 2: '{result}'")
 
     @time_measurement_decorator
     def commands_of_button3(self, event=None):
@@ -387,7 +386,7 @@ class MyGui:
 
         # feedback
         self.update_label_next_to_browse_button(label_number, f"{filepath}")
-        self.update_status_label(f"избрано: '{filepath}'")
+        self.update_status_label(f"РёР·Р±СЂР°РЅРѕ: '{filepath}'")
 
     @staticmethod
     def _choose_the_excel_with_latest_revision(path):
@@ -407,7 +406,7 @@ class MyGui:
             # return the path to the latest file
             return os.path.join(path, latest_file)
         except Exception as e:
-            return f"Грешка: '{e}'""", 'red', None
+            return f"Р“СЂРµС€РєР°: '{e}'""", 'red', None
 
     def _actualize_all_dirs_based_on_project_dir(self):
         try:
@@ -428,14 +427,14 @@ class MyGui:
 
             # check if they are existing folders
             if not os.path.exists(self.location_of_ready_dir):
-                return f"Грешка: '{self.location_of_ready_dir}' не съществува!", 'red', None
+                return f"Р“СЂРµС€РєР°: '{self.location_of_ready_dir}' РЅРµ СЃСЉС‰РµСЃС‚РІСѓРІР°!", 'red', None
             if not os.path.exists(self.location_of_finished_dir):
-                return f"Грешка: '{self.location_of_finished_dir}' не съществува!", 'red', None
+                return f"Р“СЂРµС€РєР°: '{self.location_of_finished_dir}' РЅРµ СЃСЉС‰РµСЃС‚РІСѓРІР°!", 'red', None
             if not os.path.exists(self.location_of_documents_list_file):
-                return f"Грешка: '{self.location_of_documents_list_file}' не съществува!", 'red', None
+                return f"Р“СЂРµС€РєР°: '{self.location_of_documents_list_file}' РЅРµ СЃСЉС‰РµСЃС‚РІСѓРІР°!", 'red', None
 
         except Exception as e:
-            return f"Грешка: '{e}'""", 'red', None
+            return f"Р“СЂРµС€РєР°: '{e}'""", 'red', None
 
     @time_measurement_decorator
     def select_location_of_project_dir(self, path=None):

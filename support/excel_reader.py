@@ -1,4 +1,4 @@
-# -*- coding: windows-1251 -*-
+# -*- coding: utf-8 -*-
 from openpyxl import load_workbook
 
 

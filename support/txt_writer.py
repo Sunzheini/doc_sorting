@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
+
 def append_a_dict_to_txt_file(path_to_txt, contents_dictionary):
-    with open(path_to_txt, 'a') as file:
+    with open(path_to_txt, 'a', encoding='utf-8', ) as file:
         file.write('\n')
         file.write('\n')
         for key, value in contents_dictionary.items():
@@ -8,7 +11,7 @@ def append_a_dict_to_txt_file(path_to_txt, contents_dictionary):
 
 
 def append_a_string_to_txt_file(path_to_txt, string):
-    with open(path_to_txt, 'a') as file:
+    with open(path_to_txt, 'a', encoding='utf-8', ) as file:
         file.write('\n')
         file.write(string)
     return f'Successfully exported to txt file in {path_to_txt}'

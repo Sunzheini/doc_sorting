@@ -1,4 +1,4 @@
-# -*- coding: windows-1251 -*-
+# -*- coding: utf-8 -*-
 import os
 import shutil
 import zipfile
@@ -154,16 +154,16 @@ class ModuleController:
         Ready format:
         {
        'MC077-021-001 Leak proof joint design and drawing for hull':
-        {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
+        {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
          'files': {
-            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
-            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
        'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
-        {'date': '20230930', 'rev': '1', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1',
+        {'date': '20230930', 'rev': '1', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1',
          'files': {
-            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1 - Copy.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1 - Copy.pdf'},
-            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg'},
-            'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {'number': 'MC077-022-099', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf'}}}}
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1 - Copy.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1 - Copy.pdf'},
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg'},
+            'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {'number': 'MC077-022-099', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '30092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf'}}}}
 
         Finished format with number and name:
         {
@@ -197,8 +197,8 @@ class ModuleController:
        'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
         {'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
          'files_to_move': {
-            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'},
-            'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-099 Leak proof joint design and drawing for tank and deck surface'}},
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'},
+            'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-099 Leak proof joint design and drawing for tank and deck surface'}},
          'files_to_archive': {
             'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
 
@@ -212,6 +212,32 @@ class ModuleController:
         for key, value in self.dict_contents_of_ready_dir.items():
             this_key_needs_to_be_moved = True
             iteration_is_finished = False
+
+            # check if the finished dir is empty
+            if len(self.dict_contents_of_finished_dir) == 0:
+                # check if the folder is already in the dictionary
+                if key not in self.dict_waiting_for_execution:
+                    self.dict_waiting_for_execution[key] = {}
+                    self.dict_waiting_for_execution[key]['folder destination path'] = ''
+                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
+                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+
+                # lists of files in ready
+                dict_of_ready_files = value['files']
+
+                # iterate over the files in ready
+                for ready_file in dict_of_ready_files:
+                    ready_file_path = dict_of_ready_files[ready_file]['path']
+                    ready_file_number = dict_of_ready_files[ready_file]['number']
+                    ready_file_name = dict_of_ready_files[ready_file]['name']
+
+                    # add the file to move
+                    self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
+                        'source path': ready_file_path,
+                        'destination path': '',
+                        'number name': ready_file_number + ' ' + ready_file_name
+                    }
+                continue
 
             # ------------------------------------------------------------
             # ToDo: added since the finished dir is with number only
@@ -342,7 +368,7 @@ class ModuleController:
 
         # prepare the info about new folder to return
         if len(self.dict_waiting_for_execution) > 0:
-            info = f"Бр. обновени папки в Ready спрямо Finished: {len(self.dict_waiting_for_execution)}\n"
+            info = f"Р‘СЂ. РѕР±РЅРѕРІРµРЅРё РїР°РїРєРё РІ Ready СЃРїСЂСЏРјРѕ Finished: {len(self.dict_waiting_for_execution)}\n"
             count = 1
             for key, value in self.dict_waiting_for_execution.items():
                 folder_name = self.dict_contents_of_ready_dir[key]['path']
@@ -361,7 +387,7 @@ class ModuleController:
 
         # return
         append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported new folders in ready to txt file (see above)')
+                                    'Successfully exported dict_waiting_for_execution (before correction) to txt file (see above)')
         return 'Success', info
 
     def _scan_pdf(self, file_path, pdf_scanning_coordinates):
@@ -380,6 +406,9 @@ class ModuleController:
 
         return project_name, project_description, document_number
 
+    def log_step(self, text):
+        append_a_string_to_txt_file(self.location_of_log_file, text)
+
     def check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self, finished_dir):
         """
         Checks if the new folders in work correspond to Excel file
@@ -390,7 +419,7 @@ class ModuleController:
        'MC077-022-001 Leak proof joint design and drawing for tank and deck surface':
         {'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
          'files_to_move': {
-            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}},
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}},
          'files_to_archive': {
             'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
 
@@ -400,19 +429,29 @@ class ModuleController:
         key_to_remove = []
         files_to_remove = {}
 
+        self.log_step('1')
+
         # check if the folders in waiting for execution correspond to contents of Excel file
         for key, value in self.dict_waiting_for_execution.items():
             not_found_and_needs_to_be_removed = True
 
+            self.log_step(f"key in waiting for execution: {key}")
+
             # check if the folder is in the Excel file
             for key2, value2 in self.dict_contents_of_file_by_file.items():
+
+                self.log_step(f"key2 in Excel: {key2}")
 
                 # check if match
                 if key.lower() == key2.lower():
                     not_found_and_needs_to_be_removed = False
 
+                    self.log_step("match")
+
                     # fills folder destination path if empty
                     if value['folder destination path'] == '':
+
+                        self.log_step("folder destination path is empty")
 
                         new_path = os.path.join(
                             finished_dir,
@@ -425,39 +464,53 @@ class ModuleController:
                         # update folder destination path
                         value['folder destination path'] = new_path
 
-                        # updated all files with empty destination path
+                        # update all files with empty destination path
                         for key3, value3 in value['files_to_move'].items():
+
+                            self.log_step(f"key3: {key3}")
+
                             if value3['destination path'] == '':
                                 value3['destination path'] = value['folder destination path']
 
-                    # # check if the files аre in the Excel file
+                    # check if the files Р°re in the Excel file
                     for key4, value4 in value['files_to_move'].items():
+
+                        self.log_step(f"key4: {key4}")
+
                         remove_file = True
                         number_name = value4['number name']
                         file_path = value4['source path']
 
                         for key5, value5 in self.dict_contents_of_file_by_file.items():
+
+                            self.log_step(f"key5: {key5}")
+
                             if number_name.lower() == key5.lower():
 
-                                # now scan the Excel ------------------------------------------------
-                                file_extension = os.path.splitext(key4)[1]
-                                if file_extension == '.pdf':
-                                    project_name, project_description, document_number = (
-                                        self._scan_pdf(file_path, self.pdf_scanning_coordinates))
-                                    return_info += f"--- Номер на документ: {document_number}\n"
-                                    return_info += f"--- Описание на проект: {project_description}\n"
-                                    return_info += f"--- Име на проект: {project_name}\n"
+                                self.log_step("match")
 
-                                    # check for match
-                                    if self._compare_by_name_and_number(
-                                        project_description,
-                                        document_number,
-                                        ' '.join(number_name.split(' ')[1:]),
-                                        number_name.split(' ')[0]
-                                    ):
-                                        return_info += f"--- Съответства на Excel файла\n"
-                                    else:
-                                        return_info += f"--- НЕ съответства на Excel файла\n"
+                                # now scan the Excel ------------------------------------------------
+                                try:
+                                    file_extension = os.path.splitext(key4)[1]
+                                    if file_extension == '.pdf':
+                                        project_name, project_description, document_number = (
+                                            self._scan_pdf(file_path, self.pdf_scanning_coordinates))
+                                        return_info += f"--- РќРѕРјРµСЂ РЅР° РґРѕРєСѓРјРµРЅС‚: {document_number}\n"
+                                        return_info += f"--- РћРїРёСЃР°РЅРёРµ РЅР° РїСЂРѕРµРєС‚: {project_description}\n"
+                                        return_info += f"--- РРјРµ РЅР° РїСЂРѕРµРєС‚: {project_name}\n"
+
+                                        # check for match
+                                        if self._compare_by_name_and_number(
+                                                project_description,
+                                                document_number,
+                                                ' '.join(number_name.split(' ')[1:]),
+                                                number_name.split(' ')[0]
+                                        ):
+                                            return_info += f"--- РЎСЉРѕС‚РІРµС‚СЃС‚РІР° РЅР° Excel С„Р°Р№Р»Р°\n"
+                                        else:
+                                            return_info += f"--- РќР• СЃСЉРѕС‚РІРµС‚СЃС‚РІР° РЅР° Excel С„Р°Р№Р»Р°\n"
+                                except Exception as e:
+                                    return_info += f"РќРµСѓСЃРїРµС€РЅРѕ СЃРєР°РЅРёСЂР°РЅРµ РЅР° PDF С„Р°Р№Р»Р°: {e}\n"
 
                                 remove_file = False
                                 break
@@ -472,17 +525,19 @@ class ModuleController:
 
             # if the folder is not in the Excel file, remove it from waiting for execution
             if not_found_and_needs_to_be_removed:
+                self.log_step("not found and needs to be removed")
+
                 key_to_remove.append(key)
 
         # remove folders from waiting for execution, which are not matching the Excel file
         for key in key_to_remove:
-            return_info += f"Папката {key} НЕ съответства на Excel файла\n"
+            return_info += f"РџР°РїРєР°С‚Р° {key} РќР• СЃСЉРѕС‚РІРµС‚СЃС‚РІР° РЅР° Excel С„Р°Р№Р»Р°\n"
             del self.dict_waiting_for_execution[key]
 
         # remove files from waiting for execution, which are not matching the Excel file
         for key, value in files_to_remove.items():
             for file in value:
-                return_info += f"Файлът {file} НЕ съответства на Excel файла\n"
+                return_info += f"Р¤Р°Р№Р»СЉС‚ {file} РќР• СЃСЉРѕС‚РІРµС‚СЃС‚РІР° РЅР° Excel С„Р°Р№Р»Р°\n"
                 del self.dict_waiting_for_execution[key]['files_to_move'][file]
 
         try:
@@ -490,8 +545,6 @@ class ModuleController:
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return 'Error', None
-
-        print(self.dict_waiting_for_execution)
 
         # return
         append_a_string_to_txt_file(self.location_of_log_file,
@@ -513,6 +566,10 @@ class ModuleController:
                     archive.write(os.path.join(root, file), os.path.join(folder_name, file))
 
     def archive_then_new_folders_from_ready_to_finished(self, source_folder, destination_folder, archive_folder):
+        print(self.dict_contents_of_ready_dir)
+        print(self.dict_contents_of_finished_dir)
+        print(self.dict_waiting_for_execution)
+
         # archive files inside the folders
         for key, value in self.dict_waiting_for_execution.items():
             # create archive folder
@@ -760,11 +817,11 @@ class ModuleController:
             del self.new_folders_in_ready_compared_to_saved_ready[key]
 
         # print new folders in work
-        print(f"Разлика с предходното състояние на Ready: {self.new_folders_in_ready_compared_to_saved_ready}")
+        print(f"Р Р°Р·Р»РёРєР° СЃ РїСЂРµРґС…РѕРґРЅРѕС‚Рѕ СЃСЉСЃС‚РѕСЏРЅРёРµ РЅР° Ready: {self.new_folders_in_ready_compared_to_saved_ready}")
 
         # prepare the info about new folder to return
         if len(self.new_folders_in_ready_compared_to_saved_ready) > 0:
-            info = f"Бр. папки в Ready спрямо предходното състояние: {len(self.new_folders_in_ready_compared_to_saved_ready)}\n"
+            info = f"Р‘СЂ. РїР°РїРєРё РІ Ready СЃРїСЂСЏРјРѕ РїСЂРµРґС…РѕРґРЅРѕС‚Рѕ СЃСЉСЃС‚РѕСЏРЅРёРµ: {len(self.new_folders_in_ready_compared_to_saved_ready)}\n"
             count = 1
             for key, value in self.new_folders_in_ready_compared_to_saved_ready.items():
                 folder_name = self._extract_text_after_last_backslash(key)

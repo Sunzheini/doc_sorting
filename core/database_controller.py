@@ -1,3 +1,4 @@
+# -*- coding: windows-1251 -*-
 import sqlite3
 import time
 

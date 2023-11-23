@@ -1,4 +1,4 @@
-# -*- coding: windows-1251 -*-
+# -*- coding: utf-8 -*-
 import os
 import re
 from os import walk
@@ -127,16 +127,24 @@ def extract_text_after_last_backslash(path):
 def the_walk_loop_ready(directory):
     """
     walks recursively through a directory, returns a 3-tuple (dir_path, dir_names, file_names)
-    dir_path: the path to the dir C:/Users/User/Desktop/MK/ProjectXYZ\05 DESIGN DOCUMENTS\Работна\Ready
+    dir_path: the path to the dir C:/Users/User/Desktop/MK/ProjectXYZ\05 DESIGN DOCUMENTS\Р Р°Р±РѕС‚РЅР°\Ready
     dir_names: the names of the subdirs in dir_path ['20230928 - MC077...', ]
     file_names: the names of the files in dir_path ['20230928 - MC077...', ]
     :param directory containing
     subdirs: 20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1
     and files MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf
     :return: a dictionary with the following structure:
-    # {'MC077-021-001 Leak proof joint design and drawing for hull': {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull', 'files': {'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'}, 'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}}, 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface': {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface', 'files': {'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf'}, 'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
+    # {'MC077-021-001 Leak proof joint design and drawing for hull': {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull', 'files': {'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'}, 'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}}, 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface': {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface', 'files': {'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf'}, 'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Р Р°Р±РѕС‚РЅР°\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
     """
     result = {}
+
+    # check if the directory exists
+    if not os.path.exists(directory):
+        return result
+
+    # check if the directory is empty
+    if not os.listdir(directory):
+        return result
 
     for (dir_path, dir_names, file_names) in walk(directory):
         if dir_names:
@@ -182,7 +190,7 @@ def the_walk_loop_ready(directory):
 def the_walk_loop_finished(directory):
     """
     walks recursively through a directory, returns a 3-tuple (dir_path, dir_names, file_names)
-    dir_path: the path to the dir C:/Users/User/Desktop/MK/ProjectXYZ\05 DESIGN DOCUMENTS\Работна\Ready
+    dir_path: the path to the dir C:/Users/User/Desktop/MK/ProjectXYZ\05 DESIGN DOCUMENTS\Р Р°Р±РѕС‚РЅР°\Ready
     dir_names: the names of the subdirs in dir_path ['MC077...', ]
     file_names: the names of the files in dir_path ['20230928 - MC077...', ]
     :param directory containing
@@ -193,6 +201,14 @@ def the_walk_loop_finished(directory):
                                           files: {'file name': {'number': 'MC077-021-001', name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:/Project/Finished/.../MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'}}}}
     """
     result = {}
+
+    # check if the directory exists
+    if not os.path.exists(directory):
+        return result
+
+    # check if the directory is empty
+    if not os.listdir(directory):
+        return result
 
     for (dir_path, dir_names, file_names) in walk(directory):
         if dir_names:

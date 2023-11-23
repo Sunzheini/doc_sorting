@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import fitz  # PyMuPDF
 import pytesseract
 from PIL import Image, ImageEnhance

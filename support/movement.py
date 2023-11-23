@@ -1,3 +1,4 @@
+# -*- coding: windows-1251 -*-
 import os
 import shutil
 

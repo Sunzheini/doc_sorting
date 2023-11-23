@@ -1,4 +1,4 @@
-# -*- coding: windows-1251 -*-
+# -*- coding: utf-8 -*-
 import os
 
 from core.database_controller import DatabaseController
@@ -7,7 +7,7 @@ from gui.gui_controller import MyGui
 
 
 # default_paths (can be changed via the menu) ------------------------------------------------
-default_path_for_ready_after_project_name = os.path.join('05 DESIGN DOCUMENTS', 'Работна', 'Ready')
+default_path_for_ready_after_project_name = os.path.join('05 DESIGN DOCUMENTS', 'Р Р°Р±РѕС‚РЅР°', 'Ready')
 default_path_for_finished_after_project_name = os.path.join('05 DESIGN DOCUMENTS', '020 CLASSIFICATION DRAWINGS')
 default_path_for_excel_after_project_name = os.path.join('05 DESIGN DOCUMENTS', '020 CLASSIFICATION DRAWINGS')
 
@@ -25,13 +25,13 @@ pdf_scanning_coordinates = {
 }
 
 # general info -------------------------------------------------------------------------------
-# compile to exe: `pyinstaller --onefile --noconsole main.py`
+# compile to exe: pyinstaller --onefile --noconsole main.py
 # regular expression folders: https://regex101.com/r/Lo8BEL/1
 # regular expression files: https://regex101.com/r/f9ipcV/1
 
 if __name__ == '__main__':
     # delete the log file in the beginning
-    with open(location_of_log_file, 'w') as file:
+    with open(location_of_log_file, 'w', encoding='utf-8') as file:
         file.write('')
 
     # initialize the database controller, engine and gui with respective parameters

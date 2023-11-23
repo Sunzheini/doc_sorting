@@ -1,3 +1,4 @@
+# -*- coding: windows-1251 -*-
 from openpyxl import Workbook
 
 
