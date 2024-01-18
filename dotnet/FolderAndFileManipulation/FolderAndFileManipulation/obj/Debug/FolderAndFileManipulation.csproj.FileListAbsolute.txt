@@ -1,0 +1,6 @@
+C:\Appl\Projects\C#\FolderAndFileManipulation\FolderAndFileManipulation\obj\Debug\FolderAndFileManipulation.csproj.AssemblyReference.cache
+C:\Appl\Projects\C#\FolderAndFileManipulation\FolderAndFileManipulation\obj\Debug\FolderAndFileManipulation.csproj.CoreCompileInputs.cache
+C:\Appl\Projects\C#\FolderAndFileManipulation\FolderAndFileManipulation\bin\Debug\FolderAndFileManipulation.dll
+C:\Appl\Projects\C#\FolderAndFileManipulation\FolderAndFileManipulation\bin\Debug\FolderAndFileManipulation.pdb
+C:\Appl\Projects\C#\FolderAndFileManipulation\FolderAndFileManipulation\obj\Debug\FolderAndFileManipulation.dll
+C:\Appl\Projects\C#\FolderAndFileManipulation\FolderAndFileManipulation\obj\Debug\FolderAndFileManipulation.pdb

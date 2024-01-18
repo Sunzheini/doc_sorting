@@ -1,40 +1,36 @@
 # -*- coding: utf-8 -*-
-import os
-
 from core.database_controller import DatabaseController
 from core.engine import Engine
 from gui.gui_controller import MyGui
+from support.constants import (ready_dir_path, finished_dir_path, excel_file_path,
+                               db_name, paths_table_name, previous_state_table_name,
+                               location_of_log_file, pdf_scanning_coordinates)
 
 
 # default_paths (can be changed via the menu) ------------------------------------------------
-default_path_for_ready_after_project_name = os.path.join('05 DESIGN DOCUMENTS', 'Работна', 'Ready')
-default_path_for_finished_after_project_name = os.path.join('05 DESIGN DOCUMENTS', '020 CLASSIFICATION DRAWINGS')
-default_path_for_excel_after_project_name = os.path.join('05 DESIGN DOCUMENTS', '020 CLASSIFICATION DRAWINGS')
+default_path_for_ready_after_project_name = ready_dir_path        # where we look for ready documents
+default_path_for_finished_after_project_name = finished_dir_path  # where we copy the finished documents
+default_path_for_excel_after_project_name = excel_file_path       # this is the list of documents
 
-# database variables -------------------------------------------------------------------------
-database_name = "zed.db"
-paths_table_name = "zed_paths_table"
-previous_state_table_name = "zed_previous_state_table"
 
-# other variables ----------------------------------------------------------------------------
-location_of_log_file = "log.txt"
-pdf_scanning_coordinates = {
-    'project_name': {'x1': 2135, 'y1': 1527, 'x2': 2355, 'y2': 1556},
-    'project_description': {'x1': 2135, 'y1': 1565, 'x2': 2355, 'y2': 1598},
-    'document_number': {'x1': 2135, 'y1': 1608, 'x2': 2310, 'y2': 1640},
-}
+# database constants -------------------------------------------------------------------------
+database_name = db_name                                           # name of the database
+paths_table_name = paths_table_name                               # name of the table with above paths
+previous_state_table_name = previous_state_table_name             # name of the table with previous paths
 
-# general info -------------------------------------------------------------------------------
-# compile to exe: pyinstaller --onefile --noconsole main.py
-# regular expression folders: https://regex101.com/r/Lo8BEL/1
-# regular expression files: https://regex101.com/r/f9ipcV/1
 
+# other constants ----------------------------------------------------------------------------
+location_of_log_file = location_of_log_file                       # where the log file is located
+pdf_scanning_coordinates = pdf_scanning_coordinates               # where to look inside the pdf file for info
+
+
+# start --------------------------------------------------------------------------------------
 if __name__ == '__main__':
-    # delete the log file in the beginning
+    # 1. recreate the log file in the beginning
     with open(location_of_log_file, 'w', encoding='utf-8') as file:
         file.write('')
 
-    # initialize the database controller, engine and gui with respective parameters
+    # 2. initialize the database controller, engine and gui with respective parameters
     db_controller = DatabaseController(
         database_name,
         paths_table_name,
@@ -56,4 +52,6 @@ if __name__ == '__main__':
         paths_table_name,
         previous_state_table_name,
     )
+
+    # 3. run the gui
     gui.run()
