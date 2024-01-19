@@ -3,6 +3,12 @@ from openpyxl import load_workbook
 
 
 def _determine_start_row_by_given_string(worksheet, string_for_start_row):
+    """
+    Determines the start row by a given string
+    :param worksheet: the worksheet to be searched
+    :param string_for_start_row: the string to be searched for as unique content of a cell
+    :return: the start row
+    """
     start_row = 0
     for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row, min_col=1, max_col=worksheet.max_column):
         for cell in row:
@@ -20,8 +26,23 @@ def read_from_excel_file(file_path, string_for_start_row):
     :param file_path:
     :param string_for_start_row:
     :return:
-    dict2 {'A Drawings': {'file number file name': {'line number': 'A1.1', 'file number': 'M077-021-001', 'file name': 'Hull...''}}}
-    dict3 {'file number file name': {'section number': 'A Drawings', 'line number': 'A1.1'}}
+
+    {'A DRAWINGS': {
+        'MC077-022-001 LEAK PROOF JOINT DESIGN AND DRAWING FOR TANK AND DECK SURFACE': {
+            'line number': 'A.1',
+            'file number': 'MC077-022-001',
+            'file name': 'LEAK PROOF JOINT DESIGN AND DRAWING FOR TANK AND DECK SURFACE'},
+        'MC077-022-002 PIPE SUPPORT, WALKWAY STRUCTURE EXECUTION DRAWING': {
+            'line number': 'A.2',
+            'file number': 'MC077-022-002',
+            'file name': 'PIPE SUPPORT, WALKWAY STRUCTURE EXECUTION DRAWING'}},}
+
+    {'MC077-022-001 LEAK PROOF JOINT DESIGN AND DRAWING FOR TANK AND DECK SURFACE': {
+        'section number': 'A DRAWINGS',
+        'line number': 'A.1'},
+    'MC077-022-002 PIPE SUPPORT, WALKWAY STRUCTURE EXECUTION DRAWING': {
+        'section number': 'A DRAWINGS',
+        'line number': 'A.2'},}
     """
     workbook = load_workbook(file_path)
     worksheet = workbook[workbook.sheetnames[0]]

@@ -1,7 +1,8 @@
 import re
 
 # -*- coding: utf-8 -*-
-from support.constants import folder_regex, file_regex, folder_regex_name_into_number
+from support.constants import folder_regex, file_regex, folder_regex_name_into_number, \
+    folder_regex_name_into_number_name
 
 
 def extract_text_after_last_backslash(path):
@@ -74,3 +75,22 @@ def split_folder_name_into_number(string):
         return number
     else:
         return None
+
+
+def split_folder_name_into_number_name(string):
+    """
+    Splits a folder name into number and name
+    :param string: folder name
+    :return: number and name
+    """
+    pattern = folder_regex_name_into_number_name
+
+    match = re.search(pattern, string)
+
+    if match:
+        number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
+        name = match.group(8)
+
+        return number, name
+    else:
+        return None, None

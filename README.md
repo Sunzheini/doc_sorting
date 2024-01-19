@@ -14,7 +14,8 @@ The app uses tkinter for the GUI and pytesseract for OCR.
 5. The program needs a specific folder structure to work. This will be described in the future. Otherwise,
 you can modify the code to suit your needs / folder structure.
 6. See the video for a use case in the `information` folder.
-7. Run the exe or the python project. The exe is compiled with pyinstaller.
+7. Run the exe or the python project. The exe is compiled with pyinstaller. The Excel file needs
+to be closed to avoid permission errors.
 8. To compile to exe: `pyinstaller --onefile --noconsole main.py`
 9. regular expression folders: https://regex101.com/r/Lo8BEL/1
 10. regular expression files: https://regex101.com/r/f9ipcV/1
@@ -30,24 +31,31 @@ you can modify the code to suit your needs / folder structure.
     - database_controller.py: the controller for the database
     - engine.py: the engine of the app. Provides the actual sequence of actions when pressing 
 the buttons, which is:
-       1) scan the ready directory
-       2) scan the Excel file
+       1) scan the ready directory and create a dictionary
+       2) scan the Excel file and create 2 dictionaries
        3) create the boilerplate folders acc. to the Excel file in the finished directory
-       4) scan the finished directory
-       5) compare the ready and finished directories
-       6) ???
+       4) scan the finished directory and create a dictionary
+       5) compare the ready and finished directories and create a dictionary with the items to be moved
+       6) check the Excel file to correct the dictionary with the items waiting to be moved. also scans the pdf files
        7) Move files from ready to finished
-    - module_controller.py: ???
+    - module_controller.py: contains all the steps used in the engine
+    - walk_loops.py: the loops for walking the directories, which is the heart of gathering the info
+from the directories and then filling in collections with the info
 4. support folder:
+    - comparators.py: contains the comparators for the app
     - constants.py: contains the constants for the app
     - decorators.py: contains the decorators for the app, including the timer decorator
-    - formatting.py: contains the formatting functions for strings
-    - 
+    - dll_runner.py: contains a controller class fo using methods from .Net Framework 4.8 Class Library dlls
+    - excel_reader.py: contains the tool to read from the Excel file
+    - extractors.py: extract info from the names of folders and files
+    - folder_and_file_manager.py: contains the functions for folder and file manipulation
+    - folder_and_file_manager_dotnet.py: contains the functions for folder and file manipulation from the .Net dll above
+    - formatters.py: contains the formatting functions for strings
+    - pdf_scanner.py: contains the functions for scanning pdf files
+    - txt_file_manager.py: contains the functions for txt file writing
 5. information folder:
     - contains information in bulgarian how to make the app work
     - contains a video of the app in action
 6. dotnet folder:
     - contains a .Net Framework 4.8 Class Library project, which provides useful methods
 for folder and file manipulation.
-7. dll_controller folder:
-    - ???

@@ -1,7 +1,9 @@
 adafruit-io==2.7.0
 altgraph==0.17.3
 certifi==2021.10.8
+cffi==1.16.0
 charset-normalizer==2.0.12
+clr-loader==0.2.6
 contourpy==1.0.5
 cycler==0.11.0
 distlib==0.3.6
@@ -20,6 +22,7 @@ pefile==2023.2.7
 Pillow==9.2.0
 pipenv==2022.10.12
 platformdirs==2.5.2
+pycparser==2.21
 pyinstaller==5.13.0
 pyinstaller-hooks-contrib==2023.5
 PyMuPDF==1.22.5
@@ -30,6 +33,7 @@ PyQt5-Qt5==5.15.2
 PyQt5-sip==12.11.0
 pytesseract==0.3.10
 python-dateutil==2.8.2
+pythonnet==3.0.3
 pywin32-ctypes==0.2.2
 requests==2.27.1
 six==1.16.0

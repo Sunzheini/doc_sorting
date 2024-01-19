@@ -1,39 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 
 namespace FolderAndFileManipulation
 {
     public class FolderFileLib
     {
-        private string _testDirectory;
-        //private string _testDirectory = "C:\\Appl\\Projects\\C#\\FolderAndFileManipulation\\FolderAndFileManipulation\\test";
 
-        public FolderFileLib(string default_dir)
+        public void createDirectory(string dir_path)
         {
-            this._testDirectory = default_dir;
+            Directory.CreateDirectory(dir_path);
         }
 
-        public void createDirectory(string addPth)
+        public void deleteDirectory(string dir_path)
         {
-            string newPath = Path.Combine(_testDirectory, addPth);
-            Directory.CreateDirectory(newPath);
+            Directory.Delete(dir_path, true);  // true == delete recursive
         }
 
-        public void deleteDirectory(string addPth)
+        public string getFilesInDirectory(string dir_path)
         {
-            string newPath = Path.Combine(_testDirectory, addPth);
-            Directory.Delete(newPath, true);  // true == delete recursive
-        }
-
-        public string getFilesInDirectory(string addPth)
-        {
-            string newPath = Path.Combine(_testDirectory, addPth);
-            string[] files = Directory.GetFiles(newPath);
+            string[] files = Directory.GetFiles(dir_path);
 
             string result = "";
             foreach (string file in files)
@@ -51,10 +36,9 @@ namespace FolderAndFileManipulation
             return result;
         }
 
-        public string getDirectoriesInDirectory(string addPth)
+        public string getDirectoriesInDirectory(string dir_path)
         {
-            string newPath = Path.Combine(_testDirectory, addPth);
-            string[] directories = Directory.GetDirectories(newPath);
+            string[] directories = Directory.GetDirectories(dir_path);
 
             string result = "";
             foreach (string directory in directories)
@@ -70,11 +54,19 @@ namespace FolderAndFileManipulation
             return result;
         }
 
-        public void MoveDirectory(string addPth, string addPth2)
+        public void moveDirectory(string source_dir, string destination_dir)
         {
-            string newPath = Path.Combine(_testDirectory, addPth);
-            string newPath2 = Path.Combine(_testDirectory, addPth2);
-            Directory.Move(newPath, newPath2);
+            Directory.Move(source_dir, destination_dir);
+        }
+
+        public void copyFile(string file_path, string destination_path)
+        {
+            File.Copy(file_path, destination_path);
+        }
+
+        public void deleteFile(string file_path)
+        {
+            File.Delete(file_path);
         }
     }
 }

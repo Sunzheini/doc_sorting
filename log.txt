@@ -1,6 +1,5 @@
 
 
-MC077-021-001 Leak proof joint design and drawing for hull: {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull', 'files': {'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'}, 'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'number': 'MC077-021-001', 'name': 'Leak proof joint design and drawing for hull', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}}
 MC077-022-001 Leak proof joint design and drawing for tank and deck surface: {'date': '20230928', 'rev': 0, 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface', 'files': {'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf'}, 'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'number': 'MC077-022-001', 'name': 'Leak proof joint design and drawing for tank and deck surface', 'date': '28092023', 'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}
 
 Successfully exported ready dir to txt file (see above)
@@ -61,66 +60,16 @@ MC077-026-017  ROV control - wiring diagram: {'section number': 'F ELECTRICAL', 
 MC077-026-018  Instruments for the tank pressure, temp, level etc. : {'section number': 'F ELECTRICAL', 'line number': 'F.18'}
 MC077-026-019 Control  of LPG compressors                 : {'section number': 'F ELECTRICAL', 'line number': 'F.19'}
 
-Successfully exported excel to txt file (see above)
+Successfully exported excel dicts to txt file (see above)
 Successfully created folders in finished dir
 
 
 Successfully exported finished dir to txt file (see above)
 
-MC077-021-001 Leak proof joint design and drawing for hull: {'folder destination path': '', 'files_to_move': {'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf', 'destination path': '', 'number name': 'MC077-021-001 Leak proof joint design and drawing for hull'}, 'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg', 'destination path': '', 'number name': 'MC077-021-001 Leak proof joint design and drawing for hull'}}, 'files_to_archive': {}}
 MC077-022-001 Leak proof joint design and drawing for tank and deck surface: {'folder destination path': '', 'files_to_move': {'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023-A1.pdf', 'destination path': '', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}, 'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg', 'destination path': '', 'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}}, 'files_to_archive': {}}
 
 Successfully exported dict_waiting_for_execution (before correction) to txt file (see above)
 1
-key in waiting for execution: MC077-021-001 Leak proof joint design and drawing for hull
-key2 in Excel: MC077-022-001 LEAK PROOF JOINT DESIGN AND DRAWING FOR TANK AND DECK SURFACE
-key2 in Excel: MC077-022-002 PIPE SUPPORT, WALKWAY STRUCTURE EXECUTION DRAWING
-key2 in Excel: MC077-024-001 PIPE SIZE CALCULATION AND DESIGN
-key2 in Excel: MC077-024-002 Piping and instrumentation diagrams (P&IDs)
-key2 in Excel: MC077-024-003 Process flow diagrams (PFDs)
-key2 in Excel: MC077-024-004 Hazardous area classification drawings and reports
-key2 in Excel: MC077-024-005 Ventilation system design and calculations
-key2 in Excel: MC077-024-006 Cause and Effect (C&E) diagram
-key2 in Excel: MC077-024-007 Equipment datasheets and specifications
-key2 in Excel: MC077-024-008 SYSTEM DESCRIPTION                                                         (Comprehensive description of the ESD system, including purpose, design philosophy, and functionality.)
-key2 in Excel: MC077-024-009 SYSTEM ARCHITECTURE DIAGRAM                                            (Detailed diagrams illustrating the overall architecture of the ESD system.)
-key2 in Excel: MC077-024-010 SYSTEM INSTRUMENTED FUNCTIONS (SIF). (Documentation specifying safety instrumented functions, setpoints, trip points, and response times.)
-key2 in Excel: MC077-024-011 Cause and Effect (C&E) Matrix:
-key2 in Excel: MC077-024-012 Safety Integrity Level (SIL) Analysis:                                                           ( Documentation demonstrating SIL analysis performed on the ESD system.)
-key2 in Excel: MC077-024-013 Equipment Specifications DATASHEET.                                                      ( Detailed specifications for sensors, logic solvers, actuators, and other ESD system components)
-key2 in Excel: MC077-024-014 ROV Specifications.                                                                    (Detailed specifications of ROVs, including design, capabilities, operating depth, power requirements, and control systems)
-key2 in Excel: MC077-024-015 Integration and Deployment.                                 
-(Documentation outlining integration of ROV systems into the barge LPG carrier, including deployment mechanisms, launch and recovery systems, and control stations)
-key2 in Excel: MC077-024-016 ROV Operations.                                                                   (Procedures and protocols for operation, maintenance, and inspection of ROVs, including operator training, maintenance schedules, and safety measures)
-key2 in Excel: MC077-025-001 PIPE SIZE CALCULATION AND DESIGN
-key2 in Excel: MC077-025-002 Fire detection and alarm system documentation
-key2 in Excel: MC077-025-003 Gas detection and alarm system documentation
-key2 in Excel: MC077-025-004 cause and effect scope matrix
-key2 in Excel: MC077-025-005 Fire safety plan and procedures
-key2 in Excel: MC077-025-006 Piping and Instrumentation Diagrams (P&IDs)
-key2 in Excel: MC077-025-007 AIR INSTRUMENTAION P&ID
-key2 in Excel: MC077-025-008 AIR INSTRUMENTATION PIPE LINE SZE CALCULATION
-key2 in Excel: MC077-025-009 Control room layout and design
-key2 in Excel: MC077-026-001 Distribution of el energy - one line diagram
-key2 in Excel: MC077-026-002 Electrical load calculations
-key2 in Excel: MC077-026-003 Grounding and bonding system design
-key2 in Excel: MC077-026-004 Panel layouts and panel schedules
-key2 in Excel: MC077-026-005 Cable routing and cable tray layouts
-key2 in Excel: MC077-026-006 El. Equipment arrangement, cable routing and cable tray layouts. Cable routing and cable tray layouts
-key2 in Excel: MC077-026-007 Emergency power system design and calculations
-key2 in Excel: MC077-026-008 Light layout drawing
-key2 in Excel: MC077-026-009 Lighting system calculations and OLD
-key2 in Excel: MC077-026-010 LIGHT ELECTRICAL PANEL DESIGN AND DRAWING
-key2 in Excel: MC077-026-011 EMERGENCY STOP SYSTEM 
-key2 in Excel: MC077-026-012 EMERGENCY UPS SYSTEM DESIGN AND DATA SHEET
-key2 in Excel: MC077-026-013 Fire fighting system with two diesel driven pumps and one electrical jockey pump.       
-key2 in Excel: MC077-026-014 PLC Input / Output List
-key2 in Excel: MC077-026-015 Fire fighting sprinkler system control
-key2 in Excel: MC077-026-016 Cargo pump control - wiring diagram
-key2 in Excel: MC077-026-017  ROV control - wiring diagram
-key2 in Excel: MC077-026-018  Instruments for the tank pressure, temp, level etc. 
-key2 in Excel: MC077-026-019 Control  of LPG compressors                 
-not found and needs to be removed
 key in waiting for execution: MC077-022-001 Leak proof joint design and drawing for tank and deck surface
 key2 in Excel: MC077-022-001 LEAK PROOF JOINT DESIGN AND DRAWING FOR TANK AND DECK SURFACE
 match
@@ -137,6 +86,5 @@ match
 --- Описание на проект: Leak proof joint design and drawing for a tank and deck surface 
 --- Име на проект: LPG Barge with Capacity 2x2502 cub.m 
 --- НЕ съответства на Excel файла
-Папката MC077-021-001 Leak proof joint design and drawing for hull НЕ съответства на Excel файла
 
 Successfully compared new folders in work compared to ready with Excel (see above)

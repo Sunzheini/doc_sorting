@@ -244,11 +244,6 @@ class MyGui:
                 self.location_of_finished_dir = result[2][2]
                 self.location_of_documents_list_file = result[3][2]
 
-                print(f"self.location_of_project_dir: {self.location_of_project_dir}")
-                print(f"self.location_of_ready_dir: {self.location_of_ready_dir}")
-                print(f"self.location_of_finished_dir: {self.location_of_finished_dir}")
-                print(f"self.location_of_documents_list_file: {self.location_of_documents_list_file}")
-
             else:
                 # If there is no data, you may want to handle this case accordingly
                 self.location_of_project_dir = None

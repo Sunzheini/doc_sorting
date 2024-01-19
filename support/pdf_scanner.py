@@ -5,6 +5,11 @@ from PIL import Image, ImageEnhance
 
 
 def split_pdf_scanning_coordinates(pdf_scanning_coordinates):
+    """
+    Splits the pdf_scanning_coordinates into three
+    :param pdf_scanning_coordinates: the pdf_scanning_coordinates
+    :return: project_name_coordinates, project_description_coordinates, document_number_coordinates
+    """
     project_name_coordinates = pdf_scanning_coordinates['project_name']
     project_description_coordinates = pdf_scanning_coordinates['project_description']
     document_number_coordinates = pdf_scanning_coordinates['document_number']
@@ -13,6 +18,12 @@ def split_pdf_scanning_coordinates(pdf_scanning_coordinates):
 
 
 def extract_text_from_pdf(file_path, coordinates):
+    """
+    Extracts text from a pdf file
+    :param file_path: the file path
+    :param coordinates: the coordinates of the area to be scanned
+    :return: the extracted text
+    """
     doc = fitz.open(file_path)
     page = doc[0]  # get the first page
 
