@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 import os
 from datetime import datetime
+from time import sleep
 
 from support.comparators import compare_by_name_and_number
 from support.pdf_scanner import extract_text_from_pdf, split_pdf_scanning_coordinates
 from support.excel_reader import read_from_excel_file
-from core.walk_loop_ready import the_walk_loop_ready
-from core.walk_loop_finished import the_walk_loop_finished
+from core.walk_loop import the_walk_loop
 from support.constants import content_of_excel_file_start_row
 from support.folder_and_file_manager import create_directory, directory_exists, archive_directory, delete_directory, \
     move_directory, copy_file
 from support.folder_and_file_manager_dotnet import (create_directory_with_dotnet, delete_directory_with_dotnet,
-                                                    move_directory_with_dotnet, delete_file_with_dotnet)
+                                                    move_directory_with_dotnet, delete_file_with_dotnet,
+                                                    copy_file_with_dotnet)
 from support.txt_file_manager import append_a_dict_to_txt_file, append_a_string_to_txt_file
 from support.formatters import (normalize_path_to_have_only_forward_slashes)
 from support.extractors import extract_text_after_last_backslash
@@ -47,6 +48,7 @@ class ModuleController:
         self.dict_contents_of_file_by_section = None    # filled-in by step_2_scan_excel
         self.dict_contents_of_file_by_file = None       # filled-in by step_2_scan_excel
         self.dict_contents_of_finished_dir = None       # filled-in by step_4_scan_finished_dir
+        self.dict_of_files_to_be_archived = None        # filled-in by step_5_compare_ready_to_finished
         self.dict_waiting_for_execution = None          # filled-in by step_5_compare_ready_to_finished
         # the last one is then corrected by step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel
 
@@ -56,6 +58,8 @@ class ModuleController:
     def step_1_scan_ready_dir(self, ready_dir):
         """
         Scans the ready directory, fills-in a dict and exports the result to a txt file
+
+        example folder: '20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface'
 
         self.dict_contents_of_ready_dir:
         {'MC077-021-001 Leak proof joint design and drawing for hull': {
@@ -78,7 +82,7 @@ class ModuleController:
         :return: 'Success' or 'Error'
         """
         try:
-            self.dict_contents_of_ready_dir = the_walk_loop_ready(ready_dir)
+            self.dict_contents_of_ready_dir = the_walk_loop('ready_dir', ready_dir)
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_ready_dir)
             append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported ready dir to txt file (see above)')
             return 'Success'
@@ -144,6 +148,8 @@ class ModuleController:
         """
         Scans the finished directory, fills-in a dict and exports the result to a txt file
 
+        example folder: "MC077-022-001-Leak proof joint design and drawing for tank and deck surface"
+
         self.dict_contents_of_finished_dir:
         {'MC077-021-001 Leak proof joint design and drawing for hull': {
             'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
@@ -159,18 +165,14 @@ class ModuleController:
                     'date': '28092023',
                     'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
 
-        Currently: 'MC077-021-001 Leak proof joint design and drawing for hull'
-        is:        'MC077-021-001'      because of the error
-
         :param finished_dir: path to finished dir
         :return: 'Success' or 'Error'
         """
         # scan finished directory
         try:
-            self.dict_contents_of_finished_dir = the_walk_loop_finished(finished_dir)
+            self.dict_contents_of_finished_dir = the_walk_loop('finished_dir', finished_dir)
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_finished_dir)
             append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported finished dir to txt file (see above)')
-
             return 'Success'
         except Exception as e:
             self._log_error_and_return(e)
@@ -182,192 +184,164 @@ class ModuleController:
         """
         Compares the contents of ready and finished directories and creates a dict with the new folders waiting to be moved
 
+        this dict is with empty folder destination path and empty file destination path
         self.dict_waiting_for_execution (before correction after checking the Excel file):
         {'MC077-022-001 Leak proof joint design and drawing for tank and deck surface': {
-            'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
+            'folder destination path': '',
             'files_to_move': {
                 'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg': {
                     'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg',
-                    'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
+                    'destination path': '',
                     'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'},
                 'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {
                     'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf',
-                    'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
-                    'number name': 'MC077-022-099 Leak proof joint design and drawing for tank and deck surface'}},
-            'files_to_archive': {
-                'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {
-                    'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
+                    'destination path': '',
+                    'number name': 'MC077-022-099 Leak proof joint design and drawing for tank and deck surface'}}}
 
-        Currently the dest path contains not:   'MC077-021-001 Leak proof joint design and drawing for hull'
-        but:                                    'MC077-021-001'      because of the error
+        self.dict_of_files_to_be_archived:
+        {'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {
+            'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}
 
         :return: 'Success' + info or 'Error'
         """
+        # -----------------------------------------------------------------------------------------
+        # Part A: set of files to be copied
+        # -----------------------------------------------------------------------------------------
+
+        # temp set of files to be copied
+        """
+        {
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg', 
+            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf', 
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg', 
+            'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf'
+        }
+        """
+        set_of_files_to_be_copied = set()
+
+        # dict of files to be archived, initialized to empty
+        self.dict_of_files_to_be_archived = {}
+
+        # ---------------------------------folders--------------------------------------
+        # start with iterating ready since there may be folders absent in finished
+        for ready_folder_number_name, ready_folder_data_dict in self.dict_contents_of_ready_dir.items():
+
+            # check if finished is empty
+            if len(self.dict_contents_of_finished_dir) == 0:
+
+                # -------------------------------files---------------------------------------------
+                # then iterate over the files in ready to add them all to the list of files to be copied
+                for ready_file, ready_file_data_dict in ready_folder_data_dict['files'].items():
+
+                    # add the file to the list of files to be copied
+                    set_of_files_to_be_copied.add(ready_file)
+
+                continue
+
+            # -------------------------------folders---------------------------------------------
+            # if not empty, iterate over the finished folders to compare with the selected ready folder
+            for finished_folder_number_name, finished_folder_data_dict in self.dict_contents_of_finished_dir.items():
+
+                # check if there is such a folder `number name` in finished
+                if ready_folder_number_name == finished_folder_number_name:
+
+                    # -------------------------------files---------------------------------------------
+                    # then iterate over the files in ready
+                    for ready_file, ready_file_data_dict in ready_folder_data_dict['files'].items():
+
+                        # check if there are files in this finished sub-folder
+                        if len(finished_folder_data_dict['files']) == 0:
+
+                            # add the file to the list of files to be copied
+                            set_of_files_to_be_copied.add(ready_file)
+
+                            continue
+
+                        # if not empty, iterate over the files in finished to compare with the selected ready file
+                        for finished_file, finished_file_data_dict in finished_folder_data_dict['files'].items():
+
+                            # get the extensions
+                            ready_file_extension, finished_file_extension = os.path.splitext(ready_file)[1], os.path.splitext(finished_file)[1]
+
+                            # check if the name and number of the 2 files match
+                            if compare_by_name_and_number(ready_file_data_dict['name'], ready_file_data_dict['number'], finished_file_data_dict['name'], finished_file_data_dict['number']):
+
+                                # check if the extensions is different
+                                if ready_file_extension != finished_file_extension:
+                                    continue
+
+                                # if they match, then check if the date of the ready file is newer
+                                if ready_file_data_dict['date'] > finished_file_data_dict['date']:
+
+                                    # add the file to the list of files to be copied
+                                    set_of_files_to_be_copied.add(ready_file)
+
+                                    # add the file to archive
+                                    self.dict_of_files_to_be_archived[finished_file] = {
+                                        'path': finished_file_data_dict['path']
+                                    }
+
+                            # if the name and number of the 2 files do not match
+                            else:
+
+                                # only if this is the last file in finished sub-folder
+                                if finished_file == list(finished_folder_data_dict['files'].keys())[-1]:
+
+                                    # add the file to the list of files to be copied
+                                    set_of_files_to_be_copied.add(ready_file)
+
+                    # -------------------------------folders---------------------------------------------
+                # if `number name` of the folders do not match
+                else:
+
+                    # only if there is no such folder in finished
+                    if finished_folder_number_name not in self.dict_contents_of_finished_dir.keys():
+
+                        # -------------------------------files---------------------------------------------
+                        # then iterate over the files in ready to add them all to the list of files to be copied
+                        for ready_file, ready_file_data_dict in ready_folder_data_dict['files'].items():
+
+                            # add the file to the list of files to be copied
+                            set_of_files_to_be_copied.add(ready_file)
+
+        # -----------------------------------------------------------------------------------------
+        # Part B: fill-in the dict_waiting_for_execution based on the set of files to be copied
+        # -----------------------------------------------------------------------------------------
         # reinitialize the dictionary to be empty
         self.dict_waiting_for_execution = {}
 
-        # compare self.dict_contents_of_ready_dir and self.dict_contents_of_finished_dir
-        for key, value in self.dict_contents_of_ready_dir.items():
-            this_key_needs_to_be_moved = True
-            iteration_is_finished = False
+        # iterate over the set of files to be copied
+        for set_file in set_of_files_to_be_copied:
 
-            # check if the finished dir is empty
-            if len(self.dict_contents_of_finished_dir) == 0:
-                # check if the folder is already in the dictionary
-                if key not in self.dict_waiting_for_execution:
-                    self.dict_waiting_for_execution[key] = {}
-                    self.dict_waiting_for_execution[key]['folder destination path'] = ''
-                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
-
-                # lists of files in ready
-                dict_of_ready_files = value['files']
+            # iterate over the folders in ready
+            for ready_folder_number_name, ready_folder_data_dict in self.dict_contents_of_ready_dir.items():
 
                 # iterate over the files in ready
-                for ready_file in dict_of_ready_files:
-                    ready_file_path = dict_of_ready_files[ready_file]['path']
-                    ready_file_number = dict_of_ready_files[ready_file]['number']
-                    ready_file_name = dict_of_ready_files[ready_file]['name']
+                for ready_file, ready_file_data_dict in ready_folder_data_dict['files'].items():
 
-                    # add the file to move
-                    self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
-                        'source path': ready_file_path,
-                        'destination path': '',
-                        'number name': ready_file_number + ' ' + ready_file_name
-                    }
-                continue
+                    # check if the file is in ready
+                    if set_file == ready_file:
 
-            # ------------------------------------------------------------
-            # ToDo: added since the finished dir is with number only
-            # for finished_key in self.dict_contents_of_finished_dir.keys():
-            #     # check if it is the last finished_key
-            #     if finished_key == list(self.dict_contents_of_finished_dir.keys())[-1]:
-            #         iteration_is_finished = True
-            #
-            #     # check for matching
-            #     part_key = key[:13]
-            #     if part_key in finished_key:
-            #         this_key_needs_to_be_moved = False
-
-            # ------------------------------------------------------------
-            # ToDo: commented
-            # check for matching
-            if key in self.dict_contents_of_finished_dir.keys():
-
-            # ------------------------------------------------------------
-            # ToDO: changed indentation with 1 tab up to the right to the line below for the bug
-
-                # lists of files in ready and finished
-                dict_of_ready_files = value['files']
-                # ToDo: changed key to key[:13]
-                dict_of_finished_files = self.dict_contents_of_finished_dir[key]['files']
-                # dict_of_finished_files = self.dict_contents_of_finished_dir[key[:13]]['files']
-
-                # folder destination path for later
-                # ToDo: changed key to key[:13]
-                folder_destination_path = self.dict_contents_of_finished_dir[key]['path']
-                # folder_destination_path = self.dict_contents_of_finished_dir[key[:13]]['path']
-
-                # iterate over the files in ready
-                for ready_file in dict_of_ready_files:
-                    not_found_and_must_be_moved = True
-
-                    ready_file_number = dict_of_ready_files[ready_file]['number']
-                    ready_file_name = dict_of_ready_files[ready_file]['name']
-                    ready_file_date = dict_of_ready_files[ready_file]['date']
-                    ready_file_path = dict_of_ready_files[ready_file]['path']
-                    ready_file_extension = os.path.splitext(ready_file)[1]
-
-                    # iterate over the files in finished
-                    for finished_file in dict_of_finished_files:
-                        finished_file_number = dict_of_finished_files[finished_file]['number']
-                        finished_file_name = dict_of_finished_files[finished_file]['name']
-                        finished_file_date = dict_of_finished_files[finished_file]['date']
-                        finished_file_path = dict_of_finished_files[finished_file]['path']
-                        finished_file_extension = os.path.splitext(finished_file)[1]
-
-                        # check for matching number, name and extension
-                        if (ready_file_number == finished_file_number
-                                and ready_file_name == finished_file_name
-                                and ready_file_extension == finished_file_extension):
-
-                            not_found_and_must_be_moved = False
-
-                            # check if the date is newer
-                            if ready_file_date > finished_file_date:
-
-                                # check if the folder is already in the dictionary
-                                if key not in self.dict_waiting_for_execution:
-                                    self.dict_waiting_for_execution[key] = {}
-                                    self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
-                                    self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                                    self.dict_waiting_for_execution[key]['files_to_archive'] = {}
-
-                                # add the file to move
-                                self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
-                                    'source path': ready_file_path,
-                                    'destination path': folder_destination_path,
-                                    'number name': ready_file_number + ' ' + ready_file_name
-                                }
-
-                                # add the file to archive
-                                self.dict_waiting_for_execution[key]['files_to_archive'][finished_file] = {
-                                    'path': finished_file_path
-                                }
-
-                                # break the loop
-                                break
-
-                    # add to the folder to move
-                    if not_found_and_must_be_moved:
                         # check if the folder is already in the dictionary
-                        if key not in self.dict_waiting_for_execution:
-                            self.dict_waiting_for_execution[key] = {}
-                            self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
-                            self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                            self.dict_waiting_for_execution[key]['files_to_archive'] = {}
+                        if ready_folder_number_name not in self.dict_waiting_for_execution:
+                            self.dict_waiting_for_execution[ready_folder_number_name] = {}
+                            self.dict_waiting_for_execution[ready_folder_number_name]['folder destination path'] = ''
+                            self.dict_waiting_for_execution[ready_folder_number_name]['files_to_move'] = {}
+                            self.dict_waiting_for_execution[ready_folder_number_name]['files_to_archive'] = {}
 
                         # add the file to move
-                        self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
-                            'source path': ready_file_path,
-                            'destination path': folder_destination_path,
-                            'number name': ready_file_number + ' ' + ready_file_name
+                        self.dict_waiting_for_execution[ready_folder_number_name]['files_to_move'][ready_file] = {
+                            'source path': ready_file_data_dict['path'],
+                            'destination path': '',
+                            'number name': ready_file_data_dict['number'] + ' ' + ready_file_data_dict['name']
                         }
 
-            # if the folder is not in finished, add it to dict_waiting_for_execution
-            else:
-                if iteration_is_finished:
-                    if this_key_needs_to_be_moved:
+                        # break the loop
+                        break
 
-                        # folder destination path for later
-                        folder_destination_path = ''
-
-                        # check if the folder is already in the dictionary
-                        if key not in self.dict_waiting_for_execution:
-                            self.dict_waiting_for_execution[key] = {}
-                            self.dict_waiting_for_execution[key]['folder destination path'] = folder_destination_path
-                            self.dict_waiting_for_execution[key]['files_to_move'] = {}
-                            self.dict_waiting_for_execution[key]['files_to_archive'] = {}
-
-                        # lists of files in ready
-                        dict_of_ready_files = value['files']
-
-                        # iterate over the files in ready
-                        for ready_file in dict_of_ready_files:
-                            ready_file_path = dict_of_ready_files[ready_file]['path']
-                            ready_file_number = dict_of_ready_files[ready_file]['number']
-                            ready_file_name = dict_of_ready_files[ready_file]['name']
-
-                            # add the file to move
-                            self.dict_waiting_for_execution[key]['files_to_move'][ready_file] = {
-                                'source path': ready_file_path,
-                                'destination path': folder_destination_path,
-                                'number name': ready_file_number + ' ' + ready_file_name
-                            }
-
-            # ------------------------------------------------------------
-
-        # prepare the info about new folders to return
+        # -----------------------------------------------------------------------------------------
+        # Part C: prepare the info about new folders to return
+        # -----------------------------------------------------------------------------------------
         if len(self.dict_waiting_for_execution) > 0:
             info = f"Бр. обновени папки в Ready спрямо Finished: {len(self.dict_waiting_for_execution)}\n"
             count = 1
@@ -376,24 +350,20 @@ class ModuleController:
                 final_name = extract_text_after_last_backslash(folder_name)
                 info += f"{count}) {final_name}\n"
                 count += 1
+
         else:
             info = None
 
-        # export to txt file
+        # -----------------------------------------------------------------------------------------
+        # Part D: export to txt file
+        # -----------------------------------------------------------------------------------------
         try:
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_waiting_for_execution)
+            append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported dict_waiting_for_execution (before correction) to txt file (see above)')
+            return 'Success', info
         except Exception as e:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
-            return 'Error', None
-
-        # return
-        append_a_string_to_txt_file(self.location_of_log_file,
-                                    'Successfully exported dict_waiting_for_execution (before correction) to txt file (see above)')
-
-        return 'Success', info
-
-    def _log_step(self, text):
-        append_a_string_to_txt_file(self.location_of_log_file, text)
+            return 'Error', e
 
     def step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self, finished_dir):
         """
@@ -402,6 +372,7 @@ class ModuleController:
 
         :param finished_dir: path to finished dir
 
+        adds the folder destination path if empty and the file destination path if empty!
         self.dict_waiting_for_execution (after correction after checking the Excel file):
         {'MC077-022-001 Leak proof joint design and drawing for tank and deck surface': {
             'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
@@ -410,12 +381,7 @@ class ModuleController:
                     'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg',
                     'destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
                     'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}},
-            'files_to_archive': {
-                'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {
-                    'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg'}}}}
-
-        Currently the dest path contains not:   'MC077-021-001 Leak proof joint design and drawing for hull'
-        but:                                    'MC077-021-001'      because of the error
+            'files_to_archive': {}},
 
         :return: 'Success' + info or 'Error'
         """
@@ -423,29 +389,19 @@ class ModuleController:
         key_to_remove = []
         files_to_remove = {}
 
-        self._log_step('1')
-
         # check if the folders in waiting for execution correspond to contents of Excel file
         for key, value in self.dict_waiting_for_execution.items():
             not_found_and_needs_to_be_removed = True
 
-            self._log_step(f"key in waiting for execution: {key}")
-
             # check if the folder is in the Excel file
             for key2, value2 in self.dict_contents_of_file_by_file.items():
-
-                self._log_step(f"key2 in Excel: {key2}")
 
                 # check if match
                 if key.lower() == key2.lower():
                     not_found_and_needs_to_be_removed = False
 
-                    self._log_step("match")
-
                     # fills folder destination path if empty
                     if value['folder destination path'] == '':
-
-                        self._log_step("folder destination path is empty")
 
                         new_path = os.path.join(
                             finished_dir,
@@ -461,15 +417,11 @@ class ModuleController:
                         # update all files with empty destination path
                         for key3, value3 in value['files_to_move'].items():
 
-                            self._log_step(f"key3: {key3}")
-
                             if value3['destination path'] == '':
                                 value3['destination path'] = value['folder destination path']
 
                     # check if the files аre in the Excel file
                     for key4, value4 in value['files_to_move'].items():
-
-                        self._log_step(f"key4: {key4}")
 
                         remove_file = True
                         number_name = value4['number name']
@@ -477,11 +429,7 @@ class ModuleController:
 
                         for key5, value5 in self.dict_contents_of_file_by_file.items():
 
-                            self._log_step(f"key5: {key5}")
-
                             if number_name.lower() == key5.lower():
-
-                                self._log_step("match")
 
                                 # now scan the Excel ------------------------------------------------
                                 try:
@@ -519,8 +467,6 @@ class ModuleController:
 
             # if the folder is not in the Excel file, remove it from waiting for execution
             if not_found_and_needs_to_be_removed:
-                self._log_step("not found and needs to be removed")
-
                 key_to_remove.append(key)
 
         # remove folders from waiting for execution, which are not matching the Excel file
@@ -580,68 +526,80 @@ class ModuleController:
         :param archive_folder: path to archive folder
         :return: 'Success' or 'Error'
         """
-        # archive files inside the folders
-        for key, value in self.dict_waiting_for_execution.items():
-            # create archive folder
-            # ToDO: does not work
-            # archive_folder_path = self.dict_waiting_for_execution[key]['folder destination path']
-            # new_path = normalize_path_to_have_only_forward_slashes(archive_folder_path)
-            # print(f"Archive Folder Path: {new_path}")
+        list_of_archive_paths = []
+        """
+        this list keeps the paths of the files to be archived not to create 2 archive folders 
+        inside the same path in 1 button click
+        """
 
-            # # ToDo: this works
-            # new_path = r"C:\Users\User\Desktop\MK\ProjectXYZ\05 DESIGN DOCUMENTS\020 CLASSIFICATION DRAWINGS\A DRAWINGS\Archive"
+        # -------------------------------------------------------------------------------
+        # Part A: Create archive sub-dirs and move the files there
+        # -------------------------------------------------------------------------------
+        # iterate over the dict_of_files_to_be_archived
+        for file_to_be_archived, file_to_be_archived_data_dict in self.dict_of_files_to_be_archived.items():
 
-            # ToDo: this works
-            # old = normalize_path_to_have_only_forward_slashes(self.dict_waiting_for_execution[key]['folder destination path'])
-            # explode = old.split('\\')
-            #
-            # explode_2 = 'A DRAWINGS'
-            # # explode_1 = 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'
-            # explode_1 = 'MC077-022-001'
-            #
-            # # new_path = os.path.join(archive_folder, explode[-2], explode[-1])
-            # new_path = os.path.join(archive_folder, explode_2, explode_1)
+            # get the path of the file
+            file_to_be_archived_path = file_to_be_archived_data_dict['path']
 
-            archive_folder_path = self.dict_waiting_for_execution[key]['folder destination path']
-            new_path = normalize_path_to_have_only_forward_slashes(archive_folder_path)
+            # get the path of the folder
+            folder_to_be_archived_path = os.path.dirname(file_to_be_archived_path)
 
-            # ------------------------------------------------------------
-            # ToDo: this part is for the bug, comment only this if bug is solved
-            # explode = new_path.split('\\')
-            # explode_2 = explode[-2]
-            # explode_1 = explode[-1][:13]
-            # new_path = os.path.join(archive_folder, explode_2, explode_1)
-            # ------------------------------------------------------------
+            current_datetime = datetime.now()
+            folder_name = current_datetime.strftime("%y%m%d%H%M%S")     # 231123125228, which is 23.11.2023 12:52:28
+            path_of_new_archive = os.path.join(folder_to_be_archived_path, folder_name)
 
-            # # Check if the folder exists, create it if not
-            if not directory_exists(new_path):
-                create_directory_with_dotnet(new_path)
+            # create the folder if the file path is not in the list of archive paths
+            if path_of_new_archive not in list_of_archive_paths:
+                create_directory(path_of_new_archive)
 
-            # archive the files in files_to_archive
-            if len(value['files_to_archive']) > 0:
+                # add the path to the list of archive paths
+                list_of_archive_paths.append(path_of_new_archive)
 
-                # get current date and time
-                current_datetime = datetime.now()
-                folder_name = current_datetime.strftime("%y%m%d%H%M%S")   # 231123125228, which is 23.11.2023 12:52:28
+            # move the file to archive there
+            move_directory(file_to_be_archived_path, path_of_new_archive)
 
-                # create the folder
-                path_of_new_archive = os.path.join(new_path, folder_name)
-                create_directory_with_dotnet(path_of_new_archive)
+        # -------------------------------------------------------------------------------
+        # Part B: Archive the archive sub-dirs and delete them
+        # -------------------------------------------------------------------------------
+        # iterate over the list of archive paths
+        for archive_sub_dir_path in list_of_archive_paths:
 
-                # move the files to archive there
-                for key2, value2 in value['files_to_archive'].items():
-                    move_directory_with_dotnet(value2['path'], path_of_new_archive)
+            # get the path to place the archive in
+            archive_path = os.path.dirname(archive_sub_dir_path)
+            archive_directory(archive_sub_dir_path, archive_path)
 
-                # archive the folder
-                archive_directory(path_of_new_archive, new_path)
+            # delete the folder
+            delete_directory(archive_sub_dir_path)
 
-                # delete the folder
-                delete_directory_with_dotnet(path_of_new_archive)
+        # -------------------------------------------------------------------------------
+        # Part C: Move the files
+        # -------------------------------------------------------------------------------
+        # iterate over the dict_waiting_for_execution
+        for ready_folder_number_name, ready_folder_data_dict in self.dict_waiting_for_execution.items():
 
-            # Now proceed with copying the files
-            for key2, value2 in value['files_to_move'].items():
-                # copy the file to the archive folder
-                copy_file(value2['source path'], new_path)
+            # iterate over the files_to_move
+            for file_to_move, file_to_move_data_dict in ready_folder_data_dict['files_to_move'].items():
+
+                # get the file name
+                file_name = os.path.basename(file_to_move)
+
+                # get the source path (path of the file + file name and extension)
+                source_path = file_to_move_data_dict['source path']
+
+                # get the destination path (path of the folder + file name and extension)
+                destination_path = file_to_move_data_dict['destination path'] + '\\' + file_name
+
+                # move the file
+                # ToDo: here
+                """
+                The fully qualified file name must be less than 260 characters, and the directory 
+                name must be less than 248 characters. 
+
+                If the path, combined with any additional directory or file names, exceeds the 
+                maximum allowed path length on your file system (260 characters for a file path), 
+                you might encounter issues.
+                """
+                copy_file_with_dotnet(source_path, destination_path)
 
         return 'Success'
 
