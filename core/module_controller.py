@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import random
 from datetime import datetime
 from time import sleep
 
@@ -173,6 +174,9 @@ class ModuleController:
             self.dict_contents_of_finished_dir = the_walk_loop('finished_dir', finished_dir)
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_finished_dir)
             append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported finished dir to txt file (see above)')
+
+            print(self.dict_contents_of_finished_dir)
+
             return 'Success'
         except Exception as e:
             self._log_error_and_return(e)
@@ -406,7 +410,7 @@ class ModuleController:
                         new_path = os.path.join(
                             finished_dir,
                             value2['section number'],
-                            key
+                            key.replace(' ', '-', 1)    # include a dash instead of a space
                         )
 
                         new_path = normalize_path_to_have_only_forward_slashes(new_path)
@@ -558,6 +562,24 @@ class ModuleController:
             # move the file to archive there
             move_directory(file_to_be_archived_path, path_of_new_archive)
 
+            # ToDo: temp length fix, remove only this when length of dirs is reduced
+            # -------------------------------------------------------------------------------
+            # rename the files
+            counter = 1
+            for file in os.listdir(path_of_new_archive):
+                file_path = os.path.join(path_of_new_archive, file)
+
+                # get the extension
+                current_file_name = os.path.basename(file)
+                file_extension = os.path.splitext(file)[1]
+
+                # rename the file
+                new_file_name = str(counter) + file_extension
+                os.rename(file_path, os.path.join(path_of_new_archive, new_file_name))
+
+                counter += 1
+            # -------------------------------------------------------------------------------
+
         # -------------------------------------------------------------------------------
         # Part B: Archive the archive sub-dirs and delete them
         # -------------------------------------------------------------------------------
@@ -586,20 +608,19 @@ class ModuleController:
                 # get the source path (path of the file + file name and extension)
                 source_path = file_to_move_data_dict['source path']
 
+                # replace `Ready` with `READY` in the source path
+                source_path = source_path.replace('Ready', 'READY')
+
                 # get the destination path (path of the folder + file name and extension)
                 destination_path = file_to_move_data_dict['destination path'] + '\\' + file_name
 
-                # move the file
-                # ToDo: here
-                """
-                The fully qualified file name must be less than 260 characters, and the directory 
-                name must be less than 248 characters. 
+                # check if the destination path exists
+                if not os.path.exists(file_to_move_data_dict['destination path']):
+                    create_directory(file_to_move_data_dict['destination path'])
 
-                If the path, combined with any additional directory or file names, exceeds the 
-                maximum allowed path length on your file system (260 characters for a file path), 
-                you might encounter issues.
-                """
-                copy_file_with_dotnet(source_path, destination_path)
+                # move the file
+                # copy_file_with_dotnet(source_path, destination_path)
+                copy_file(source_path, destination_path)
 
         return 'Success'
 

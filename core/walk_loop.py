@@ -2,6 +2,7 @@
 import os
 from os import walk
 
+from support.constants import allowed_file_extensions
 from support.extractors import extract_text_after_last_backslash, split_folder_name_into_date_number_name_revision, \
     split_file_name_into_number_name_date, split_folder_name_into_number_name
 from support.formatters import normalize_path_to_have_only_forward_slashes
@@ -124,6 +125,11 @@ def the_walk_loop(type_of_directory, directory):
             }
 
         for file in file_names:
+            # check if file extension is in allowed_file_extensions
+            file_extension = os.path.splitext(file)[-1].lower()
+            if file_extension not in allowed_file_extensions:
+                continue
+
             file_number, file_name, file_date = split_file_name_into_number_name_date(file)
 
             result[folder_number_space_name]['files'][file] = {
