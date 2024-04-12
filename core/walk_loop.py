@@ -15,9 +15,9 @@ def the_walk_loop(type_of_directory, directory):
     example folder ready: '20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface'
     example folder finished: "MC077-022-001-Leak proof joint design and drawing for tank and deck surface"
 
-    walks recursively through a directory, returns a 3-tuple (dir_path, dir_names, file_names)
+    walks recursively through a directory, returns a 3-tuple (dir_path, subdir_names, file_names)
         - dir_path: the path to the dir C:/Users/User/Desktop/MK/ProjectXYZ\05 DESIGN DOCUMENTS\Работна\Ready
-        - dir_names: the names of the subdirs in dir_path ['20230928 - MC077...', ]
+        - subdir_names: the names of the subdirs in dir_path ['20230928 - MC077...', ]
         - file_names: the names of the files in dir_path ['20230928 - MC077...', ]
 
     for ready_dir, only takes the highest date and highest revision!
@@ -72,10 +72,10 @@ def the_walk_loop(type_of_directory, directory):
         return result
 
     # walk through the directory
-    for (dir_path, dir_names, file_names) in walk(directory):
+    for (dir_path, subdir_names, file_names) in walk(directory):
 
         # skip if there are subdirs
-        if dir_names:
+        if subdir_names:
             continue
 
         dir_path_after_last_backslash = extract_text_after_last_backslash(dir_path)

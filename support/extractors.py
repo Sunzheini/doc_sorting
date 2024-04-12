@@ -2,7 +2,7 @@ import re
 
 # -*- coding: utf-8 -*-
 from support.constants import folder_regex, file_regex, folder_regex_name_into_number, \
-    folder_regex_name_into_number_name
+    folder_regex_name_into_number_name, file_regex_new_format
 
 
 def extract_text_after_last_backslash(path):
@@ -50,14 +50,25 @@ def split_file_name_into_number_name_date(string):
     pattern = file_regex
     match = re.search(pattern, string)
 
+    # ToDo: 2. Changed here
+    # if there is no match with the old pattern, try the new one
     if match:
         number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
         name = match.group(8)
         date = match.group(10)
-
         return number, name, date
     else:
-        return None, None, None
+        pattern = file_regex_new_format
+        match = re.search(pattern, string)
+
+        if match:
+            number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
+            name = None
+            date = match.group(8)
+            return number, name, date
+
+        else:
+            return None, None, None
 
 
 def split_folder_name_into_number(string):

@@ -9,6 +9,12 @@ def compare_by_name_and_number(name1, number1, name2, number2):
     :param number2: an integer
     :return: a boolean
     """
+    # ToDo: 3. Added this:
+    if name1 is None or name2 is None:
+        if number1 != number2:
+            return False
+        return True
+
     # turn to lowercase
     name1 = name1.lower()
     name2 = name2.lower()

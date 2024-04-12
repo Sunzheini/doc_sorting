@@ -62,22 +62,36 @@ class ModuleController:
 
         example folder: '20230928 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface'
 
+
         self.dict_contents_of_ready_dir:
         {'MC077-021-001 Leak proof joint design and drawing for hull': {
-        'date': '20230928',
-        'rev': 0,
-        'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
-        'files': {
-            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {
-                'number': 'MC077-021-001',
-                'name': 'Leak proof joint design and drawing for hull',
-                'date': '28092023',
-                'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
-            'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {
-                'number': 'MC077-021-001',
-                'name': 'Leak proof joint design and drawing for hull',
-                'date': '28092023',
-                'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
+            'date': '20230928',
+            'rev': 0,
+            'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
+            'files': {
+                'MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf': {
+                    'number': 'MC077-021-001',
+                    'name': 'Leak proof joint design and drawing for hull',
+                    'date': '28092023',
+                    'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023-A1.pdf'},
+                'MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg': {
+                    'number': 'MC077-021-001',
+                    'name': 'Leak proof joint design and drawing for hull',
+                    'date': '28092023',
+                    'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
+
+        Note: file_name is None if the actual file name is using the new format, i.e.
+        „MC077-022-001_ 30092023-A1.pdf“
+        instead of
+        „MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf“
+        first a search is performed for the old format, then for the new one:
+            'files': {
+                'MC077-021-001_28092023.dwg': {
+                    'number': 'MC077-021-001',
+                    'name': None,
+                    'date': '28092023',
+                    'path': 'C:\\Users\\User\\Desktop\\MK\\P\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001_28092023.dwg'},
+
 
         :param ready_dir: path to ready dir
         :return: 'Success' or 'Error'
@@ -151,6 +165,7 @@ class ModuleController:
 
         example folder: "MC077-022-001-Leak proof joint design and drawing for tank and deck surface"
 
+
         self.dict_contents_of_finished_dir:
         {'MC077-021-001 Leak proof joint design and drawing for hull': {
             'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull',
@@ -166,6 +181,19 @@ class ModuleController:
                     'date': '28092023',
                     'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
 
+        Note: file_name is None if the actual file name is using the new format, i.e.
+        „MC077-022-001_ 30092023-A1.pdf“
+        instead of
+        „MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf“
+        first a search is performed for the old format, then for the new one:
+            'files': {
+                'MC077-021-001_28092023.dwg': {
+                    'number': 'MC077-021-001',
+                    'name': None,
+                    'date': '28092023',
+                    'path': 'C:\\Users\\User\\Desktop\\MK\\P\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001_28092023.dwg'},
+
+
         :param finished_dir: path to finished dir
         :return: 'Success' or 'Error'
         """
@@ -174,8 +202,6 @@ class ModuleController:
             self.dict_contents_of_finished_dir = the_walk_loop('finished_dir', finished_dir)
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_finished_dir)
             append_a_string_to_txt_file(self.location_of_log_file, 'Successfully exported finished dir to txt file (see above)')
-
-            print(self.dict_contents_of_finished_dir)
 
             return 'Success'
         except Exception as e:
@@ -189,7 +215,7 @@ class ModuleController:
         Compares the contents of ready and finished directories and creates a dict with the new folders waiting to be moved
 
         this dict is with empty folder destination path and empty file destination path
-        self.dict_waiting_for_execution (before correction after checking the Excel file):
+        self.dict_waiting_for_execution (before the correction, which comes after checking the Excel file):
         {'MC077-022-001 Leak proof joint design and drawing for tank and deck surface': {
             'folder destination path': '',
             'files_to_move': {
@@ -197,10 +223,10 @@ class ModuleController:
                     'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023.dwg',
                     'destination path': '',
                     'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'},
-                'MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {
+                'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf': {
                     'source path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230930 - MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 1\\MC077-022-099-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf',
                     'destination path': '',
-                    'number name': 'MC077-022-099 Leak proof joint design and drawing for tank and deck surface'}}}
+                    'number name': 'MC077-022-001 Leak proof joint design and drawing for tank and deck surface'}}}
 
         self.dict_of_files_to_be_archived:
         {'MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 28092023.dwg': {
@@ -268,7 +294,10 @@ class ModuleController:
                             ready_file_extension, finished_file_extension = os.path.splitext(ready_file)[1], os.path.splitext(finished_file)[1]
 
                             # check if the name and number of the 2 files match
-                            if compare_by_name_and_number(ready_file_data_dict['name'], ready_file_data_dict['number'], finished_file_data_dict['name'], finished_file_data_dict['number']):
+                            if compare_by_name_and_number(ready_file_data_dict['name'],
+                                                          ready_file_data_dict['number'],
+                                                          finished_file_data_dict['name'],
+                                                          finished_file_data_dict['number']):
 
                                 # check if the extensions is different
                                 if ready_file_extension != finished_file_extension:
@@ -337,7 +366,9 @@ class ModuleController:
                         self.dict_waiting_for_execution[ready_folder_number_name]['files_to_move'][ready_file] = {
                             'source path': ready_file_data_dict['path'],
                             'destination path': '',
-                            'number name': ready_file_data_dict['number'] + ' ' + ready_file_data_dict['name']
+                            # ToDo: 4. Changed this, now debug the whole method since it is creating empty dicts
+                            # 'number name': ready_file_data_dict['number'] + ' ' + ready_file_data_dict['name']
+                            'number name': ready_folder_number_name
                         }
 
                         # break the loop
