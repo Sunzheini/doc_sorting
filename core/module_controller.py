@@ -328,7 +328,9 @@ class ModuleController:
                 else:
 
                     # only if there is no such folder in finished
-                    if finished_folder_number_name not in self.dict_contents_of_finished_dir.keys():
+                    # ToDo: 5. Fixed this since was returning empty dict
+                    # if finished_folder_number_name not in self.dict_contents_of_finished_dir.keys():
+                    if ready_folder_number_name not in self.dict_contents_of_finished_dir.keys():
 
                         # -------------------------------files---------------------------------------------
                         # then iterate over the files in ready to add them all to the list of files to be copied
@@ -366,7 +368,7 @@ class ModuleController:
                         self.dict_waiting_for_execution[ready_folder_number_name]['files_to_move'][ready_file] = {
                             'source path': ready_file_data_dict['path'],
                             'destination path': '',
-                            # ToDo: 4. Changed this, now debug the whole method since it is creating empty dicts
+                            # ToDo: 4. Changed this
                             # 'number name': ready_file_data_dict['number'] + ' ' + ready_file_data_dict['name']
                             'number name': ready_folder_number_name
                         }
@@ -402,13 +404,14 @@ class ModuleController:
 
     def step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self, finished_dir):
         """
-        Checks if the dicting waiting for execution corresponds to the Excel file and then also after
+        Checks if the dict waiting for execution corresponds to the Excel file and then also after
         scanning the pdf files. Corrects the dict_waiting_for_execution and exports the result to a txt file
 
         :param finished_dir: path to finished dir
 
         adds the folder destination path if empty and the file destination path if empty!
         self.dict_waiting_for_execution (after correction after checking the Excel file):
+
         {'MC077-022-001 Leak proof joint design and drawing for tank and deck surface': {
             'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\A DRAWINGS\\MC077-022-001',
             'files_to_move': {
@@ -593,22 +596,22 @@ class ModuleController:
             # move the file to archive there
             move_directory(file_to_be_archived_path, path_of_new_archive)
 
-            # ToDo: temp length fix, remove only this when length of dirs is reduced
+            # ToDo: temp length fix, remove only this when length of dirs is reduced, 6. removed temp fix
             # -------------------------------------------------------------------------------
             # rename the files
-            counter = 1
-            for file in os.listdir(path_of_new_archive):
-                file_path = os.path.join(path_of_new_archive, file)
-
-                # get the extension
-                current_file_name = os.path.basename(file)
-                file_extension = os.path.splitext(file)[1]
-
-                # rename the file
-                new_file_name = str(counter) + file_extension
-                os.rename(file_path, os.path.join(path_of_new_archive, new_file_name))
-
-                counter += 1
+            # counter = 1
+            # for file in os.listdir(path_of_new_archive):
+            #     file_path = os.path.join(path_of_new_archive, file)
+            #
+            #     # get the extension
+            #     current_file_name = os.path.basename(file)
+            #     file_extension = os.path.splitext(file)[1]
+            #
+            #     # rename the file
+            #     new_file_name = str(counter) + file_extension
+            #     os.rename(file_path, os.path.join(path_of_new_archive, new_file_name))
+            #
+            #     counter += 1
             # -------------------------------------------------------------------------------
 
         # -------------------------------------------------------------------------------

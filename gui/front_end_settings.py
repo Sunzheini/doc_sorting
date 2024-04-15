@@ -3,7 +3,7 @@ from tkinter import Button, Label, Canvas
 
 # general -----------------------------------------------------------------------------
 app_name = 'ZED'
-app_version = 'v0.4a'
+app_version = 'v0.7'
 window_width = 800
 window_height = 705
 roboto_font_family = 'Roboto'
