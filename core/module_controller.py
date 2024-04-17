@@ -11,9 +11,9 @@ from core.walk_loop import the_walk_loop
 from support.constants import content_of_excel_file_start_row
 from support.folder_and_file_manager import create_directory, directory_exists, archive_directory, delete_directory, \
     move_directory, copy_file
-from support.folder_and_file_manager_dotnet import (create_directory_with_dotnet, delete_directory_with_dotnet,
-                                                    move_directory_with_dotnet, delete_file_with_dotnet,
-                                                    copy_file_with_dotnet)
+# from support.folder_and_file_manager_dotnet import (create_directory_with_dotnet, delete_directory_with_dotnet,
+#                                                     move_directory_with_dotnet, delete_file_with_dotnet,
+#                                                     copy_file_with_dotnet)
 from support.txt_file_manager import append_a_dict_to_txt_file, append_a_string_to_txt_file
 from support.formatters import (normalize_path_to_have_only_forward_slashes)
 from support.extractors import extract_text_after_last_backslash
@@ -152,7 +152,8 @@ class ModuleController:
                 current_folder_path = os.path.join(finished_dir, key)
 
                 if not directory_exists(current_folder_path):
-                    create_directory_with_dotnet(current_folder_path)
+                    # create_directory_with_dotnet(current_folder_path)
+                    create_directory(current_folder_path)
 
             append_a_string_to_txt_file(self.location_of_log_file, 'Successfully created folders in finished dir')
             return 'Success'
@@ -469,28 +470,29 @@ class ModuleController:
 
                             if number_name.lower() == key5.lower():
 
-                                # now scan the Excel ------------------------------------------------
-                                try:
-                                    file_extension = os.path.splitext(key4)[1]
-                                    if file_extension == '.pdf':
-                                        project_name, project_description, document_number = (
-                                            self._scan_pdf(file_path, self.pdf_scanning_coordinates))
-                                        return_info += f"--- Номер на документ: {document_number}\n"
-                                        return_info += f"--- Описание на проект: {project_description}\n"
-                                        return_info += f"--- Име на проект: {project_name}\n"
-
-                                        # check for match
-                                        if compare_by_name_and_number(
-                                                project_description,
-                                                document_number,
-                                                ' '.join(number_name.split(' ')[1:]),
-                                                number_name.split(' ')[0]
-                                        ):
-                                            return_info += f"--- Съответства на Excel файла\n"
-                                        else:
-                                            return_info += f"--- НЕ съответства на Excel файла\n"
-                                except Exception as e:
-                                    return_info += f"Неуспешно сканиране на PDF файла: {e}\n"
+                                # ToDo: 17.04.2024: commented for now to skip installation of pytesseract
+                                # now scan the PDF ------------------------------------------------
+                                # try:
+                                #     file_extension = os.path.splitext(key4)[1]
+                                #     if file_extension == '.pdf':
+                                #         project_name, project_description, document_number = (
+                                #             self._scan_pdf(file_path, self.pdf_scanning_coordinates))
+                                #         return_info += f"--- Номер на документ: {document_number}\n"
+                                #         return_info += f"--- Описание на проект: {project_description}\n"
+                                #         return_info += f"--- Име на проект: {project_name}\n"
+                                #
+                                #         # check for match
+                                #         if compare_by_name_and_number(
+                                #                 project_description,
+                                #                 document_number,
+                                #                 ' '.join(number_name.split(' ')[1:]),
+                                #                 number_name.split(' ')[0]
+                                #         ):
+                                #             return_info += f"--- Съответства на Excel файла\n"
+                                #         else:
+                                #             return_info += f"--- НЕ съответства на Excel файла\n"
+                                # except Exception as e:
+                                #     return_info += f"Неуспешно сканиране на PDF файла: {e}\n"
 
                                 remove_file = False
                                 break
