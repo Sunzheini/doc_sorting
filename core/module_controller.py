@@ -680,3 +680,4 @@ class ModuleController:
         """
         append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
         return f'Error: {e}'
+
