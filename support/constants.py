@@ -19,7 +19,7 @@ location_of_dll = os.path.join(pycharm_project_folder, "dotnet", "FolderAndFileM
 dll_name = "FolderAndFileManipulation"
 
 # other constants ----------------------------------------------------------------------------
-allowed_file_extensions = ['.pdf', '.dwg']      # ToDo: 0. add more file extensions
+allowed_file_extensions = ['.pdf', '.dwg', '.zip']      # ToDo: 0. add more file extensions
 location_of_log_file = "log.txt"
 pdf_scanning_coordinates = {
     'project_name': {'x1': 2135, 'y1': 1527, 'x2': 2355, 'y2': 1556},
@@ -29,7 +29,9 @@ pdf_scanning_coordinates = {
 content_of_excel_file_start_row = 'A'
 
 # regex patterns -----------------------------------------------------------------------------
-folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
+# folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
+# ToDo: 01.05.2024 added to include ( and & and - in the folder name
+folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\.\(\)\,\&\-\s]+(?=\S)[A-Za-z\)\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
 
 file_regex = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(\s*-\s*|\s*-|-\s*|-\s*)(\d+)'
 # ToDo: 1. Added this one:

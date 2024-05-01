@@ -21,7 +21,11 @@ def create_directory(directory):
     :param directory: the directory to create
     :return: None
     """
-    os.makedirs(directory)
+    try:
+        os.makedirs(directory)
+    except Exception as e:
+        print(e)
+        pass
 
 
 def move_directory(source, destination):
