@@ -107,6 +107,7 @@ def the_walk_loop(type_of_directory, directory):
 
         elif type_of_directory == 'finished_dir':
             folder_number, folder_name = split_folder_name_into_number_name(dir_path_after_last_backslash)
+
             if folder_number is None and folder_name is None:
                 continue
             folder_number_space_name = folder_number + ' ' + folder_name

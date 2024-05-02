@@ -66,12 +66,23 @@ def read_from_excel_file(file_path, string_for_start_row):
 
         # check if it is a section
         if line_number and not drawing_number and drawing_name:
+
+            # stripping
+            line_number = line_number.strip()
+            drawing_name = drawing_name.strip()
+
             section_number_space_name = line_number + ' ' + drawing_name
             dict_by_section[section_number_space_name] = {}
             continue
 
         # check if it is a file
         if line_number and drawing_number and drawing_name:
+
+            # stripping
+            line_number = line_number.strip()
+            drawing_number = drawing_number.strip()
+            drawing_name = drawing_name.strip()
+
             section_number = line_number[0]
 
             section_number_space_name = None

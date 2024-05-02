@@ -94,6 +94,7 @@ def split_folder_name_into_number_name(string):
     :param string: folder name
     :return: number and name
     """
+
     pattern = folder_regex_name_into_number_name
 
     match = re.search(pattern, string)

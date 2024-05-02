@@ -38,4 +38,6 @@ file_regex = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-
 file_regex_new_format = r'([A-Za-z]+)(\d+)(\s*[-_]\s*|\s*-\s*|[-_]\s*|-\s*)(\d+)(\s*[-_]\s*|\s*-\s*|[-_]\s*|-\s*)(\d+)(\s*[-_]\s*|\s*-\s*|[-_]\s*|-\s*)(\d+)'
 
 folder_regex_name_into_number = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)'
-folder_regex_name_into_number_name = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])'
+# folder_regex_name_into_number_name = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])'
+# ToDo: 01.05.2024 added to include ( and & and - in the folder name
+folder_regex_name_into_number_name = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\(\)\&\s]+(?=\S)[A-Za-z\)\s])'
