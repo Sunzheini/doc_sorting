@@ -413,6 +413,7 @@ class MyGui:
         :param str filepath: The file path to be associated with the specified button identifier.
         :return: None
         """
+
         # check if entry exists
         if self.db_object.does_entry_exist(
                 self.paths_table_name,      # table name
@@ -420,13 +421,22 @@ class MyGui:
                 column_value                # column value
         ):
             # If entry already exists, update it
+            # self.db_object.update_entry(
+            #     self.paths_table_name,      # table name
+            #     "button_identifier",        # condition column name
+            #     "path",                     # condition value
+            #     column_value,               # new path column name
+            #     filepath                    # new path value
+            # )
+
             self.db_object.update_entry(
-                self.paths_table_name,      # table name
-                "button_identifier",        # condition column name
-                "path",                     # condition value
-                column_value,               # new path column name
-                filepath                    # new path value
+                self.paths_table_name,  # table name
+                "button_identifier",  # condition column name
+                column_value,  # condition value
+                "path",  # new path column name
+                filepath  # new path value
             )
+
         else:
             # Entry doesn't exist; insert a new one
             self.db_object.insert_data(

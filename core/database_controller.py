@@ -115,6 +115,10 @@ class DatabaseController:
         query = f"UPDATE {table_name} SET {new_path_column_name} = ? WHERE {condition_column_name} = ?"
         self._execute_query(query, (new_path_value, condition_value))
 
+        # check if the update was successful
+        if not self.does_entry_exist(table_name, condition_column_name, condition_value):
+            print(f"Update failed for {condition_value} in {table_name}")
+
     def insert_data(self, table_name, column1_name, column2_name, column1_value, data):
         """
         Insert a new entry into the specified table.
