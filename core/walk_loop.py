@@ -2,6 +2,7 @@
 import os
 from os import walk
 
+from core.global_error_handler import GlobalErrorHandler
 from support.constants import allowed_file_extensions
 from support.extractors import extract_text_after_last_backslash, split_folder_name_into_date_number_name_revision, \
     split_file_name_into_number_name_date, split_folder_name_into_number_name
@@ -81,6 +82,9 @@ def the_walk_loop(type_of_directory, directory):
         dir_path_after_last_backslash = extract_text_after_last_backslash(dir_path)
 
         if type_of_directory == 'ready_dir':
+            # additional error handling
+            GlobalErrorHandler.CURRENT_ITEM = dir_path_after_last_backslash
+
             folder_date, folder_number, folder_name, folder_revision = split_folder_name_into_date_number_name_revision(dir_path_after_last_backslash)
             folder_number_space_name = folder_number + ' ' + folder_name
 
@@ -106,6 +110,9 @@ def the_walk_loop(type_of_directory, directory):
             }
 
         elif type_of_directory == 'finished_dir':
+            # additional error handling
+            GlobalErrorHandler.CURRENT_ITEM = dir_path_after_last_backslash
+
             folder_number, folder_name = split_folder_name_into_number_name(dir_path_after_last_backslash)
 
             if folder_number is None and folder_name is None:
@@ -126,6 +133,9 @@ def the_walk_loop(type_of_directory, directory):
             }
 
         for file in file_names:
+            # additional error handling
+            GlobalErrorHandler.CURRENT_ITEM = dir_path_after_last_backslash + '\\' + file
+
             # check if file extension is in allowed_file_extensions
             file_extension = os.path.splitext(file)[-1].lower()
             if file_extension not in allowed_file_extensions:

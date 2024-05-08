@@ -15,6 +15,7 @@ from gui.front_end_settings import (roboto_font_family, roboto_font_size,
                                     name_of_browse_label4, name_of_browse_button1, name_of_browse_button2,
                                     name_of_browse_button3, name_of_browse_button4, name_of_button1,
                                     name_of_button2, name_of_button3, name_of_shortcut_button)
+from core.global_error_handler import GlobalErrorHandler
 
 
 class MyGui:
@@ -265,6 +266,9 @@ class MyGui:
         :param event: not used
         :return: None
         """
+        GlobalErrorHandler.CURRENT_OPERATION = ""
+        GlobalErrorHandler.CURRENT_ITEM = ""
+
         # execute functions and get the result, color and additional message if any
         try:
             return_result, status_color, additional_message = self.engine_object.methods_bound_to_button_1(
@@ -275,6 +279,14 @@ class MyGui:
             )
         except Exception as e:
             return_result, status_color, additional_message = f"Грешка: '{e}'", 'red', None
+
+        # additional error handling
+        if return_result is None and status_color == 'red':
+            return_result = GlobalErrorHandler.CURRENT_OPERATION
+            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
+        elif return_result is not None and status_color == 'red':
+            return_result += ', ' + GlobalErrorHandler.CURRENT_OPERATION
+            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
 
         # feedback to the light next to the button
         self.update_light_next_to_button(self.canvas1, self.rect1, status_color)
@@ -293,6 +305,9 @@ class MyGui:
         :param event: not used
         :return: None
         """
+        GlobalErrorHandler.CURRENT_OPERATION = ""
+        GlobalErrorHandler.CURRENT_ITEM = ""
+
         # execute functions and get the result, color and additional message if any
         try:
             return_result, status_color, additional_message = self.engine_object.methods_bound_to_button2(
@@ -302,6 +317,14 @@ class MyGui:
             )
         except Exception as e:
             return_result, status_color, additional_message = f"Грешка: '{e}'", 'red', None
+
+        # additional error handling
+        if return_result is None and status_color == 'red':
+            return_result = GlobalErrorHandler.CURRENT_OPERATION
+            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
+        elif return_result is not None and status_color == 'red':
+            return_result += ', ' + GlobalErrorHandler.CURRENT_OPERATION
+            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
 
         # feedback to the light next to the button
         self.update_light_next_to_button(self.canvas2, self.rect2, status_color)

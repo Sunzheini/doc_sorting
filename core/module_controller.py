@@ -4,7 +4,8 @@ import random
 from datetime import datetime
 from time import sleep
 
-from support.comparators import compare_by_name_and_number
+from core.global_error_handler import GlobalErrorHandler
+from support.comparators import compare_by_name_and_number, first_date_is_newer
 from support.pdf_scanner import extract_text_from_pdf, split_pdf_scanning_coordinates
 from support.excel_reader import read_from_excel_file
 from core.walk_loop import the_walk_loop
@@ -96,6 +97,8 @@ class ModuleController:
         :param ready_dir: path to ready dir
         :return: 'Success' or 'Error'
         """
+        GlobalErrorHandler.CURRENT_OPERATION = 'Error in step_1_scan_ready_dir'
+
         try:
             self.dict_contents_of_ready_dir = the_walk_loop('ready_dir', ready_dir)
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_ready_dir)
@@ -130,6 +133,11 @@ class ModuleController:
         :param file_path: path to Excel file
         :return: 'Success' or 'Error'
         """
+        GlobalErrorHandler.CURRENT_OPERATION = 'Error in step_2_scan_excel'
+
+        if not os.path.exists(file_path):
+            GlobalErrorHandler.CURRENT_ITEM = "File does not exist"
+
         try:
             string_for_start_row = content_of_excel_file_start_row
             self.dict_contents_of_file_by_section, self.dict_contents_of_file_by_file = read_from_excel_file(file_path, string_for_start_row)
@@ -147,6 +155,8 @@ class ModuleController:
         :param finished_dir: path to finished dir
         :return: Success or Error
         """
+        GlobalErrorHandler.CURRENT_OPERATION = 'Error in step_3_create_folders_in_finished_dir'
+
         try:
             for key in self.dict_contents_of_file_by_section.keys():
                 current_folder_path = os.path.join(finished_dir, key)
@@ -198,7 +208,9 @@ class ModuleController:
         :param finished_dir: path to finished dir
         :return: 'Success' or 'Error'
         """
-        # scan finished directory
+        # scan finished
+        GlobalErrorHandler.CURRENT_OPERATION = 'Error in step_4_scan_finished_dir'
+
         try:
             self.dict_contents_of_finished_dir = the_walk_loop('finished_dir', finished_dir)
             append_a_dict_to_txt_file(self.location_of_log_file, self.dict_contents_of_finished_dir)
@@ -238,6 +250,7 @@ class ModuleController:
         # -----------------------------------------------------------------------------------------
         # Part A: set of files to be copied
         # -----------------------------------------------------------------------------------------
+        GlobalErrorHandler.CURRENT_OPERATION = 'Error in step_5_compare_ready_to_finished'
 
         # temp set of files to be copied
         """
@@ -302,10 +315,26 @@ class ModuleController:
 
                                 # check if the extensions is different
                                 if ready_file_extension != finished_file_extension:
-                                    continue
+                                    # continue
+
+                                    # ToDo: changed this
+                                    # check if there are no files with the same extension in the finished sub-folder
+                                    if ready_file_extension not in [os.path.splitext(file)[1] for file in finished_folder_data_dict['files'].keys()]:
+                                        # add the file to the list of files to be copied
+                                        set_of_files_to_be_copied.add(ready_file)
+                                        continue
+                                    else:
+                                        continue
 
                                 # if they match, then check if the date of the ready file is newer
-                                if ready_file_data_dict['date'] > finished_file_data_dict['date']:
+                                # if ready_file_data_dict['date'] > finished_file_data_dict['date']:
+
+                                # ToDo: changed to correctly compare date. i.e. 17102023 should be older than 09022024
+                                if ready_file_data_dict['date'] is None:
+                                    raise ValueError(f"The date of the file {ready_file} is None")
+                                if finished_file_data_dict['date'] is None:
+                                    raise ValueError(f"The date of the file {finished_file} is None")
+                                if first_date_is_newer(ready_file_data_dict['date'], finished_file_data_dict['date']):
 
                                     # add the file to the list of files to be copied
                                     set_of_files_to_be_copied.add(ready_file)
@@ -424,6 +453,9 @@ class ModuleController:
 
         :return: 'Success' + info or 'Error'
         """
+        GlobalErrorHandler.CURRENT_OPERATION = \
+            'Error in step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel'
+
         return_info = ""
         key_to_remove = []
         files_to_remove = {}
@@ -566,6 +598,8 @@ class ModuleController:
         :param archive_folder: path to archive folder
         :return: 'Success' or 'Error'
         """
+        GlobalErrorHandler.CURRENT_OPERATION = 'Error in step_7_archive_then_new_folders_from_ready_to_finished'
+
         list_of_archive_paths = []
         """
         this list keeps the paths of the files to be archived not to create 2 archive folders 
