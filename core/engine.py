@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+import os
+
 from core.module_controller import ModuleController
 
 
@@ -123,3 +126,48 @@ class Engine:
 
         return ('Обновяването премина успешно', 'green', None) if not has_additional_message \
             else ('Обновяването премина успешно', 'green', additional_message)
+
+    def methods_bound_to_button4(self, ready_dir):
+        """
+        Execute methods bound to button 4.
+        :return: Tuple (result message, color, additional_message).
+        """
+        has_additional_message = False
+        additional_message = ""
+
+        # ------------------------------------------------------------------------------
+        # generating info
+        # ------------------------------------------------------------------------------
+        try:
+            folder_info = []
+            for root, dirs, files in os.walk(ready_dir):
+                for dir_name in dirs:
+                    dir_path = os.path.join(root, dir_name)
+                    dir_mod_time = datetime.fromtimestamp(os.path.getmtime(dir_path)).strftime('%Y-%m-%d %H:%M:%S')
+                    folder_info.append(f"Folder: {dir_name} (Last Modified: {dir_mod_time})")
+
+                    # List files within this directory
+                    for file_name in os.listdir(dir_path):
+
+                        if file_name.lower() == 'thumbs.db':
+                            continue  # Skip Thumbs.db files
+
+                        file_path = os.path.join(dir_path, file_name)
+                        if os.path.isfile(file_path):
+                            file_mod_time = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime(
+                                '%Y-%m-%d %H:%M:%S')
+                            folder_info.append(f"     File: {file_name} (Last Modified: {file_mod_time})")
+
+                    folder_info.append('')
+
+            if folder_info:
+                has_additional_message = True
+                additional_message += '\n' + "\n".join(folder_info)
+            else:
+                additional_message += '\n' + "No folders found."
+
+        except Exception as e:
+            return e, 'red', None
+
+        return ('', 'green', None) if not has_additional_message \
+            else ('', 'green', additional_message)

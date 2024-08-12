@@ -4,6 +4,7 @@ from tkinter import filedialog
 from tkinter import *
 from tkinter import font
 from tkinter import scrolledtext
+from PIL import Image, ImageTk  # Import the PIL module
 
 from gui.default_status_text import default_status_text
 from support.decorators import time_measurement_decorator
@@ -175,16 +176,18 @@ class MyGui:
         # -----------------------------------------------------------------------------
         # Work Buttons
         # -----------------------------------------------------------------------------
-        self.work_button_1, self.work_button_2, self.work_button_3 = (
+        self.work_button_1, self.work_button_2, self.work_button_3, self.work_button_4 = (
             apply_the_work_buttons(self.window))
 
         self.work_button_1.config(command=self.commands_bound_to_work_button_1)
         self.work_button_2.config(command=self.commands_bound_to_work_button_2)
         self.work_button_3.config(command=self.commands_bound_to_work_button_3)
+        self.work_button_4.config(command=self.commands_bound_to_work_button_4)
 
         self.work_button_1.place(x=10, y=155)
-        self.work_button_2.place(x=295, y=155)
-        self.work_button_3.place(x=580, y=155)
+        self.work_button_2.place(x=212, y=155)
+        self.work_button_3.place(x=414, y=155)
+        self.work_button_4.place(x=616, y=155)
 
         # -----------------------------------------------------------------------------
         # Bind keyboard shortcuts to work buttons
@@ -192,16 +195,18 @@ class MyGui:
         self.window.bind_all('<a>', self.commands_bound_to_work_button_1)
         self.window.bind_all('<s>', self.commands_bound_to_work_button_2)
         self.window.bind_all('<d>', self.commands_bound_to_work_button_3)
+        self.window.bind_all('<f>', self.commands_bound_to_work_button_4)
 
         # -----------------------------------------------------------------------------
         # Lights next to work buttons
         # -----------------------------------------------------------------------------
-        self.canvas1, self.canvas2, self.canvas3, self.rect1, self.rect2, self.rect3 = (
+        self.canvas1, self.canvas2, self.canvas3, self.canvas4, self.rect1, self.rect2, self.rect3, self.rect4 = (
             apply_light_next_to_work_buttons(self.window))
 
-        self.canvas1.place(x=195, y=155)
-        self.canvas2.place(x=480, y=155)
-        self.canvas3.place(x=765, y=155)
+        self.canvas1.place(x=160, y=155)
+        self.canvas2.place(x=362, y=155)
+        self.canvas3.place(x=564, y=155)
+        self.canvas4.place(x=766, y=155)
 
         # -----------------------------------------------------------------------------
         # Create a line separator under the work buttons section
@@ -225,6 +230,9 @@ class MyGui:
         )
         self.status_label.place(x=10, y=225)
         self.status_label.insert(END, self.contents_of_status_label)
+
+        # Load the image
+        self.initialize_image()
 
     # -----------------------------------------------------------------------------
     # Initial query of the database for the directories
@@ -256,6 +264,35 @@ class MyGui:
             self.update_status_label(f"Грешка: '{e}'")
 
     # -----------------------------------------------------------------------------
+    # For the custom photo
+    # -----------------------------------------------------------------------------
+    # def initialize_image(self):
+    #     self.image_path = 'static\\cert.jpg'  # specify the path to your image
+    #     self.image = Image.open(self.image_path)
+    #     self.image = self.image.resize((200, 200), Image.ANTIALIAS)  # resize the image as needed
+    #     self.photo = ImageTk.PhotoImage(self.image)
+    #     self.status_label.image_create(END, image=self.photo)
+
+    def initialize_image(self):
+        self.image_path = "static\\cert.jpg"  # specify the path to your image
+        self.image = Image.open(self.image_path)
+        self.image = self.image.resize((270, 200), Image.ANTIALIAS)  # resize the image as needed
+        self.photo = ImageTk.PhotoImage(self.image)
+
+        self.image_canvas = Canvas(self.status_label, width=270, height=200,
+                                   highlightthickness=0, bg='white', bd=1, relief='ridge')
+        self.image_canvas.create_image(0, 0, anchor='nw', image=self.photo)
+        self.image_canvas.place(relx=1.0, x=0, y=0, anchor='ne')  # Adjust x and y as needed
+
+    # def remove_image(self):
+    #     self.status_label.delete("1.0", END)  # Clear the status label to remove the image
+    #     self.status_label.insert(END, self.contents_of_status_label)  # Re-insert the default text or any other text
+
+    def remove_image(self):
+        if hasattr(self, 'image_canvas'):
+            self.image_canvas.destroy()  # Remove the image canvas
+
+    # -----------------------------------------------------------------------------
     # Methods on work buttons
     # -----------------------------------------------------------------------------
     @time_measurement_decorator
@@ -266,6 +303,8 @@ class MyGui:
         :param event: not used
         :return: None
         """
+        self.remove_image()  # Remove the image from the status label
+
         GlobalErrorHandler.CURRENT_OPERATION = ""
         GlobalErrorHandler.CURRENT_ITEM = ""
 
@@ -305,6 +344,8 @@ class MyGui:
         :param event: not used
         :return: None
         """
+        self.remove_image()  # Remove the image from the status label
+
         GlobalErrorHandler.CURRENT_OPERATION = ""
         GlobalErrorHandler.CURRENT_ITEM = ""
 
@@ -342,6 +383,8 @@ class MyGui:
         :param event: not used
         :return: None
         """
+        self.remove_image()  # Remove the image from the status label
+
         # clear the status label
         self.contents_of_status_label = self.DEFAULT_STATUS_TEXT
         self.status_label.delete('1.0', END)
@@ -349,6 +392,40 @@ class MyGui:
         # set the light to green for 1 second
         self.update_light_next_to_button(self.canvas3, self.rect3, 'green')
         self.window.after(1000, self.update_light_next_to_button, self.canvas3, self.rect3, 'gray')
+
+    @time_measurement_decorator
+    def commands_bound_to_work_button_4(self, event=None):
+        self.remove_image()  # Remove the image from the status label
+
+        GlobalErrorHandler.CURRENT_OPERATION = ""
+        GlobalErrorHandler.CURRENT_ITEM = ""
+
+        # execute functions and get the result, color and additional message if any
+        try:
+            return_result, status_color, additional_message = self.engine_object.methods_bound_to_button4(
+                self.location_of_ready_dir,         # source_folder
+            )
+        except Exception as e:
+            return_result, status_color, additional_message = f"Грешка: '{e}'", 'red', None
+
+        # additional error handling
+        if return_result is None and status_color == 'red':
+            return_result = GlobalErrorHandler.CURRENT_OPERATION
+            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
+        elif return_result is not None and status_color == 'red':
+            return_result += ', ' + GlobalErrorHandler.CURRENT_OPERATION
+            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
+
+        # feedback to the light next to the button
+        self.update_light_next_to_button(self.canvas4, self.rect4, status_color)
+
+        # if there is an additional message, show it
+        if additional_message is not None:
+            self.update_status_label(f"{return_result}\n{additional_message}")
+        else:
+            self.update_status_label(f"{return_result}")
+
+        self.window.after(1000, self.update_light_next_to_button, self.canvas4, self.rect4, 'gray')
 
     # -----------------------------------------------------------------------------
     # Browse main methods
@@ -362,6 +439,8 @@ class MyGui:
         :param path: the path to be used if specified
         :return: None
         """
+        # self.remove_image()  # Remove the image from the status label
+
         if path is None:
             filepath = filedialog.askdirectory()
         else:
@@ -382,6 +461,8 @@ class MyGui:
         :param path: the path to be used if specified
         :return: None
         """
+        # self.remove_image()  # Remove the image from the status label
+
         if path is None:
             filepath = filedialog.askdirectory()
         else:
@@ -399,6 +480,8 @@ class MyGui:
         :param path: the path to be used if specified
         :return: None
         """
+        # self.remove_image()  # Remove the image from the status label
+
         if path is None:
             filepath = filedialog.askdirectory()
         else:
@@ -416,6 +499,8 @@ class MyGui:
         :param path: the path to be used if specified
         :return: None
         """
+        # self.remove_image()  # Remove the image from the status label
+
         if path is None:
             filepath = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
         else:

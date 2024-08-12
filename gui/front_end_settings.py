@@ -3,7 +3,7 @@ from tkinter import Button, Label, Canvas
 
 # general -----------------------------------------------------------------------------
 app_name = 'ZED'
-app_version = 'v0.7'
+app_version = 'v.01'
 window_width = 800
 window_height = 705
 roboto_font_family = 'Roboto'
@@ -22,6 +22,7 @@ name_of_browse_button4 = 'Промени пътя към списъка'
 name_of_button1 = 'Сканирай за промени (A)'
 name_of_button2 = 'Приложи промените (S)'
 name_of_button3 = 'Изчисти конзолата (D)'
+name_of_button4 = 'Справка за проекта (F)'
 name_of_shortcut_button = '>>'
 
 
@@ -32,7 +33,7 @@ shortcut_button_width = 5
 shortcut_button_height = 1
 shortcut_button_relief = 'flat'
 shortcut_button_cursor = 'hand2'
-work_button_width = 25
+work_button_width = 20
 work_button_height = 2
 
 
@@ -235,7 +236,14 @@ def apply_the_work_buttons(window):
         height=work_button_height,
     )
 
-    return work_button1, work_button2, work_button3
+    work_button4 = Button(
+        window,
+        text=name_of_button4,
+        width=work_button_width,
+        height=work_button_height,
+    )
+
+    return work_button1, work_button2, work_button3, work_button4
 
 
 def apply_light_next_to_work_buttons(window):
@@ -271,6 +279,15 @@ def apply_light_next_to_work_buttons(window):
         bg=light_background_color,
     )
 
+    light4 = Canvas(
+        window,
+        width=light_width,
+        height=light_height,
+        bd=0,
+        highlightthickness=0,
+        bg=light_background_color,
+    )
+
     rect1 = light1.create_rectangle(
         2, 1, 10, 39,
         fill=light_fill_color,
@@ -289,4 +306,10 @@ def apply_light_next_to_work_buttons(window):
         outline=light_outline_color,
     )
 
-    return light1, light2, light3, rect1, rect2, rect3
+    rect4 = light4.create_rectangle(
+        2, 1, 10, 39,
+        fill=light_fill_color,
+        outline=light_outline_color,
+    )
+
+    return light1, light2, light3, light4, rect1, rect2, rect3, rect4
