@@ -1,0 +1,25 @@
+{
+    "C:/Users/User/Desktop/MK/new/Project160824": {
+        "PD069-022-04 Pulling eyes": {
+            "responsible_person": "6",
+            "price": "7",
+            "hours": "8",
+            "date": "2024-08-16",
+            "passed": "2"
+        },
+        "PD069-041-02 Crane foundation SB": {
+            "responsible_person": "8",
+            "price": "7",
+            "hours": "8",
+            "date": "2024-08-16",
+            "passed": "2"
+        },
+        "PD069-022-01 ANCHORING & TOWING EQUIMENT": {
+            "responsible_person": "9",
+            "price": "8",
+            "hours": "7",
+            "date": "2024-08-16",
+            "passed": "2"
+        }
+    }
+}

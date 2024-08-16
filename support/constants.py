@@ -41,3 +41,22 @@ folder_regex_name_into_number = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-
 # folder_regex_name_into_number_name = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])'
 # ToDo: 01.05.2024 added to include ( and & and - in the folder name
 folder_regex_name_into_number_name = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я\(\)\&\s]+(?=\S)[A-Za-zА-Яа-я\)\s])'
+
+# ToDo: changed here
+# ------------------------------------------------------------------------------------------------
+rates = {
+    'Lto': 25,
+    'BoH': 18,
+    'VYA': 18,
+    'Nve': 20,
+    'NiV': 19,
+    'AIA': 14,
+    'BoM': 22,
+
+    'Pon': 50,
+    'PM': 40,
+    'Akhn': 60,
+    'Cha': 30,
+}
+location_of_json_file = "opened_projects.json"
+location_of_statistics_file = "statistics.xlsx"

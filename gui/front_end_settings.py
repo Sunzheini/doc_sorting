@@ -12,7 +12,7 @@ roboto_font_size = 9
 
 # button names -------------------------------------------------------------------------
 name_of_browse_label1 = 'Път към проекта: няма'
-name_of_browse_button1 = 'Избери пътя към проекта'
+name_of_browse_button1 = 'Път към проекта'
 name_of_browse_label2 = 'Път към `Ready`: няма'
 name_of_browse_button2 = 'Промени пътя към `Ready`'
 name_of_browse_label3 = 'Път към `020 CLASSIFICATION DRAWINGS`: няма'
@@ -20,20 +20,23 @@ name_of_browse_button3 = 'Промени пътя към `020`'
 name_of_browse_label4 = 'Път към актуалния списък в Excel: няма'
 name_of_browse_button4 = 'Промени пътя към списъка'
 name_of_button1 = 'Сканирай за промени (A)'
-name_of_button2 = 'Приложи промените (S)'
-name_of_button3 = 'Изчисти конзолата (D)'
-name_of_button4 = 'Справка за проекта (F)'
+name_of_button1a = '...(S)'
+name_of_button2 = 'Приложи промените (D)'
+name_of_button3 = 'Изчисти конзолата (F)'
+name_of_button4 = 'Справка за проекта (G)'
 name_of_shortcut_button = '>>'
 
 
 # button settings ----------------------------------------------------------------------
 browse_button_width = 25
+browse_button_width_short = 18
 browse_button_height = 1
 shortcut_button_width = 5
 shortcut_button_height = 1
 shortcut_button_relief = 'flat'
 shortcut_button_cursor = 'hand2'
 work_button_width = 20
+work_button_a1_width = 5
 work_button_height = 2
 
 
@@ -79,8 +82,9 @@ def apply_the_browse_buttons(window):
     browse_button_1 = Button(
         window,
         text=name_of_browse_button1,
-        width=browse_button_width,
+        width=browse_button_width_short,
         height=browse_button_height,
+        anchor='w',
     )
 
     browse_button_2 = Button(
@@ -88,6 +92,7 @@ def apply_the_browse_buttons(window):
         text=name_of_browse_button2,
         width=browse_button_width,
         height=browse_button_height,
+        anchor='w',
     )
 
     browse_button_3 = Button(
@@ -95,6 +100,7 @@ def apply_the_browse_buttons(window):
         text=name_of_browse_button3,
         width=browse_button_width,
         height=browse_button_height,
+        anchor='w',
     )
 
     browse_button_4 = Button(
@@ -102,6 +108,7 @@ def apply_the_browse_buttons(window):
         text=name_of_browse_button4,
         width=browse_button_width,
         height=browse_button_height,
+        anchor='w',
     )
 
     return browse_button_1, browse_button_2, browse_button_3, browse_button_4
@@ -222,6 +229,13 @@ def apply_the_work_buttons(window):
         height=work_button_height,
     )
 
+    work_button1a = Button(
+        window,
+        text=name_of_button1a,
+        width=work_button_a1_width,
+        height=work_button_height,
+    )
+
     work_button2 = Button(
         window,
         text=name_of_button2,
@@ -243,7 +257,7 @@ def apply_the_work_buttons(window):
         height=work_button_height,
     )
 
-    return work_button1, work_button2, work_button3, work_button4
+    return work_button1, work_button1a, work_button2, work_button3, work_button4
 
 
 def apply_light_next_to_work_buttons(window):

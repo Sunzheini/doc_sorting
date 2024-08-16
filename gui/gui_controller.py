@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
-from tkinter import filedialog
+import datetime
+from tkinter import filedialog, simpledialog, messagebox
 from tkinter import *
 from tkinter import font
 from tkinter import scrolledtext
 from PIL import Image, ImageTk  # Import the PIL module
 
+from core.project_manager import ProjectManager
 from gui.default_status_text import default_status_text
+from support.constants import location_of_json_file, location_of_statistics_file
 from support.decorators import time_measurement_decorator
 from gui.front_end_settings import (roboto_font_family, roboto_font_size,
                                     apply_the_front_end_settings, apply_the_browse_buttons,
@@ -48,6 +51,12 @@ class MyGui:
         :param paths_table_name: see main.py
         :param previous_state_table_name: see main.py
         """
+        # -----------------------------------------------------------------------------
+        # First login dialog
+        # -----------------------------------------------------------------------------
+        # Show login dialog before anything else
+        if not self.show_login_dialog():
+            return  # Exit if login is unsuccessful
 
         # -----------------------------------------------------------------------------
         # General window looks
@@ -122,6 +131,33 @@ class MyGui:
         self.browse_button_4.place(x=10, y=100)
 
         # -----------------------------------------------------------------------------
+        # Browse Button for list of projects
+        # -----------------------------------------------------------------------------
+        with open('static\\list_of_project_directories', 'r') as f:
+            self.list_of_project_directories = f.readlines()
+        self.list_of_project_directories = [x.strip() for x in self.list_of_project_directories]
+
+        self.selected_project_option = StringVar()  # Define a Tkinter var to store the selected option
+        # self.selected_project_option.set(self.list_of_project_directories[0])   # Set the default option
+        self.dropdown = OptionMenu(self.window, self.selected_project_option, *self.list_of_project_directories)
+        self.dropdown.config(
+            width=1,
+            bg='#E5E5E5',
+            fg='#E5E5E5',
+            relief='solid',
+            cursor='hand2',
+            borderwidth=1,
+            highlightthickness=1,
+        )
+        self.dropdown.place(x=148, y=10)
+
+        def execute_on_dropdown_select(*args):
+            self.project_selected_via_dropdown = self.selected_project_option.get()
+            self.small_browse_button_functionality(self.project_selected_via_dropdown)
+
+        self.selected_project_option.trace('w', execute_on_dropdown_select)
+
+        # -----------------------------------------------------------------------------
         # Browse Labels
         # -----------------------------------------------------------------------------
         self.browse_label_1, self.browse_label_2, self.browse_label_3, self.browse_label_4 = (
@@ -176,26 +212,29 @@ class MyGui:
         # -----------------------------------------------------------------------------
         # Work Buttons
         # -----------------------------------------------------------------------------
-        self.work_button_1, self.work_button_2, self.work_button_3, self.work_button_4 = (
+        self.work_button_1, self.work_button_1a, self.work_button_2, self.work_button_3, self.work_button_4 = (
             apply_the_work_buttons(self.window))
 
         self.work_button_1.config(command=self.commands_bound_to_work_button_1)
+        self.work_button_1a.config(command=self.commands_bound_to_work_button_1a)
         self.work_button_2.config(command=self.commands_bound_to_work_button_2)
         self.work_button_3.config(command=self.commands_bound_to_work_button_3)
         self.work_button_4.config(command=self.commands_bound_to_work_button_4)
 
         self.work_button_1.place(x=10, y=155)
-        self.work_button_2.place(x=212, y=155)
-        self.work_button_3.place(x=414, y=155)
+        self.work_button_1a.place(x=187, y=155)
+        self.work_button_2.place(x=252, y=155)
+        self.work_button_3.place(x=434, y=155)
         self.work_button_4.place(x=616, y=155)
 
         # -----------------------------------------------------------------------------
         # Bind keyboard shortcuts to work buttons
         # -----------------------------------------------------------------------------
         self.window.bind_all('<a>', self.commands_bound_to_work_button_1)
-        self.window.bind_all('<s>', self.commands_bound_to_work_button_2)
-        self.window.bind_all('<d>', self.commands_bound_to_work_button_3)
-        self.window.bind_all('<f>', self.commands_bound_to_work_button_4)
+        self.window.bind_all('<s>', self.commands_bound_to_work_button_1a)
+        self.window.bind_all('<d>', self.commands_bound_to_work_button_2)
+        self.window.bind_all('<f>', self.commands_bound_to_work_button_3)
+        self.window.bind_all('<g>', self.commands_bound_to_work_button_4)
 
         # -----------------------------------------------------------------------------
         # Lights next to work buttons
@@ -204,8 +243,8 @@ class MyGui:
             apply_light_next_to_work_buttons(self.window))
 
         self.canvas1.place(x=160, y=155)
-        self.canvas2.place(x=362, y=155)
-        self.canvas3.place(x=564, y=155)
+        self.canvas2.place(x=402, y=155)
+        self.canvas3.place(x=584, y=155)
         self.canvas4.place(x=766, y=155)
 
         # -----------------------------------------------------------------------------
@@ -337,6 +376,107 @@ class MyGui:
             self.update_status_label(f"Операция 1: '{return_result}'")
 
     @time_measurement_decorator
+    def commands_bound_to_work_button_1a(self, event=None):
+        # get the dict of items to move
+        my_dict = self.engine_object.module.dict_waiting_for_execution
+        """
+        {'MC077-024-006 Cause and Effect CandE diagram proba': 
+            {'folder destination path': 'C:\\Users\\User\\Desktop\\MK\\new\\ProjectZZZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\B LPG BARGE PROCESS PIPING SYSTEM DRAWING AND DESIGN\\MC077-024-006-Cause and Effect CandE diagram proba', 
+             'files_to_move': 
+                {'MC077-024-006_25092023.pdf': 
+                    {'source path': 'C:\\Users\\User\\Desktop\\MK\\new\\ProjectZZZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230925 - MC077-024-006-Cause and Effect CandE diagram proba\\MC077-024-006_25092023.pdf', 
+                     'destination path': 'C:\\Users\\User\\Desktop\\MK\\new\\ProjectZZZ\\05 DESIGN DOCUMENTS\\020 CLASSIFICATION DRAWINGS\\B LPG BARGE PROCESS PIPING SYSTEM DRAWING AND DESIGN\\MC077-024-006-Cause and Effect CandE diagram proba', 
+                     'number name': 'MC077-024-006 Cause and Effect CandE diagram proba'}}}}
+        """
+        # get the folder names only in a list
+        folder_names = list(my_dict.keys())
+        # ['MC077-024-003 Process flow diagrams PFDs', 'MC077-024-006 Cause and Effect CandE diagram proba']
+
+        # Create a Toplevel window (popup)
+        popup = Toplevel()
+        popup.title("Folder Information")
+
+        entries = {}
+
+        def on_submit():
+            nonlocal entries
+            entries = {folder: {
+                'responsible_person': person_entry.get(),
+                'price': price_entry.get(),
+                'hours': hours_entry.get(),
+            }
+                       for folder, (person_entry, price_entry, hours_entry) in entry_fields.items()}
+            popup.destroy()  # Close the popup window
+
+        entry_fields = {}
+
+        for i, folder in enumerate(folder_names):
+            Label(popup, text=f"Folder: {folder}").grid(row=i, column=0, padx=10, pady=5, sticky='w')
+
+            person_label = Label(popup, text="Responsible Person:")
+            person_label.grid(row=i, column=1, padx=10, pady=5)
+            person_entry = Entry(popup)
+            person_entry.grid(row=i, column=2, padx=10, pady=5)
+
+            price_label = Label(popup, text="Price:")
+            price_label.grid(row=i, column=3, padx=10, pady=5)
+            price_entry = Entry(popup)
+            price_entry.grid(row=i, column=4, padx=10, pady=5)
+
+            hours_label = Label(popup, text="Hours:")
+            hours_label.grid(row=i, column=5, padx=10, pady=5)
+            hours_entry = Entry(popup)
+            hours_entry.grid(row=i, column=6, padx=10, pady=5)
+
+            entry_fields[folder] = (person_entry, price_entry, hours_entry)
+
+        submit_button = Button(popup, text="Submit", command=on_submit)
+        submit_button.grid(row=len(folder_names), columnspan=5, pady=10)
+
+        # Wait until the popup window is closed before continuing execution
+        self.window.wait_window(popup)
+
+        # After window is closed, `entries` will have the data
+        """
+        {'MC077-024-006 Cause and Effect CandE diagram proba': 
+            {'responsible_person': '1', 'price': '2'}, 
+         'MC077-024-003 Process flow diagrams PFDs': 
+            {'responsible_person': '3', 'price': '4'}}
+        """
+
+        # modify entries to have also today's date
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        entries = {folder: {**data, 'date': today} for folder, data in entries.items()}
+
+        # Write to the Project Manager
+        pm = ProjectManager(location_of_json_file)
+        pm.write_data_into_the_json_file(self.location_of_project_dir, entries)
+
+        """
+        {
+            "C:\\Users\\User\\Desktop\\MK\\new\\ProjectZZZ": {
+                "MC077-024-006 Cause and Effect CandE diagram proba": {
+                    "responsible_person": "9",
+                    "price": "9"
+                },
+                "MC077-024-003 Process flow diagrams PFDs": {
+                    "responsible_person": "5",
+                    "price": "6"
+                },
+                "MC077-024-007 Equipment datasheets and specifications": {
+                    "responsible_person": "9",
+                    "price": "9"
+                },
+                "MC077-024-001 PIPE SIZE CALCULATION AND DESIGN": {
+                    "responsible_person": "9",
+                    "price": "9"
+                }
+            },
+            "C:\\Users\\User\\Desktop\\MK\\new\\ProjectXYZ": {}
+        }
+        """
+
+    @time_measurement_decorator
     def commands_bound_to_work_button_2(self, event=None):
         """
         This method is bound to the second work button and executes the functions
@@ -397,34 +537,16 @@ class MyGui:
     def commands_bound_to_work_button_4(self, event=None):
         self.remove_image()  # Remove the image from the status label
 
-        GlobalErrorHandler.CURRENT_OPERATION = ""
-        GlobalErrorHandler.CURRENT_ITEM = ""
-
-        # execute functions and get the result, color and additional message if any
+        # generate the statistics
         try:
-            return_result, status_color, additional_message = self.engine_object.methods_bound_to_button4(
-                self.location_of_ready_dir,         # source_folder
-            )
+            pm = ProjectManager(location_of_json_file)
+            pm.export_to_excel(location_of_statistics_file)
+            self.update_status_label("Статистиката е готова.")
         except Exception as e:
-            return_result, status_color, additional_message = f"Грешка: '{e}'", 'red', None
+            self.update_status_label(f"Грешка: '{e}'")
 
-        # additional error handling
-        if return_result is None and status_color == 'red':
-            return_result = GlobalErrorHandler.CURRENT_OPERATION
-            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
-        elif return_result is not None and status_color == 'red':
-            return_result += ', ' + GlobalErrorHandler.CURRENT_OPERATION
-            return_result += ', ' + GlobalErrorHandler.CURRENT_ITEM
-
-        # feedback to the light next to the button
-        self.update_light_next_to_button(self.canvas4, self.rect4, status_color)
-
-        # if there is an additional message, show it
-        if additional_message is not None:
-            self.update_status_label(f"{return_result}\n{additional_message}")
-        else:
-            self.update_status_label(f"{return_result}")
-
+        # set the light to green for 1 second
+        self.update_light_next_to_button(self.canvas4, self.rect4, 'green')
         self.window.after(1000, self.update_light_next_to_button, self.canvas4, self.rect4, 'gray')
 
     # -----------------------------------------------------------------------------
@@ -567,6 +689,13 @@ class MyGui:
         try:
             # actualize the other directories based on the project directory
             if self.location_of_project_dir is not None:
+                # ToDo: changed here
+                # ---------------------------------------------------------------------------
+                # update the project manager
+                pm = ProjectManager(location_of_json_file)
+                pm.write_opened_project_into_the_json_file(self.location_of_project_dir)
+                # ---------------------------------------------------------------------------
+
                 self.location_of_ready_dir = os.path.join(self.location_of_project_dir,
                                                           self.default_path_for_ready_after_project_name)
                 self.select_location_of_ready_dir(self.location_of_ready_dir)
@@ -621,6 +750,15 @@ class MyGui:
         except Exception as e:
             # If there are other exceptions
             return f"Грешка: {e}", 'red', None
+
+    def small_browse_button_functionality(self, project_selected_via_dropdown):
+        self.location_of_project_dir = project_selected_via_dropdown
+        self._update_location('location_of_project_dir', self.browse_label_1, project_selected_via_dropdown)
+
+        # actualize the other directories based on the project directory
+        self._actualize_all_dirs_based_on_project_dir()
+
+        self.update_status_label(f"Избран проект: '{project_selected_via_dropdown}'")
 
     # -----------------------------------------------------------------------------
     # Shortcut button methods
@@ -700,3 +838,39 @@ class MyGui:
         """
         self.db_object.close_connection()       # Close the database connection
         self.window.quit()
+
+    # -----------------------------------------------------------------------------
+    def show_login_dialog(self):
+        """
+        Show a login dialog to the user.
+        Return True if login is successful, False otherwise.
+        """
+        login_dialog = Tk()
+        login_dialog.withdraw()  # Hide the main root window
+
+        # Prompt for username
+        username = simpledialog.askstring("Login", "Enter your username:", parent=login_dialog)
+        if not username:
+            messagebox.showerror("Login Failed", "Username cannot be empty!")
+            return False
+
+        # Prompt for password
+        password = simpledialog.askstring("Login", "Enter your password:", parent=login_dialog, show='*')
+        if not password:
+            messagebox.showerror("Login Failed", "Password cannot be empty!")
+            return False
+
+        # Replace with actual authentication logic
+        if self.authenticate(username, password):
+            login_dialog.destroy()  # Destroy login window on successful login
+            return True
+        else:
+            messagebox.showerror("Login Failed", "Invalid username or password!")
+            return False
+
+    def authenticate(self, username, password):
+        """
+        Replace this method with actual authentication logic.
+        """
+        # Dummy authentication logic
+        return username == "lt" and password == "123"
