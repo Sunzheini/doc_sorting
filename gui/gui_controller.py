@@ -444,9 +444,21 @@ class MyGui:
             {'responsible_person': '3', 'price': '4'}}
         """
 
-        # modify entries to have also today's date
-        today = datetime.datetime.now().strftime("%Y-%m-%d")
-        entries = {folder: {**data, 'date': today} for folder, data in entries.items()}
+        # # modify entries to have also today's date
+        # today = datetime.datetime.now().strftime("%Y-%m-%d")
+        # entries = {folder: {**data, 'date': today} for folder, data in entries.items()}
+
+        # -----------------------------------------------------------------------------
+        #ToDo: use self.engine_object.module.dict_waiting_for_execution to get the date in its name from the first file in the folder
+        entries = {folder: {**data} for folder, data in entries.items()}
+
+        for folder, data in self.engine_object.module.dict_waiting_for_execution.items():
+            for file, file_data in data['files_to_move'].items():
+                date = file.split('_')[-1].split('.')[0]
+                entries[folder]['date'] = date
+                continue
+
+        # -----------------------------------------------------------------------------
 
         # Write to the Project Manager
         pm = ProjectManager(location_of_json_file)
