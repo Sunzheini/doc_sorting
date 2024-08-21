@@ -455,6 +455,10 @@ class MyGui:
         for folder, data in self.engine_object.module.dict_waiting_for_execution.items():
             for file, file_data in data['files_to_move'].items():
                 date = file.split('_')[-1].split('.')[0]
+
+                # ToDo: 19.08.2024, modify the date, not to be 14072024, but 20240714
+                date = f"{date[4:]}{date[2:4]}{date[:2]}"
+
                 entries[folder]['date'] = date
                 continue
 
