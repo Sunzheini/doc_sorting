@@ -31,7 +31,9 @@ content_of_excel_file_start_row = 'A'
 # regex patterns -----------------------------------------------------------------------------
 # folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
 # ToDo: 01.05.2024 added to include ( and & and - in the folder name
-folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я\.\(\)\,\&\-\s]+(?=\S)[A-Za-zА-Яа-я\)\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
+# folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я\.\(\)\,\&\-\s]+(?=\S)[A-Za-zА-Яа-я\)\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
+# ToDo: 31.10.2024
+folder_regex = r'(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([\dA-Za-z.,]+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я0-9\.\(\)\,\&\-\s]+(?=\S)[A-Za-zА-Яа-я0-9\)\s])(?:\s*-\s*|\s*-|\s*-|-\s*)?((\d)?)'
 
 file_regex = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я\s]+(?=\S)[A-Za-zА-Яа-я\s])(\s*-\s*|\s*-|-\s*|-\s*)(\d+)'
 # ToDo: 1. Added this one:
@@ -40,7 +42,9 @@ file_regex_new_format = r'([A-Za-zА-Яа-я]+)(\d+)(\s*[-_]\s*|\s*-\s*|[-_]\s*|
 folder_regex_name_into_number = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)'
 # folder_regex_name_into_number_name = r'([A-Za-z]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-z\s]+(?=\S)[A-Za-z\s])'
 # ToDo: 01.05.2024 added to include ( and & and - in the folder name
-folder_regex_name_into_number_name = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я\(\)\&\s]+(?=\S)[A-Za-zА-Яа-я\)\s])'
+# folder_regex_name_into_number_name = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я\(\)\&\s]+(?=\S)[A-Za-zА-Яа-я\)\s])'
+# ToDo: 31.10.2024
+folder_regex_name_into_number_name = r'([A-Za-zА-Яа-я]+)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)(\d+)(\s*-\s*|\s*-|-\s*|-\s*)([\dA-Za-z.,]+)(\s*-\s*|\s*-|-\s*|-\s*)([A-Za-zА-Яа-я0-9.,\(\)\&\s]+(?=\S)[A-Za-zА-Яа-я0-9\)\s])'
 
 # ToDo: changed here
 # ------------------------------------------------------------------------------------------------

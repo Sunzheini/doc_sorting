@@ -82,7 +82,7 @@ class ModuleController:
                     'path': 'C:\\Users\\User\\Desktop\\MK\\ProjectXYZ\\05 DESIGN DOCUMENTS\\Работна\\Ready\\20230928 - MC077-021-001-Leak proof joint design and drawing for hull\\MC077-021-001-Leak proof joint design and drawing for hull - 28092023.dwg'}}},
 
         Note: file_name is None if the actual file name is using the new format, i.e.
-        „MC077-022-001_ 30092023-A1.pdf“
+        „MC077-022-001_30092023-A1.pdf“
         instead of
         „MC077-022-001-Leak proof joint design and drawing for tank and deck surface - 30092023-A1.pdf“
         first a search is performed for the old format, then for the new one:
