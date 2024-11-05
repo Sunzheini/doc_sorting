@@ -12,7 +12,8 @@ def _determine_start_row_by_given_string(worksheet, string_for_start_row):
     start_row = 0
     for row in worksheet.iter_rows(min_row=1, max_row=worksheet.max_row, min_col=1, max_col=worksheet.max_column):
         for cell in row:
-            if cell.value == string_for_start_row:
+            cell_value = cell.value
+            if cell_value == string_for_start_row:
                 start_row = cell.row
                 break
         if start_row:

@@ -432,7 +432,7 @@ class ModuleController:
             append_a_string_to_txt_file(self.location_of_log_file, f'Error: {e}')
             return 'Error', e
 
-    def step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel(self, finished_dir):
+    def step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel_also_fills_destination_paths(self, finished_dir):
         """
         Checks if the dict waiting for execution corresponds to the Excel file and then also after
         scanning the pdf files. Corrects the dict_waiting_for_execution and exports the result to a txt file
@@ -477,7 +477,8 @@ class ModuleController:
                         new_path = os.path.join(
                             finished_dir,
                             value2['section number'],
-                            key.replace(' ', '-', 1)    # include a dash instead of a space
+                            # key.replace(' ', '-', 1)    # include a dash instead of a space
+                            key.replace(' ', '_', 1)    # include a dash instead of a space
                         )
 
                         new_path = normalize_path_to_have_only_forward_slashes(new_path)

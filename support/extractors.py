@@ -24,21 +24,33 @@ def split_folder_name_into_date_number_name_revision(string):
     :param string: folder name
     :return: date, number, name and revision
     """
-    pattern = folder_regex
-    match = re.search(pattern, string)
+    # pattern = folder_regex
+    # match = re.search(pattern, string)
+    #
+    # if match:
+    #     date = match.group(1)
+    #     number = match.group(3) + match.group(4) + '-' + match.group(6) + '-' + match.group(8)
+    #     name = match.group(10)
+    #     revision = match.group(11)
+    #
+    #     if revision == "":
+    #         revision = 0
+    #
+    #     return date, number, name, revision
+    # else:
+    #     return None, None, None, None
 
-    if match:
-        date = match.group(1)
-        number = match.group(3) + match.group(4) + '-' + match.group(6) + '-' + match.group(8)
-        name = match.group(10)
-        revision = match.group(11)
+    split_character = '_'
+    split_string = string.split(split_character)
+    date = split_string[0]
+    number = split_string[1]
+    name = split_string[2]
+    revision = 0
 
-        if revision == "":
-            revision = 0
+    if len(split_string) > 3:
+        revision = int(split_string[3])
 
-        return date, number, name, revision
-    else:
-        return None, None, None, None
+    return date, number, name, revision
 
 
 def split_file_name_into_number_name_date(string):
@@ -47,28 +59,39 @@ def split_file_name_into_number_name_date(string):
     :param string: file name
     :return: number and name and date
     """
-    pattern = file_regex
-    match = re.search(pattern, string)
+    # pattern = file_regex
+    # match = re.search(pattern, string)
+    #
+    # # ToDo: 2. Changed here
+    # # if there is no match with the old pattern, try the new one
+    # if match:
+    #     number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
+    #     name = match.group(8)
+    #     date = match.group(10)
+    #     return number, name, date
+    # else:
+    #     pattern = file_regex_new_format
+    #     match = re.search(pattern, string)
+    #
+    #     if match:
+    #         number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
+    #         name = None
+    #         date = match.group(8)
+    #         return number, name, date
+    #
+    #     else:
+    #         return None, None, None
 
-    # ToDo: 2. Changed here
-    # if there is no match with the old pattern, try the new one
-    if match:
-        number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
-        name = match.group(8)
-        date = match.group(10)
-        return number, name, date
-    else:
-        pattern = file_regex_new_format
-        match = re.search(pattern, string)
+    split_character = '_'
+    split_string = string.split(split_character)
+    number = split_string[0]
+    name = None
+    date = split_string[1]
 
-        if match:
-            number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
-            name = None
-            date = match.group(8)
-            return number, name, date
+    #  remove file extension
+    date = date.split('.')[0]
 
-        else:
-            return None, None, None
+    return number, name, date
 
 
 def split_folder_name_into_number(string):
@@ -95,14 +118,25 @@ def split_folder_name_into_number_name(string):
     :return: number and name
     """
 
-    pattern = folder_regex_name_into_number_name
+    # pattern = folder_regex_name_into_number_name
+    # match = re.search(pattern, string)
+    #
+    # if match:
+    #     number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
+    #     name = match.group(8)
+    #
+    #     return number, name
+    # else:
+    #     return None, None
 
-    match = re.search(pattern, string)
+    split_character = '_'
+    split_string = string.split(split_character)
+    number = split_string[0]
 
-    if match:
-        number = match.group(1) + match.group(2) + '-' + match.group(4) + '-' + match.group(6)
-        name = match.group(8)
-
-        return number, name
+    if len(split_string) > 1:
+        name = split_string[1]
     else:
-        return None, None
+        number = None
+        name = None
+
+    return number, name

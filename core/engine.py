@@ -98,7 +98,7 @@ class Engine:
             return result, 'red', None
 
         # 6. Check if new folders in work correspond to Excel file
-        result, temp_message = self.module.step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel(finished_dir)
+        result, temp_message = self.module.step_6_check_if_new_folders_in_work_and_their_contents_correspond_to_excel_also_fills_destination_paths(finished_dir)
         if temp_message is not None:
             has_additional_message = True
             additional_message += '\n' + temp_message
