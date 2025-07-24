@@ -19,7 +19,8 @@ location_of_dll = os.path.join(pycharm_project_folder, "dotnet", "FolderAndFileM
 dll_name = "FolderAndFileManipulation"
 
 # other constants ----------------------------------------------------------------------------
-allowed_file_extensions = ['.pdf', '.dwg', '.zip', '.doc', '.docx', '.xls', '.xlsx']
+# allowed_file_extensions = ['.pdf', '.dwg', '.zip', '.doc', '.docx', '.xls', '.xlsx']
+allowed_file_extensions = ['.pdf', '.dwg', '.DWG']
 location_of_log_file = "log.txt"
 pdf_scanning_coordinates = {
     'project_name': {'x1': 2135, 'y1': 1527, 'x2': 2355, 'y2': 1556},

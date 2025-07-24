@@ -717,6 +717,7 @@ imported by:
  &#8226;   <a href="#PIL._webp">PIL._webp</a>
  &#8226;   <a href="#PIL.features">PIL.features</a>
  &#8226;   <a href="#fitz.fitz">fitz.fitz</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
  &#8226;   <a href="#openpyxl.drawing.image">openpyxl.drawing.image</a>
  &#8226;   <a href="#pytesseract.pytesseract">pytesseract.pytesseract</a>
  &#8226;   <a href="#support.pdf_scanner">support.pdf_scanner</a>
@@ -1312,6 +1313,7 @@ imported by:
  &#8226;   <a href="#PIL.XpmImagePlugin">PIL.XpmImagePlugin</a>
  &#8226;   <a href="#PIL.features">PIL.features</a>
  &#8226;   <a href="#fitz.fitz">fitz.fitz</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
  &#8226;   <a href="#openpyxl.drawing.image">openpyxl.drawing.image</a>
  &#8226;   <a href="#pytesseract.pytesseract">pytesseract.pytesseract</a>
  &#8226;   <a href="#support.pdf_scanner">support.pdf_scanner</a>
@@ -1645,6 +1647,7 @@ imports:
 imported by:
     <a href="#PIL">PIL</a>
  &#8226;   <a href="#PIL.SpiderImagePlugin">PIL.SpiderImagePlugin</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
 
   </div>
 
@@ -6271,7 +6274,9 @@ imported by:
 imported by:
     <a href="#core.database_controller">core.database_controller</a>
  &#8226;   <a href="#core.engine">core.engine</a>
+ &#8226;   <a href="#core.global_error_handler">core.global_error_handler</a>
  &#8226;   <a href="#core.module_controller">core.module_controller</a>
+ &#8226;   <a href="#core.project_manager">core.project_manager</a>
  &#8226;   <a href="#core.walk_loop">core.walk_loop</a>
 
   </div>
@@ -6303,6 +6308,12 @@ imported by:
 imports:
     <a href="#core">core</a>
  &#8226;   <a href="#core.module_controller">core.module_controller</a>
+ &#8226;   <a href="#core.project_manager">core.project_manager</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#support.constants">support.constants</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
 
   </div>
   <div class="import">
@@ -6314,11 +6325,30 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="core.global_error_handler"></a>
+  <a target="code" href="///D:/Study/Projects/PycharmProjects/doc_sorting/core/global_error_handler.py" type="text/plain"><tt>core.global_error_handler</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core">core</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.module_controller">core.module_controller</a>
+ &#8226;   <a href="#core.walk_loop">core.walk_loop</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="core.module_controller"></a>
   <a target="code" href="///D:/Study/Projects/PycharmProjects/doc_sorting/core/module_controller.py" type="text/plain"><tt>core.module_controller</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#core">core</a>
+ &#8226;   <a href="#core.global_error_handler">core.global_error_handler</a>
  &#8226;   <a href="#core.walk_loop">core.walk_loop</a>
  &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#os">os</a>
@@ -6343,11 +6373,32 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="core.project_manager"></a>
+  <a target="code" href="///D:/Study/Projects/PycharmProjects/doc_sorting/core/project_manager.py" type="text/plain"><tt>core.project_manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#core">core</a>
+ &#8226;   <a href="#json">json</a>
+ &#8226;   <a href="#openpyxl">openpyxl</a>
+ &#8226;   <a href="#os">os</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#core.engine">core.engine</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="core.walk_loop"></a>
   <a target="code" href="///D:/Study/Projects/PycharmProjects/doc_sorting/core/walk_loop.py" type="text/plain"><tt>core.walk_loop</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#core">core</a>
+ &#8226;   <a href="#core.global_error_handler">core.global_error_handler</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#support.constants">support.constants</a>
  &#8226;   <a href="#support.extractors">support.extractors</a>
@@ -6655,10 +6706,12 @@ imports:
 imported by:
     <a href="#_strptime">_strptime</a>
  &#8226;   <a href="#calendar">calendar</a>
+ &#8226;   <a href="#core.engine">core.engine</a>
  &#8226;   <a href="#core.module_controller">core.module_controller</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#fontTools.misc.plistlib">fontTools.misc.plistlib</a>
  &#8226;   <a href="#fontTools.misc.timeTools">fontTools.misc.timeTools</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#http.server">http.server</a>
  &#8226;   <a href="#openpyxl.cell._writer">openpyxl.cell._writer</a>
@@ -16634,15 +16687,24 @@ imported by:
   <a target="code" href="///D:/Study/Projects/PycharmProjects/doc_sorting/gui/gui_controller.py" type="text/plain"><tt>gui.gui_controller</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#gui">gui</a>
+    <a href="#PIL">PIL</a>
+ &#8226;   <a href="#PIL.Image">PIL.Image</a>
+ &#8226;   <a href="#PIL.ImageTk">PIL.ImageTk</a>
+ &#8226;   <a href="#core.global_error_handler">core.global_error_handler</a>
+ &#8226;   <a href="#core.project_manager">core.project_manager</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#gui">gui</a>
  &#8226;   <a href="#gui.default_status_text">gui.default_status_text</a>
  &#8226;   <a href="#gui.front_end_settings">gui.front_end_settings</a>
  &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#support.constants">support.constants</a>
  &#8226;   <a href="#support.decorators">support.decorators</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
  &#8226;   <a href="#tkinter.font">tkinter.font</a>
+ &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
  &#8226;   <a href="#tkinter.scrolledtext">tkinter.scrolledtext</a>
+ &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
 
   </div>
   <div class="import">
@@ -17802,7 +17864,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#fitz.fitz">fitz.fitz</a>
+    <a href="#core.project_manager">core.project_manager</a>
+ &#8226;   <a href="#fitz.fitz">fitz.fitz</a>
  &#8226;   <a href="#fitz.utils">fitz.utils</a>
  &#8226;   <a href="#fontTools.ttLib.tables.D__e_b_g">fontTools.ttLib.tables.D__e_b_g</a>
  &#8226;   <a href="#json.decoder">json.decoder</a>
@@ -25009,7 +25072,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#openpyxl._constants">openpyxl._constants</a>
+    <a href="#core.project_manager">core.project_manager</a>
+ &#8226;   <a href="#openpyxl._constants">openpyxl._constants</a>
  &#8226;   <a href="#openpyxl.cell">openpyxl.cell</a>
  &#8226;   <a href="#openpyxl.cell._writer">openpyxl.cell._writer</a>
  &#8226;   <a href="#openpyxl.chart">openpyxl.chart</a>
@@ -29865,7 +29929,9 @@ imported by:
  &#8226;   <a href="#concurrent.futures.process">concurrent.futures.process</a>
  &#8226;   <a href="#concurrent.futures.thread">concurrent.futures.thread</a>
  &#8226;   <a href="#configparser">configparser</a>
+ &#8226;   <a href="#core.engine">core.engine</a>
  &#8226;   <a href="#core.module_controller">core.module_controller</a>
+ &#8226;   <a href="#core.project_manager">core.project_manager</a>
  &#8226;   <a href="#core.walk_loop">core.walk_loop</a>
  &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#ctypes._aix">ctypes._aix</a>
@@ -38108,8 +38174,10 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#core.module_controller">core.module_controller</a>
+    <a href="#core.engine">core.engine</a>
+ &#8226;   <a href="#core.module_controller">core.module_controller</a>
  &#8226;   <a href="#core.walk_loop">core.walk_loop</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#support.extractors">support.extractors</a>
 
@@ -38993,19 +39061,20 @@ imports:
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#sys">sys</a>
- &#8226;   <a href="#tkinter.commondialog">tkinter.commondialog</a>
  &#8226;   <a href="#tkinter.constants">tkinter.constants</a>
  &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
  &#8226;   <a href="#tkinter.font">tkinter.font</a>
  &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
  &#8226;   <a href="#tkinter.scrolledtext">tkinter.scrolledtext</a>
+ &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
 
   </div>
   <div class="import">
 imported by:
-    <a href="#gui.front_end_settings">gui.front_end_settings</a>
+    <a href="#core.engine">core.engine</a>
+ &#8226;   <a href="#gui.front_end_settings">gui.front_end_settings</a>
  &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
  &#8226;   <a href="#tkinter.commondialog">tkinter.commondialog</a>
  &#8226;   <a href="#tkinter.constants">tkinter.constants</a>
@@ -39030,8 +39099,7 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
+    <a href="#tkinter.filedialog">tkinter.filedialog</a>
  &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
 
   </div>
@@ -39124,7 +39192,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#tkinter">tkinter</a>
+    <a href="#gui.gui_controller">gui.gui_controller</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
 
   </div>
@@ -39160,7 +39229,10 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#tkinter.filedialog">tkinter.filedialog</a>
+    <a href="#core.engine">core.engine</a>
+ &#8226;   <a href="#gui.gui_controller">gui.gui_controller</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
 
   </div>
 

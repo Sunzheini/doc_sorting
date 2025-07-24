@@ -18,6 +18,21 @@ def extract_text_after_last_backslash(path):
     return name
 
 
+def split_string_24072025(s):
+    # Match DATE (digits), then first delimiter, then CODE (all until last delimiter), then DESCRIPTION
+    match = re.match(r'^(\d+)[-_](.*?)[-_]([^-_]*)$', s)
+    if not match:
+        # Alternative pattern if DESCRIPTION contains delimiters (e.g., "Ladder-VL3")
+        match = re.match(r'^(\d+)[-_](.*)[-_](.*)$', s)
+    if match:
+        date_part, code_part, desc_part = match.groups()
+        # Remove trailing delimiters
+        code_part = code_part.rstrip('-_')
+        desc_part = desc_part.rstrip('-_')
+        return date_part, code_part, desc_part
+    return None  # Fallback if no match
+
+
 def split_folder_name_into_date_number_name_revision(string):
     """
     Splits a folder name into date, number, name and revision
@@ -40,8 +55,10 @@ def split_folder_name_into_date_number_name_revision(string):
     # else:
     #     return None, None, None, None
 
-    split_character = '_'
-    split_string = string.split(split_character)
+    split_character: str = '-'
+
+    # split_string = string.split(split_character)
+    split_string = split_string_24072025(string)
     date = split_string[0]
     number = split_string[1]
     name = split_string[2]

@@ -1,6 +1,6 @@
 import json
 import os
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 
 class ProjectManager:
@@ -36,7 +36,8 @@ class ProjectManager:
         :param project_name: name of the project.
         """
         if project_name not in self.projects:
-            self.projects[project_name] = {}
+            # self.projects[project_name] = {}
+            self.projects[project_name] = []
             self._save_projects()
             print(f"Project '{project_name}' added.")
         else:
@@ -76,24 +77,39 @@ class ProjectManager:
         """
         # Ensure the project directory is initialized in the dictionary
         if project_dir not in self.projects:
-            self.projects[project_dir] = {}
+            # self.projects[project_dir] = {}
+            self.projects[project_dir] = []
 
         # Update the existing dictionary for the project directory
         for project_name, details in data_dictionary.items():
 
             # Check if the project name is already present in the project directory
-            if project_name in self.projects[project_dir]:
-
-            # Get the existing value of `passed`
-                passed = self.projects[project_dir][project_name].get('passed', False)
-                new_passed = int(passed) + 1
-                details['passed'] = str(new_passed)
-
-            else:
-                details['passed'] = '1'
+            # if project_name in self.projects[project_dir]:
+            #
+            # # Get the existing value of `passed`
+            #     passed = self.projects[project_dir][project_name].get('passed', False)
+            #     new_passed = int(passed) + 1
+            #     details['passed'] = str(new_passed)
+            #
+            # else:
+            #     details['passed'] = '1'
 
             # Update the existing dictionary for the project directory
-            self.projects[project_dir][project_name] = details
+            # self.projects[project_dir][project_name] = details
+
+            if project_name in [proj['project_name'] for proj in self.projects[project_dir]]:
+                for proj in self.projects[project_dir]:
+                    if proj['project_name'] == project_name:
+                        passed = proj['details'].get('passed', 0)
+                        new_passed = int(passed) + 1
+                        details['passed'] = new_passed
+            else:
+                details['passed'] = 1
+
+            self.projects[project_dir].append({
+                'project_name': project_name,
+                'details': details
+            })
 
         # Save the updated projects dictionary to the JSON file
         self._save_projects()
@@ -115,15 +131,26 @@ class ProjectManager:
         first_row = True
 
         for project_dir, projects in self.projects.items():
-            for project_name, details in projects.items():
+            # for project_name, details in projects.items():
+            #     if first_row:
+            #         # Add headers dynamically from the keys in the first project
+            #         headers.extend(details.keys())
+            #         sheet.append(headers)
+            #         first_row = False
+            #
+            #     # Prepare the row data
+            #     row = [project_dir, project_name] + [details.get(header, '') for header in headers[2:]]
+            #     sheet.append(row)
+
+            for project in projects:
                 if first_row:
                     # Add headers dynamically from the keys in the first project
-                    headers.extend(details.keys())
+                    headers.extend(project['details'].keys())
                     sheet.append(headers)
                     first_row = False
 
                 # Prepare the row data
-                row = [project_dir, project_name] + [details.get(header, '') for header in headers[2:]]
+                row = [project_dir, project['project_name']] + [project['details'].get(header, '') for header in headers[2:]]
                 sheet.append(row)
 
         # Save the workbook to the specified file path
