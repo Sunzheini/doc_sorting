@@ -1,0 +1,94 @@
+{
+    "D:/BigBusiness/MK/new/Project03082025": [
+        {
+            "project_name": "MC080-010-03 Hull lines",
+            "details": {
+                "responsible_person": "1",
+                "price": "1",
+                "hours": "1",
+                "date": "20241209",
+                "passed": 1
+            }
+        },
+        {
+            "project_name": "MC080-010-03 Hull lines",
+            "details": {
+                "responsible_person": "2",
+                "price": "2",
+                "hours": "2",
+                "date": "20241209",
+                "passed": 2
+            }
+        },
+        {
+            "project_name": "MC080-010-12 Equipment Number calculation",
+            "details": {
+                "responsible_person": "33",
+                "price": "33",
+                "hours": "33",
+                "date": "20241203",
+                "passed": 1
+            }
+        },
+        {
+            "project_name": "MC080-010-09 Ship resistanse report from CFD",
+            "details": {
+                "responsible_person": "33",
+                "price": "33",
+                "hours": "33",
+                "date": "20240112",
+                "passed": 1
+            }
+        },
+        {
+            "project_name": "MC080-010-15 Bow engine room arrangement",
+            "details": {
+                "responsible_person": "33",
+                "price": "33",
+                "hours": "33",
+                "date": "20240612",
+                "passed": 1
+            }
+        },
+        {
+            "project_name": "MC080-010-13 Preliminary tank plan",
+            "details": {
+                "responsible_person": "33",
+                "price": "33",
+                "hours": "33",
+                "date": "20241129",
+                "passed": 1
+            }
+        },
+        {
+            "project_name": "MC080-010-02 General Arrangement Plan",
+            "details": {
+                "responsible_person": "33",
+                "price": "33",
+                "hours": "33",
+                "date": "20241207",
+                "passed": 1
+            }
+        },
+        {
+            "project_name": "MC080-010-02 General Arrangement Plan",
+            "details": {
+                "responsible_person": "444",
+                "price": "444",
+                "hours": "444",
+                "date": "20241213",
+                "passed": 2
+            }
+        },
+        {
+            "project_name": "MC080-010-05 Weight and Center of Gravity Calculation",
+            "details": {
+                "responsible_person": "444",
+                "price": "444",
+                "hours": "444",
+                "date": "20241312",
+                "passed": 1
+            }
+        }
+    ]
+}
