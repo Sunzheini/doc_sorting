@@ -55,8 +55,8 @@ class MyGui:
         # First login dialog
         # -----------------------------------------------------------------------------
         # Show login dialog before anything else
-        # if not self.show_login_dialog():
-        #     return  # Exit if login is unsuccessful
+        if not self.show_login_dialog():
+            return  # Exit if login is unsuccessful
 
         # -----------------------------------------------------------------------------
         # General window looks

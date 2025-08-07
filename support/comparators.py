@@ -33,6 +33,10 @@ def first_date_is_newer(date1, date2):
     :param date2: a string
     :return: a boolean
     """
+    # first strip the end spaces of the dates
+    date1 = date1.strip()
+    date2 = date2.strip()
+
     # There is a case when the date is not 17102023 but 17.10.2023 and after the regex, this function only receives 17
     if len(date1) != 8 or len(date2) != 8:
         raise ValueError("The date must be in the format ddmmyyyy")
