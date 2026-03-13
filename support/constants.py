@@ -2,6 +2,10 @@
 import os
 
 
+username_default = "lt"
+password_default = "123"
+
+
 # default_paths (can be changed via the menu) ------------------------------------------------
 ready_dir_path = os.path.join('05 DESIGN DOCUMENTS', 'Работна', 'Ready')
 finished_dir_path = os.path.join('05 DESIGN DOCUMENTS', '020 CLASSIFICATION DRAWINGS')

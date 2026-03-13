@@ -9,7 +9,7 @@ from PIL import Image, ImageTk  # Import the PIL module
 
 from core.project_manager import ProjectManager
 from gui.default_status_text import default_status_text
-from support.constants import location_of_json_file, location_of_statistics_file
+from support.constants import location_of_json_file, location_of_statistics_file, username_default, password_default
 from support.decorators import time_measurement_decorator
 from gui.front_end_settings import (roboto_font_family, roboto_font_size,
                                     apply_the_front_end_settings, apply_the_browse_buttons,
@@ -55,8 +55,8 @@ class MyGui:
         # First login dialog
         # -----------------------------------------------------------------------------
         # Show login dialog before anything else
-        if not self.show_login_dialog():
-            return  # Exit if login is unsuccessful
+        # if not self.show_login_dialog():
+        #     return  # Exit if login is unsuccessful
 
         # -----------------------------------------------------------------------------
         # General window looks
@@ -313,15 +313,16 @@ class MyGui:
     #     self.status_label.image_create(END, image=self.photo)
 
     def initialize_image(self):
-        self.image_path = "static\\cert.jpg"  # specify the path to your image
-        self.image = Image.open(self.image_path)
-        self.image = self.image.resize((270, 200), Image.ANTIALIAS)  # resize the image as needed
-        self.photo = ImageTk.PhotoImage(self.image)
-
-        self.image_canvas = Canvas(self.status_label, width=270, height=200,
-                                   highlightthickness=0, bg='white', bd=1, relief='ridge')
-        self.image_canvas.create_image(0, 0, anchor='nw', image=self.photo)
-        self.image_canvas.place(relx=1.0, x=0, y=0, anchor='ne')  # Adjust x and y as needed
+        # self.image_path = "static\\cert.jpg"  # specify the path to your image
+        # self.image = Image.open(self.image_path)
+        # self.image = self.image.resize((270, 200), Image.ANTIALIAS)  # resize the image as needed
+        # self.photo = ImageTk.PhotoImage(self.image)
+        #
+        # self.image_canvas = Canvas(self.status_label, width=270, height=200,
+        #                            highlightthickness=0, bg='white', bd=1, relief='ridge')
+        # self.image_canvas.create_image(0, 0, anchor='nw', image=self.photo)
+        # self.image_canvas.place(relx=1.0, x=0, y=0, anchor='ne')  # Adjust x and y as needed
+        pass
 
     # def remove_image(self):
     #     self.status_label.delete("1.0", END)  # Clear the status label to remove the image
@@ -342,7 +343,7 @@ class MyGui:
         :param event: not used
         :return: None
         """
-        self.remove_image()  # Remove the image from the status label
+        # self.remove_image()  # Remove the image from the status label
 
         GlobalErrorHandler.CURRENT_OPERATION = ""
         GlobalErrorHandler.CURRENT_ITEM = ""
@@ -500,7 +501,7 @@ class MyGui:
         :param event: not used
         :return: None
         """
-        self.remove_image()  # Remove the image from the status label
+        # self.remove_image()  # Remove the image from the status label
 
         GlobalErrorHandler.CURRENT_OPERATION = ""
         GlobalErrorHandler.CURRENT_ITEM = ""
@@ -889,4 +890,4 @@ class MyGui:
         Replace this method with actual authentication logic.
         """
         # Dummy authentication logic
-        return username == "lt" and password == "123"
+        return username == username_default and password == password_default
